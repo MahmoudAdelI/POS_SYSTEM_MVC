@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
+using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
-using System;
-using System.Data;
 
 namespace POS_SYSTEM_MVC
 {
