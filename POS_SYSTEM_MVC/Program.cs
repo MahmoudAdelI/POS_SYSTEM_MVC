@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Models;
 using System;
+using System.Data;
 
 namespace POS_SYSTEM_MVC
 {
@@ -21,7 +23,13 @@ namespace POS_SYSTEM_MVC
 
             // Register Identity with roles
             builder.Services
-                .AddIdentity<ApplicationUser, IdentityRole>()
+                .AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 4;
+                    options.Password.RequireUppercase = false;
+                })
                 .AddEntityFrameworkStores<POSContext>()
                 .AddDefaultTokenProviders();
             //------------
@@ -29,19 +37,53 @@ namespace POS_SYSTEM_MVC
             var app = builder.Build();
 
 
-            // seed roles
+            #region seed users + roles
             using (var scope = app.Services.CreateScope())
             {
-                var roleManager = scope.ServiceProvider
-                    .GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-                string[] roles = { "Admin", "Cashier" };
+                // seed roles
+                string[] roles = { Role.Admin, Role.Cashier };
                 foreach (var role in roles)
-                {
                     if (!await roleManager.RoleExistsAsync(role))
                         await roleManager.CreateAsync(new IdentityRole(role));
+
+                // seed admin user
+                if (await userManager.FindByNameAsync("admin") == null)
+                {
+                    var admin = new ApplicationUser
+                    {
+                        UserName = "admin",
+                        FirstName = "Admin",
+                        LastName = "User"
+                    };
+                    var result = await userManager.CreateAsync(admin, "password");
+                    if (result.Succeeded)
+                        await userManager.AddToRoleAsync(admin, Role.Admin);
+                    else
+                        foreach (var error in result.Errors)
+                            Console.WriteLine($" {error.Description}");
+                }
+
+                // seed cashier user
+                if (await userManager.FindByNameAsync("cashier") == null)
+                {
+                    var cashier = new ApplicationUser
+                    {
+                        UserName = "cashier",
+                        FirstName = "Cashier",
+                        LastName = "User"
+                    };
+                    var result = await userManager.CreateAsync(cashier, "password");
+                    if (result.Succeeded)
+                        await userManager.AddToRoleAsync(cashier, Role.Cashier);
+                    else
+                        foreach (var error in result.Errors)
+                            Console.WriteLine($" {error.Description}");
                 }
             }
+            #endregion
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

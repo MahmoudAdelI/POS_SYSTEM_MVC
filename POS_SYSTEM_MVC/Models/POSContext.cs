@@ -15,6 +15,7 @@ namespace POS_SYSTEM_MVC.Models
 
             builder.Entity<IdentityRole>().ToTable("roles");
             builder.Entity<IdentityUserRole<string>>().ToTable("user_roles");
+
         }
     }
 }
