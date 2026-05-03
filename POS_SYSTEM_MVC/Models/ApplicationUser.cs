@@ -19,5 +19,7 @@ namespace POS_SYSTEM_MVC.Models
 
         [Column(TypeName = "smallmoney")]
         public decimal Salary { get; set; }
+
+        public ICollection<Sale> Sales { get; set; } = [];
     }
 }

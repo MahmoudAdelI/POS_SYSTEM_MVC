@@ -8,7 +8,7 @@ namespace POS_SYSTEM_MVC.Models
     {
         public int Id { get; set; }
 
-        public int CashierId { get; set; }
+        public string CashierId { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

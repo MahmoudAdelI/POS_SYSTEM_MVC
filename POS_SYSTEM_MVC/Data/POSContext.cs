@@ -58,6 +58,11 @@ namespace POS_SYSTEM_MVC.Data
                 .HasForeignKey(e => e.ProductVariantId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Sale>()
+                .HasOne(s => s.Cashier)
+                .WithMany(u => u.Sales)
+                .HasForeignKey(s => s.CashierId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Unique indexes
             builder.Entity<ProductVariant>().HasIndex(e => e.SKU).IsUnique();

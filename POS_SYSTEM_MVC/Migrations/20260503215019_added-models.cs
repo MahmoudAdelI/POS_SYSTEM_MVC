@@ -56,23 +56,22 @@ namespace POS_SYSTEM_MVC.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CashierId = table.Column<int>(type: "int", nullable: false),
+                    CashierId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DiscountType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DiscountValue = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
-                    DiscountAmount = table.Column<decimal>(type: "smallmoney", nullable: true),
-                    CashierId1 = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    DiscountAmount = table.Column<decimal>(type: "smallmoney", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sale", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Sale_users_CashierId1",
-                        column: x => x.CashierId1,
+                        name: "FK_Sale_users_CashierId",
+                        column: x => x.CashierId,
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -346,9 +345,9 @@ namespace POS_SYSTEM_MVC.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sale_CashierId1",
+                name: "IX_Sale_CashierId",
                 table: "Sale",
-                column: "CashierId1");
+                column: "CashierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SaleLine_ProductVariantId",

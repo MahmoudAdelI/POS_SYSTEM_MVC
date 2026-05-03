@@ -436,10 +436,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CashierId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CashierId1")
+                    b.Property<string>("CashierId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -461,7 +458,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CashierId1");
+                    b.HasIndex("CashierId");
 
                     b.ToTable("Sale");
                 });
@@ -693,9 +690,9 @@ namespace POS_SYSTEM_MVC.Migrations
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.Sale", b =>
                 {
                     b.HasOne("POS_SYSTEM_MVC.Models.ApplicationUser", "Cashier")
-                        .WithMany()
-                        .HasForeignKey("CashierId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Sales")
+                        .HasForeignKey("CashierId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cashier");
@@ -767,6 +764,11 @@ namespace POS_SYSTEM_MVC.Migrations
                     b.Navigation("AttributeValue");
 
                     b.Navigation("ProductVariant");
+                });
+
+            modelBuilder.Entity("POS_SYSTEM_MVC.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Sales");
                 });
 
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.Brand", b =>
