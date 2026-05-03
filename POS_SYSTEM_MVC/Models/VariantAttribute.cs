@@ -1,0 +1,11 @@
+﻿namespace POS_SYSTEM_MVC.Models
+{
+    public class VariantAttribute
+    {
+        public int ProductVariantId { get; set; }
+        public int AttributeValueId { get; set; }
+
+        public ProductVariant ProductVariant { get; set; }
+        public ProductAttributeValue AttributeValue { get; set; }
+    }
+}
