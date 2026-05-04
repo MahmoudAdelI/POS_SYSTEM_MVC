@@ -66,6 +66,9 @@ namespace POS_SYSTEM_MVC.Data
 
             // Unique indexes
             builder.Entity<ProductVariant>().HasIndex(e => e.SKU).IsUnique();
+            builder.Entity<ProductAttributeValue>()
+                .HasIndex(e => new { e.SubCategoryId, e.AttributeId, e.Value })
+                .IsUnique();
 
             // Enums stored as strings
             builder.Entity<Discount>().Property(e => e.Type).HasConversion<string>();
