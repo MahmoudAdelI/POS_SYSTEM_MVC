@@ -8,8 +8,14 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow:
+    0 0 0 0.1rem white,
+    0 0 0 0.25rem #258cfb;
 }
 
 html {
@@ -19,13 +25,154 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #f8f9fa;
+  overflow-x: hidden;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+/* Sidebar Styles */
+#wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+#sidebar {
+  min-width: 250px;
+  max-width: 250px;
+  background: #212529;
+  color: #fff;
+  transition: all 0.3s;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+#sidebar.active {
+  left: -250px;
+}
+
+/* Add offset for the content when sidebar is fixed */
+#content {
+  width: 100%;
+  padding: 20px;
+  margin-left: 250px;
+  min-height: 100vh;
+  transition: all 0.3s;
+  background-color: #f8f9fa;
+}
+
+#sidebar.active + #content {
+  margin-left: 0;
+}
+
+#sidebar .sidebar-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Sidebar */
+#sidebar .sidebar-content::-webkit-scrollbar {
+  width: 5px;
+}
+#sidebar .sidebar-content::-webkit-scrollbar-track {
+  background: #212529;
+}
+#sidebar .sidebar-content::-webkit-scrollbar-thumb {
+  background: #343a40;
+  border-radius: 10px;
+}
+#sidebar .sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: #495057;
+}
+
+#sidebar .sidebar-footer {
+  padding: 15px;
+  background: #1a1d20;
+  border-top: 1px solid #343a40;
+  flex-shrink: 0;
+}
+
+.user-profile {
+  background: rgba(255, 255, 255, 0.05);
+  margin: 10px;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+#sidebar ul li a {
+  padding: 12px 20px;
+  font-size: 1.1em;
+  display: block;
+  color: #adb5bd;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+#sidebar ul li a:hover {
+  color: #fff;
+  background: #343a40;
+}
+
+#sidebar ul li.active > a,
+a[aria-expanded="true"] {
+  color: #fff;
+  background: #0d6efd;
+}
+
+#sidebar ul li a i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+/* Content Area */
+#content {
+  width: 100%;
+  padding: 20px;
+  margin-left: 250px;
+  min-height: 100vh;
+  transition: all 0.3s;
+  background-color: #f8f9fa;
+}
+
+#ajax-loader {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+@media (max-width: 768px) {
+  #sidebar {
+    left: -250px;
+  }
+  #sidebar.active {
+    left: 0;
+  }
+  #content {
+    margin-left: 0 !important;
+  }
+}
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
