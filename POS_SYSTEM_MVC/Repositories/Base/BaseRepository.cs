@@ -13,6 +13,18 @@ namespace POS_SYSTEM_MVC.Repositories.Base
 
         public async Task<T?> GetByIdAsync(int id) => await _dbset.FindAsync(id);
 
+        public async Task<IReadOnlyList<T>> GetAllAsync() => await _dbset.ToListAsync();
+
+        public async Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbset;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync();
+        }
+
         public Task<T?> GetAsync(Expression<Func<T, bool>> expression) => _dbset.FirstOrDefaultAsync(expression);
 
         public int Count() => _dbset.Count();
@@ -32,8 +44,8 @@ namespace POS_SYSTEM_MVC.Repositories.Base
             }
         }
 
-  
 
-      
+
+
     }
 }

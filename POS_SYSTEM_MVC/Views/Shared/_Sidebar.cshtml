@@ -7,112 +7,90 @@
 @{
     // Mock Data for UI Development
     var isUserLoggedIn = true;
-    var userRole = "Admin"; // Options: "Admin", "Cashier"
+    var userRole = "Cashier"; // Options: "Admin", "Cashier"
     var userName = "Mohamed Fares";
 }
 
 <nav id="sidebar">
     <div class="sidebar-header d-flex flex-column align-items-center justify-content-center py-4">
-        <div class="bg-primary rounded-circle mb-2 d-flex align-items-center justify-content-center"
-             style="width: 60px; height: 60px;">
-            <i class="fas fa-cash-register fa-2x text-white"></i>
-        </div>
-        <h4 class="mb-0 fw-bold">POS</h4>
-        <small class="text-muted">v1.0</small>
+        <h4 class="mb-0 fw-bold">POS System</h4>
     </div>
 
     <div class="sidebar-content">
-        <div class="user-profile px-3 py-2 border-bottom border-secondary mb-3">
+        <div class="user-profile px-3 py-2 mb-3">
             <div class="d-flex align-items-center">
                 <div class="flex-shrink-0">
-                    <img src="https://ui-avatars.com/api/?name=@userName&background=0D6EFD&color=fff"
-                         class="rounded-circle" width="40" alt="User">
+                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                         style="width: 45px; height: 45px;">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
                 </div>
                 <div class="flex-grow-1 ms-3 overflow-hidden">
-                    <p class="mb-0 text-white fw-bold text-truncate">@userName</p>
-                    <span class="badge bg-success small">@userRole</span>
+                    <p class="mb-0 fw-bold text-truncate">@userName</p>
+                    <span class="text-muted small">@userRole</span>
                 </div>
             </div>
         </div>
 
-        <ul class="list-unstyled components">
-
-           
-            @if (isUserLoggedIn)
-            {
+        @if (userRole == "Admin")
+        {
+            <h6 class="category-label">Admin Panel</h6>
+            <ul class="list-unstyled components">
+                <li class="active">
+                    <a href="/Admin/Dashboard" class="ajax-link">
+                        <i class="fas fa-chart-line fa-fw"></i>
+                        <span class="ms-2">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/Products" class="ajax-link">
+                        <i class="fas fa-cube fa-fw"></i>
+                        <span class="ms-2">Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/Inventory" class="ajax-link">
+                        <i class="fas fa-box fa-fw"></i>
+                        <span class="ms-2">Inventory</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/Discounts" class="ajax-link">
+                        <i class="fas fa-tag fa-fw"></i>
+                        <span class="ms-2">Discounts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/SalesHistory" class="ajax-link">
+                        <i class="fas fa-receipt fa-fw"></i>
+                        <span class="ms-2">Sales History</span>
+                    </a>
+                </li>
+               
+            </ul>
+        }
+        else
+        {
+            <h6 class="category-label">Category</h6>
+            <ul class="list-unstyled components">
                 <li class="active">
                     <a href="@Url.Action("Index", "Home")" class="ajax-link">
-                        <i class="fas fa-chart-line"></i> Dashboard
+                        <span class="ms-2">All Products</span>
                     </a>
                 </li>
-                @if (userRole == "Admin")
-                {
-                    <p class="px-3 small text-uppercase fw-bold text-muted mt-3 mb-1">Inventory</p>
-                    <li>
-                        <a href="/Products" class="ajax-link">
-                            <i class="fas fa-boxes-stacked"></i> Products
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Categories" class="ajax-link">
-                            <i class="fas fa-layer-group"></i> Categories
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Brands" class="ajax-link">
-                            <i class="fas fa-award"></i> Brands
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Units" class="ajax-link">
-                            <i class="fas fa-ruler-combined"></i> Units
-                        </a>
-                    </li>
 
-                    <p class="px-3 small text-uppercase fw-bold text-muted mt-3 mb-1">Management</p>
-                    <li>
-                        <a href="/Users" class="ajax-link">
-                            <i class="fas fa-user-shield"></i> Staff Team
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/Reports" class="ajax-link">
-                            <i class="fas fa-file-invoice-dollar"></i> Business Reports
-                        </a>
-                    </li>
-                }
-
-                <p class="px-3 small text-uppercase fw-bold text-muted mt-3 mb-1">Operations</p>
-                <li>
-                    <a href="/Sales" class="ajax-link">
-                        <i class="fas fa-cart-plus"></i> New Sale (POS)
-                    </a>
-                </li>
-                <li>
-                    <a href="/Sales/History" class="ajax-link">
-                        <i class="fas fa-clock-rotate-left"></i> Sales History
-                    </a>
-                </li>
-                <li>
-                    <a href="/Discounts" class="ajax-link">
-                        <i class="fas fa-percent"></i> Promotions
-                    </a>
-                </li>
-            }
-        </ul>
+                @await Component.InvokeAsync("SidebarCategory")
+            </ul>
+        }
     </div>
 
     <div class="sidebar-footer p-3">
-
-       
         @if (isUserLoggedIn)
         {
-            <button type="button" class="btn btn-outline-light w-100 mb-2">
-                <i class="fas fa-gear"></i> Settings
-            </button>
-            <button type="button" class="btn btn-danger w-100">
-                <i class="fas fa-power-off"></i> Logout
-            </button>
+            <a href="/Identity/Account/Logout" class="logout-link">
+                <i class="fas fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
         }
         else
         {

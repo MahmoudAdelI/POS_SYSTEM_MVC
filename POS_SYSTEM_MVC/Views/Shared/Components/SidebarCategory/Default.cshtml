@@ -1,0 +1,27 @@
+@model IEnumerable<POS_SYSTEM_MVC.Models.Category>
+
+@foreach (var category in Model)
+{
+    <li>
+        @if (category.SubCategories != null && category.SubCategories.Any())
+        {
+            <a href="#categorySubmenu_@category.Id" data-bs-toggle="collapse" aria-expanded="false">
+                <span class="ms-2">@category.Name</span>
+            </a>
+            <ul class="collapse list-unstyled sidebar-submenu" id="categorySubmenu_@category.Id">
+                @foreach (var sub in category.SubCategories)
+                {
+                    <li>
+                        <a href="/Products?subCategoryId=@sub.Id" class="ajax-link">@sub.Name</a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <a href="/Products?categoryId=@category.Id" class="ajax-link">
+                <span class="ms-2">@category.Name</span>
+            </a>
+        }
+    </li>
+}

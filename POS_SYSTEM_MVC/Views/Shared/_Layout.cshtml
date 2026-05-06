@@ -25,6 +25,16 @@
                         <i class="fas fa-align-left"></i>
                         <span>Toggle Sidebar</span>
                     </button>
+
+                    @* Search bar for the cashier *@
+                    <form class="d-flex mx-auto w-50 position-relative" id="productSearchForm" action="@Url.Action("Index", "Home")" method="get">
+                        <div class="input-group border rounded-pill bg-white" style="height: 45px;">
+                            <span class="input-group-text bg-transparent border-0 text-muted ps-4 pe-2">
+                                <i class="fas fa-search fs-5"></i>
+                            </span>
+                            <input class="form-control border-0 shadow-none bg-transparent rounded-pill" type="search" name="searchQuery" id="productSearchInput" placeholder="Search products by name..." aria-label="Search">
+                        </div>
+                    </form>
                     
                     <div class="ms-auto d-flex align-items-center">
                         @if (User.Identity?.IsAuthenticated == true)
