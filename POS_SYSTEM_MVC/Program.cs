@@ -27,9 +27,12 @@ namespace POS_SYSTEM_MVC
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //------------
 
+<<<<<<< HEAD
       
      
 
+=======
+>>>>>>> da50706294f0edc6b02741a19c15f78c8e9fc500
             // Register Identity with roles
             builder.Services
                 .AddIdentity<ApplicationUser, IdentityRole>(options =>
