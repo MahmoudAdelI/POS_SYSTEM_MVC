@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore.Storage;
 using POS_SYSTEM_MVC.Data;
+using POS_SYSTEM_MVC.Repositories;
 
 namespace POS_SYSTEM_MVC.UnitOfWork
 {
@@ -8,6 +9,8 @@ namespace POS_SYSTEM_MVC.UnitOfWork
     {
         private readonly POSContext _context = context;
         private IDbContextTransaction? _transaction;
+
+        public IUnitRepository Units { get; } = new UnitRepository(context);
 
         public async Task BeginTransactionAsync()
         {

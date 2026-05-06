@@ -27,6 +27,10 @@ namespace POS_SYSTEM_MVC
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //------------
 
+            builder.Services.AddScoped<IUnitOfWork, POS_SYSTEM_MVC.UnitOfWork.UnitOfWork>();
+            builder.Services.AddScoped<IUnitService, UnitService>();
+
+
             // Register Identity with roles
             builder.Services
                 .AddIdentity<ApplicationUser, IdentityRole>(options =>
