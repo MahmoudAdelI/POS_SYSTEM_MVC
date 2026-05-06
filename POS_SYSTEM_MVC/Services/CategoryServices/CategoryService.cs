@@ -7,15 +7,20 @@ using POS_SYSTEM_MVC.Models;
 
 namespace POS_SYSTEM_MVC.Services.CategoryServices
 {
-        public class CategoryService(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
-            : ICategoryService
+    public class CategoryService(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+        : ICategoryService
+    {
+        public async Task<int> AddCategoryAsync(AddCategoryDto dto)
         {
-            public async Task<int> AddCategoryAsync(AddCategoryDto dto)
-            {
-                var category = new Category { Name = dto.Name };
-                await categoryRepository.AddAsync(category);
-                await unitOfWork.SaveChangesAsync();
-                return category.Id;
-            }
+            var category = new Category { Name = dto.Name };
+            await categoryRepository.AddAsync(category);
+            await unitOfWork.SaveChangesAsync();
+            return category.Id;
+        }
+
+        public async Task<IReadOnlyList<Category>> GetAllCategoriesAsync()
+        {
+            return await categoryRepository.GetAllAsync(c => c.SubCategories);
         }
     }
+}

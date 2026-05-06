@@ -1,24 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using POS_SYSTEM_MVC.Data;
+using POS_SYSTEM_MVC.Services.CategoryServices;
 using System.Threading.Tasks;
 
 namespace POS_SYSTEM_MVC.ViewComponents
 {
     public class SidebarCategoryViewComponent : ViewComponent
     {
-        private readonly POSContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public SidebarCategoryViewComponent(POSContext context)
+        public SidebarCategoryViewComponent(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var categories = await _context.Categories
-                                           .Include(c => c.SubCategories)
-                                           .ToListAsync();
+            var categories = await _categoryService.GetAllCategoriesAsync();
 
             return View(categories);
         }

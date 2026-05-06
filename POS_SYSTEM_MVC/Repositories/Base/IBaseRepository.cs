@@ -6,6 +6,8 @@ namespace POS_SYSTEM_MVC.Repositories.Base
     {
         Task AddAsync(T entity);
         Task<T?> GetByIdAsync(int id);
+        Task<IReadOnlyList<T>> GetAllAsync();
+        Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] includes);
         Task<T?> GetAsync(Expression<Func<T, bool>> expression);
         int Count();
         int Count(Expression<Func<T, bool>> expression);
