@@ -23,6 +23,19 @@ $(document).ready(function () {
             $('#content').css('margin-left', '250px');
         }
     });
+
+    // Handle Search Form Submission
+    $(document).on('submit', '#productSearchForm', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('action');
+        var query = $('#productSearchInput').val();
+
+        // Construct URL with query string
+        var fullUrl = url + (url.indexOf('?') > -1 ? '&' : '?') + 'searchQuery=' + encodeURIComponent(query);
+
+        loadContent(fullUrl, true);
+    });
+
     $(document).on('click', '.ajax-link', function (e) {
         e.preventDefault();
         var url = $(this).attr('href');
