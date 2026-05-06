@@ -4,7 +4,7 @@ using POS_SYSTEM_MVC.Data;
 
 namespace POS_SYSTEM_MVC.UnitOfWork
 {
-    public class UnitOfWork(POSContext context) : IUnitOfWork
+    public class UnitOfWorkService(POSContext context) : IUnitOfWork
     {
         private readonly POSContext _context = context;
         private IDbContextTransaction? _transaction;
