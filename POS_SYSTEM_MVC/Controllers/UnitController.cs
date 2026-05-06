@@ -22,7 +22,7 @@ namespace POS_SYSTEM_MVC.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var unit = await _unitService.GetByIdAsync(id);
-            if (unit == null) return NotFound();
+            if (unit == null) return NotFound($"Unit with ID {id} was not found");
             return Ok(unit);
         }
 

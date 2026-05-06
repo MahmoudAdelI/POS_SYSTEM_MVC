@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Storage;
 using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
 using POS_SYSTEM_MVC.Repositories;
-<<<<<<< HEAD
 using POS_SYSTEM_MVC.Repositories.Base;
-=======
->>>>>>> da50706294f0edc6b02741a19c15f78c8e9fc500
+using POS_SYSTEM_MVC.Repositories.Brands;
+using POS_SYSTEM_MVC.Repositories.CategoryRepo;
+using POS_SYSTEM_MVC.Repositories.SubCategories;
 using POS_SYSTEM_MVC.Repositories.UnitRepo;
 
 namespace POS_SYSTEM_MVC.UnitOfWork
@@ -16,10 +16,9 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         private readonly POSContext _context = context;
         private IDbContextTransaction? _transaction;
 
-        public IBaseRepository<Category> Categories { get; } = new BaseRepository<Category>(context);
-        public IBaseRepository<SubCategory> SubCategories { get; } = new BaseRepository<SubCategory>(context);
-        public IBaseRepository<Brand> Brands { get; } = new BaseRepository<Brand>(context);
-
+        public ICategoryRepository Categories { get; } = new CategoryRepository(context);
+        public ISubCategoryRepository SubCategories { get; } = new SubCategoryRepository(context);
+        public IBrandRepository Brands { get; } = new BrandRepository(context);
         public IUnitRepository Units { get; } = new UnitRepository(context);
 
         public async Task BeginTransactionAsync()

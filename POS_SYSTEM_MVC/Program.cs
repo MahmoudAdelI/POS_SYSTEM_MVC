@@ -3,12 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
-using POS_SYSTEM_MVC.Repositories.Brands;
-using POS_SYSTEM_MVC.Repositories.CategoryRepo;
-using POS_SYSTEM_MVC.Repositories.SubCategories;
 using POS_SYSTEM_MVC.Services.Brands;
 using POS_SYSTEM_MVC.Services.CategoryServices;
 using POS_SYSTEM_MVC.Services.SubCategoriesServices;
+using POS_SYSTEM_MVC.Services.Unitservices;
+using POS_SYSTEM_MVC.Services.UnitServices;
 using POS_SYSTEM_MVC.UnitOfWork;
 
 namespace POS_SYSTEM_MVC
@@ -27,12 +26,6 @@ namespace POS_SYSTEM_MVC
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //------------
 
-<<<<<<< HEAD
-      
-     
-
-=======
->>>>>>> da50706294f0edc6b02741a19c15f78c8e9fc500
             // Register Identity with roles
             builder.Services
                 .AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -46,12 +39,10 @@ namespace POS_SYSTEM_MVC
                 .AddDefaultTokenProviders();
             //------------
             builder.Services.AddScoped<IUnitOfWork, UnitOfWorkService>();
-            //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-            //builder.Services.AddScoped<ICategoryService, CategoryService>();
-            //builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
-            //builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
-            //builder.Services.AddScoped<IBrandRepository, BrandRepository>();
-            //builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<IUnitService, UnitService>();
             var app = builder.Build();
 
 
