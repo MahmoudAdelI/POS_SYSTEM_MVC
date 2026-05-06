@@ -3,6 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
+using POS_SYSTEM_MVC.Repositories.Brands;
+using POS_SYSTEM_MVC.Repositories.CategoryRepo;
+using POS_SYSTEM_MVC.Repositories.SubCategories;
+using POS_SYSTEM_MVC.Services.Brands;
+using POS_SYSTEM_MVC.Services.CategoryServices;
+using POS_SYSTEM_MVC.Services.SubCategoriesServices;
+using POS_SYSTEM_MVC.UnitOfWork;
 
 namespace POS_SYSTEM_MVC
 {
@@ -32,7 +39,13 @@ namespace POS_SYSTEM_MVC
                 .AddEntityFrameworkStores<POSContext>()
                 .AddDefaultTokenProviders();
             //------------
-
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWorkService>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+            builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
+            builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
             var app = builder.Build();
 
 
@@ -92,7 +105,7 @@ namespace POS_SYSTEM_MVC
 
             app.UseStaticFiles();
             app.UseRouting();
-
+         
             app.UseAuthentication();
             app.UseAuthorization();
 
