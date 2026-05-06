@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
+using POS_SYSTEM_MVC.Servicies;
+using POS_SYSTEM_MVC.UnitOfWork;
 
 namespace POS_SYSTEM_MVC
 {
@@ -19,6 +21,10 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddDbContext<POSContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //------------
+
+            builder.Services.AddScoped<IUnitOfWork, POS_SYSTEM_MVC.UnitOfWork.UnitOfWork>();
+            builder.Services.AddScoped<IUnitService, UnitService>();
+
 
             // Register Identity with roles
             builder.Services
