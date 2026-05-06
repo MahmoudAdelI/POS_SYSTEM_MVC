@@ -1,7 +1,6 @@
 ﻿using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
 using POS_SYSTEM_MVC.Repositories.Base;
-using POS_SYSTEM_MVC.Repositories.CategoryRepo;
 
 namespace POS_SYSTEM_MVC.Repositories.CategoryRepo
 {
@@ -10,3 +9,6 @@ namespace POS_SYSTEM_MVC.Repositories.CategoryRepo
     {
     }
 }
+
+//Namespace "POS_SYSTEM_MVC.Services.Category" does not match folder structure,
+////expected "POS_SYSTEM_MVC.Servicies.Category"
