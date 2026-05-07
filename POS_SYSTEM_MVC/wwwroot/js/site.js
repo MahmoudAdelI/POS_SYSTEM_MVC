@@ -26,6 +26,7 @@ $(document).ready(function () {
 
     // Handle Search Form Submission
     $(document).on('submit', '#productSearchForm', function (e) {
+        if ($(this).hasClass('no-ajax')) return;
         e.preventDefault();
         var url = $(this).attr('action');
         var query = $('#productSearchInput').val();
@@ -37,6 +38,7 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.ajax-link', function (e) {
+        if ($(this).hasClass('no-ajax')) return;
         e.preventDefault();
         var url = $(this).attr('href');
 
@@ -68,6 +70,9 @@ $(document).ready(function () {
     };
 
     function loadContent(url, pushState) {
+        // Prevent recursive or unnecessary reloads
+        if (window.location.href === url) return;
+
         $('#ajax-loader').fadeIn(100);
 
         $.ajax({
