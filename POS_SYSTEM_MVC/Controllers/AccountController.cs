@@ -11,7 +11,7 @@ namespace POS_SYSTEM_MVC.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,7 +37,7 @@ namespace POS_SYSTEM_MVC.Controllers
                 else if (roles.Contains("cashier"))
                 {
                     return Redirect("/Cashier");
-                }   
+                }
             }
             return View();
 
@@ -96,6 +96,13 @@ namespace POS_SYSTEM_MVC.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+
+
         }
     }
 }
