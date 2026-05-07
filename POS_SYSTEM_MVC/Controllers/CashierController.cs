@@ -13,12 +13,14 @@ namespace POS_SYSTEM_MVC.Controllers
             _productService = productService;
         }
 
-        public async Task<IActionResult> Index(string searchTerm, int page = 1)
+        public async Task<IActionResult> Index(string searchTerm, int? categoryId, int? subCategoryId, int page = 1)
         {
             const int pageSize = 8;
-            var result = await _productService.GetProductsForCashierAsync(searchTerm, page, pageSize);
+            var result = await _productService.GetProductsForCashierAsync(searchTerm, categoryId, subCategoryId, page, pageSize);
 
             ViewBag.SearchTerm = searchTerm;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.SubCategoryId = subCategoryId;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)result.TotalItems / pageSize);
 

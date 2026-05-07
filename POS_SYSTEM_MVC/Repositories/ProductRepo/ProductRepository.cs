@@ -11,7 +11,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
     }
 
-    public async Task<(IReadOnlyList<Product> Products, int TotalItems)> GetProductsForCashierAsync(string searchTerm, int page, int pageSize)
+    public async Task<(IReadOnlyList<Product> Products, int TotalItems)> GetProductsForCashierAsync(string searchTerm, int? categoryId, int? subCategoryId, int page, int pageSize)
     {
         var query = _context.Products
             .AsNoTracking()
@@ -22,6 +22,15 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         if (!string.IsNullOrEmpty(searchTerm))
         {
             query = query.Where(p => p.Name.Contains(searchTerm) || p.Brand.Name.Contains(searchTerm));
+        }
+
+        if (subCategoryId.HasValue)
+        {
+            query = query.Where(p => p.SubCategoryId == subCategoryId.Value);
+        }
+        else if (categoryId.HasValue)
+        {
+            query = query.Where(p => p.SubCategory.CategoryId == categoryId.Value);
         }
 
         var totalItems = await query.CountAsync();

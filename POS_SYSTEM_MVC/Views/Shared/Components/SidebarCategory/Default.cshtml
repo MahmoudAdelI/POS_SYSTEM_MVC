@@ -12,14 +12,14 @@
                 @foreach (var sub in category.SubCategories)
                 {
                     <li>
-                        <a href="/Products?subCategoryId=@sub.Id" class="ajax-link">@sub.Name</a>
+                        <a href="@Url.Action("Index", "Cashier", new { subCategoryId = sub.Id })" class="ajax-link">@sub.Name</a>
                     </li>
                 }
             </ul>
         }
         else
         {
-            <a href="/Products?categoryId=@category.Id" class="ajax-link">
+            <a href="@Url.Action("Index", "Cashier", new { categoryId = category.Id })" class="ajax-link">
                 <span class="ms-2">@category.Name</span>
             </a>
         }
