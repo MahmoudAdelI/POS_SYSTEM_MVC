@@ -6,12 +6,12 @@ namespace POS_SYSTEM_MVC.Services.CategoryServices
 {
     public class CategoryService(IUnitOfWork unitOfWork) : ICategoryService
     {
-        public async Task<int> AddCategoryAsync(AddCategoryDto dto)
+        public async Task<CategoryResponseDto> AddCategoryAsync(AddCategoryDto dto)
         {
             var category = new Category { Name = dto.Name };
             await unitOfWork.Categories.AddAsync(category);
             await unitOfWork.SaveChangesAsync();
-            return category.Id;
+            return new CategoryResponseDto { Id = category.Id, Name = category.Name };
         }
 
         public async Task<IReadOnlyList<Category>> GetAllCategoriesAsync()

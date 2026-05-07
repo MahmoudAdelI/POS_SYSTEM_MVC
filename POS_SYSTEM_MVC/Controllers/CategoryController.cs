@@ -16,9 +16,10 @@ namespace POS_SYSTEM_MVC.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var id = await categoryService.AddCategoryAsync(dto);
-            return Ok(new { id });
+            var category = await categoryService.AddCategoryAsync(dto);
+            return Ok(category);
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
             {

@@ -16,8 +16,8 @@ public class SubCategoryController(ISubCategoryService subCategoryService) : Con
 
         try
         {
-            var id = await subCategoryService.AddSubCategoryAsync(dto);
-            return Ok(new { id });
+            var subCategory = await subCategoryService.AddSubCategoryAsync(dto);
+            return Ok(subCategory);
         }
         catch (Exception ex)
         {

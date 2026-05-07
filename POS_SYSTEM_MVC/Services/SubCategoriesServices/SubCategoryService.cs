@@ -6,12 +6,12 @@ namespace POS_SYSTEM_MVC.Services.SubCategoriesServices
 {
     public class SubCategoryService(IUnitOfWork unitOfWork) : ISubCategoryService
     {
-        public async Task<int> AddSubCategoryAsync(AddSubCategoryDto dto)
+        public async Task<SubCategoryResponseDto> AddSubCategoryAsync(AddSubCategoryDto dto)
         {
-            var category = await unitOfWork.Categories
-                                           .GetAsync(c => c.Name == dto.CategoryName);
+            var category = await unitOfWork.Categories.GetByIdAsync(dto.CategoryId);
+                                           
             if (category is null)
-                throw new Exception($"Category '{dto.CategoryName}' Not Found");
+                throw new Exception($"Category '{dto.CategoryId}' Not Found");
 
             var subCategory = new SubCategory
             {
@@ -21,7 +21,7 @@ namespace POS_SYSTEM_MVC.Services.SubCategoriesServices
 
             await unitOfWork.SubCategories.AddAsync(subCategory);
             await unitOfWork.SaveChangesAsync();
-            return subCategory.Id;
+            return new SubCategoryResponseDto { Id = subCategory.Id, Name = subCategory.Name };
         }
     }
 }

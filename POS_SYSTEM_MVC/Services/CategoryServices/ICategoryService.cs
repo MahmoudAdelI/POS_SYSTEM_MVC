@@ -5,7 +5,7 @@ namespace POS_SYSTEM_MVC.Services.CategoryServices
 {
     public interface ICategoryService
     {
-        Task<int> AddCategoryAsync(AddCategoryDto dto);
+        Task<CategoryResponseDto> AddCategoryAsync(AddCategoryDto dto);
         Task<IReadOnlyList<Category>> GetAllCategoriesAsync();
         Task<IReadOnlyList<CategoryWithSubsDto>> GetAllWithSubsAsync();
     }
