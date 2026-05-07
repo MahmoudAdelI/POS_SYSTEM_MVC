@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace POS_SYSTEM_MVC.DTOs
+namespace POS_SYSTEM_MVC.DTOs.Brand
 {
     public class AddBrandDto
     {

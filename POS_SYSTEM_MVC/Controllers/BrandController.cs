@@ -1,7 +1,8 @@
 ﻿// Controllers/BrandController.cs
 using Microsoft.AspNetCore.Mvc;
-using POS_SYSTEM_MVC.DTOs;
+using POS_SYSTEM_MVC.DTOs.Brand;
 using POS_SYSTEM_MVC.Services.Brands;
+using POS_SYSTEM_MVC.Services.CategoryServices;
 
 namespace POS_SYSTEM_MVC.Controllers;
 
@@ -17,5 +18,12 @@ public class BrandController(IBrandService brandService) : ControllerBase
 
         var id = await brandService.AddBrandAsync(dto);
         return Ok(new { id });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var categories = await brandService.GetAllAsync();
+        return Ok(categories);
     }
 }

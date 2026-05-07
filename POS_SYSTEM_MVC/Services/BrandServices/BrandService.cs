@@ -1,4 +1,4 @@
-﻿using POS_SYSTEM_MVC.DTOs;
+﻿using POS_SYSTEM_MVC.DTOs.Brand;
 using POS_SYSTEM_MVC.Models;
 using POS_SYSTEM_MVC.UnitOfWork;
 
@@ -12,5 +12,11 @@ public class BrandService(IUnitOfWork unitOfWork) : IBrandService
         await unitOfWork.Brands.AddAsync(brand);
         await unitOfWork.SaveChangesAsync();
         return brand.Id;
+    }
+
+    public async Task<IReadOnlyList<BrandResponseDto>> GetAllAsync()
+    {
+        var brands = await unitOfWork.Brands.GetAllAsync();
+        return brands.Select(b => new BrandResponseDto { Id = b.Id, Name = b.Name }).ToList();
     }
 }
