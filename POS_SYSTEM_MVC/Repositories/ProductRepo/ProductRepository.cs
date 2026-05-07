@@ -11,7 +11,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
     }
 
-    public async Task<(IReadOnlyList<Product> Products, int TotalItems)> GetProductsForCashierAsync(string searchTerm, int? categoryId, int? subCategoryId, int page, int pageSize)
+    public async Task<(IReadOnlyList<Product> Products, int TotalItems)> GetProductsForCashierAsync(string searchTerm, int? categoryId, int? subCategoryId, string stockFilter, int page, int pageSize)
     {
         var query = _context.Products
             .AsNoTracking()
@@ -31,6 +31,18 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         else if (categoryId.HasValue)
         {
             query = query.Where(p => p.SubCategory.CategoryId == categoryId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(stockFilter))
+        {
+            if (stockFilter == "inStock")
+            {
+                query = query.Where(p => p.Variants.Any(v => v.StockQuantity > 0));
+            }
+            else if (stockFilter == "outOfStock")
+            {
+                query = query.Where(p => p.Variants.All(v => v.StockQuantity <= 0));
+            }
         }
 
         var totalItems = await query.CountAsync();
@@ -53,5 +65,14 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                     .ThenInclude(va => va.AttributeValue)
                         .ThenInclude(av => av.Attribute)
             .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task<ProductVariant?> GetVariantByIdAsync(int variantId)
+    {
+        return await _context.ProductVariants
+            .Include(v => v.Product)
+            .Include(v => v.VariantAttributes)
+                .ThenInclude(va => va.AttributeValue)
+            .FirstOrDefaultAsync(v => v.Id == variantId);
     }
 }

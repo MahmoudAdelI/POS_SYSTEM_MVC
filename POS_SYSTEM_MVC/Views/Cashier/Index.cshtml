@@ -3,70 +3,78 @@
     ViewData["Title"] = "Cashier - Products";
 }
 
-<!-- Fixed Search Bar -->
-<div class="sticky-top bg-white border-bottom py-3 mb-4" style="top: 0; z-index: 1020;">
-    <div class="container-fluid px-4 w-50 " style="margin-left: 25px;">
-        <form asp-action="Index" method="get" class="no-ajax">
-            <div class="input-group" style="max-width: 800px;">
-                <span class="input-group-text bg-white border-end-0 text-muted" style="border-radius: 6px 0 0 6px;">
-                    <i class="fas fa-search"></i>
-                </span>
-                <input type="text" id="searchInput" name="searchTerm" value="@ViewBag.SearchTerm"
-                       class="form-control border-start-0 ps-0" placeholder="Search products by name..."
-                       style="border-radius: 0 6px 6px 0; box-shadow: none;" autocomplete="off"
-                       onkeydown="if(event.keyCode==13){this.form.submit();return false;}">
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="container-fluid px-4">
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
-        @foreach (var product in Model)
-        {
-            <div class="col">
-                <div class="card h-100 border-1 product-card" onclick="openProductDetails(@product.Id)"
-                     style="cursor: pointer; transition: all 0.2s ease; border-radius: 8px; overflow: hidden; border-color: #e5e7eb;">
-                    <div style="aspect-ratio: 1 / 1; overflow: hidden; background-color: #f8f9fa;">
-                        <img src="/images/products/@(product.Id).jpg" class="card-img-top w-100 h-100"
-                             style="object-fit: cover;" alt="@product.Name"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Product+Image'">
-                    </div>
-                    <div class="card-body p-3 bg-white">
-                        <h6 class="card-title text-dark fw-semibold mb-2 text-truncate" title="@product.Name">@product.Name</h6>
-                        <p class="card-text text-primary mb-0" style="font-size: 1.05rem;">$@product.BasePrice.ToString("F2")</p>
+<div class="d-flex h-100 overflow-hidden position-relative">
+    <!-- Main Content Area (Products) -->
+    <div class="flex-grow-1 overflow-auto bg-light transition-all" id="productsArea">
+        <!-- Fixed Search Bar -->
+        <div class="sticky-top bg-white border-bottom py-3 px-4 shadow-sm" style="top: 0; z-index: 1020;">
+            <div class="container-fluid d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <div class="input-group" style="max-width: 900px;">
+                        <span class="input-group-text bg-white border-end-0 text-muted px-3" style="border-radius: 10px 0 0 10px;">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="searchInput" name="searchTerm" value="@ViewBag.SearchTerm"
+                               class="form-control border-start-0 ps-2 py-2" placeholder="Search products by name or SKU..."
+                               style="border-radius: 0 10px 10px 0; box-shadow: none; font-size: 1.05rem; height: 44px;" autocomplete="off">
                     </div>
                 </div>
             </div>
-        }
+        </div>
+
+        <div class="container my-5 mx-5 d-flex flex-column" style="min-height: calc(100vh - 220px);" id="productListContainer">
+            @await Html.PartialAsync("_ProductList", Model)
+        </div>
     </div>
 
-    @if (ViewBag.TotalPages >= 1)
-    {
-        <nav aria-label="Product navigation" class="mt-5 mb-5">
-            <ul class="pagination pagination-rounded justify-content-center">
-                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                    <a class="page-link"
-                           href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, page = ViewBag.CurrentPage - 1 })">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
-                </li>
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
-                        <a class="page-link"
-                           href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, page = i })">@i</a>
-                    </li>
-                }
-                <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                    <a class="page-link"
-                           href="@Url.Action("Index", new { searchTerm = ViewBag.SearchTerm, page = ViewBag.CurrentPage + 1 })">
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    }
+    <!-- Cart Sidebar -->
+    <div class="bg-white border-start d-flex flex-column cart-sidebar hidden" id="cartSidebar">
+        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold"><i class="fas fa-shopping-bag me-2"></i>Cart (<span id="cartCount">0</span>)</h6>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-light rounded-circle shadow-sm" onclick="toggleCart(false)" title="Close Cart">
+                    <i class="fas fa-times small"></i>
+                </button>
+                <button class="btn btn-sm text-danger" onclick="clearCart()" title="Clear Cart">
+                    <i class="fas fa-trash-alt small"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-grow-1 overflow-auto p-2" id="cartItems">
+            <div class="text-center mt-5 text-muted" id="emptyCartMessage">
+                <i class="fas fa-shopping-cart fa-2x mb-2 opacity-25"></i>
+                <p class="small">Your cart is empty</p>
+            </div>
+        </div>
+
+        <div class="p-3 border-top bg-white">
+            <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted small fw-semibold">Subtotal</span>
+                <span class="fw-bold small" id="cartSubtotal">$0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small fw-semibold">Tax (10%)</span>
+                <span class="fw-bold small" id="cartTax">$0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3 pt-2 border-top">
+                <h6 class="mb-0 fw-bold">Total</h6>
+                <h5 class="mb-0 fw-bold text-primary" id="cartTotal">$0.00</h5>
+            </div>
+            <button class="btn btn-primary w-100 py-2 fw-bold rounded-3 shadow-sm" id="checkoutBtn" disabled onclick="checkout()">
+                Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Cart Button -->
+    <button class="btn btn-primary rounded-circle shadow-lg position-fixed d-none" id="floatingCartBtn" 
+            style="bottom: 25px; right: 25px; width: 55px; height: 55px; z-index: 1030;" onclick="toggleCart(true)">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light" id="floatingCartCount" style="font-size: 0.7rem;">
+            0
+        </span>
+    </button>
 </div>
 
 <!-- Modal Container -->
@@ -74,65 +82,381 @@
 
 @section Scripts {
     <script>
+        window.posCart = [];
+        let isCartVisible = false;
+
         function openProductDetails(id) {
             $.get('/Cashier/GetProductDetails/' + id, function (data) {
                 $('#modalContainer').html(data);
                 $('#productDetailsModal').modal('show');
             });
         }
+
+        window.toggleCart = function(show) {
+            isCartVisible = show;
+            const $sidebar = $('#cartSidebar');
+            const $floatingBtn = $('#floatingCartBtn');
+
+            if (show) {
+                $sidebar.removeClass('hidden');
+                $floatingBtn.addClass('d-none');
+            } else {
+                $sidebar.addClass('hidden');
+                if (window.posCart.length > 0) {
+                    $floatingBtn.removeClass('d-none');
+                }
+            }
+        };
+
+        window.renderCart = function() {
+            const $cartItems = $('#cartItems');
+            const $cartCount = $('#cartCount');
+            const $floatingCartCount = $('#floatingCartCount');
+            const $emptyMsg = $('#emptyCartMessage');
+            
+            if (window.posCart.length === 0) {
+                $cartItems.find('.cart-item').remove();
+                $emptyMsg.show();
+                $cartCount.text(0);
+                $floatingCartCount.text(0);
+                $('#checkoutBtn').prop('disabled', true);
+                
+                if (isCartVisible) {
+                    toggleCart(false);
+                }
+                $('#floatingCartBtn').addClass('d-none');
+            } else {
+                $emptyMsg.hide();
+                $cartItems.find('.cart-item').remove();
+                
+                let subtotal = 0;
+                let count = 0;
+
+                window.posCart.forEach(item => {
+                    subtotal += item.unitPrice * item.quantity;
+                    count += item.quantity;
+
+                    const attrText = Object.entries(item.attributes).map(([k, v]) => `${k}: ${v}`).join(' - ');
+                    
+                    const itemHtml = `
+                        <div class="cart-item p-2 mb-2 rounded-3 border bg-white shadow-sm" data-variant-id="${item.variantId}">
+                            <div class="d-flex gap-2">
+                                <img src="/images/products/${item.productId}.jpg" class="rounded" style="width: 45px; height: 45px; object-fit: cover;" 
+                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/45/eeeeee?text=?'">
+                                <div class="flex-grow-1 min-width-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h6 class="mb-0 fw-bold text-truncate" style="font-size: 0.75rem; max-width: 140px;">${item.name}</h6>
+                                        <button class="btn btn-link text-danger p-0" onclick="removeFromCart(${item.variantId})">
+                                            <i class="fas fa-trash-alt" style="font-size: 0.7rem;"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-muted mb-1 text-truncate" style="font-size: 0.7rem;">${attrText}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="input-group input-group-sm" style="width: 80px;">
+                                            <button class="btn btn-outline-secondary py-0 px-1" style="font-size: 0.7rem;" onclick="updateQty(${item.variantId}, -1)">-</button>
+                                            <input type="text" class="form-control text-center py-0 px-1 bg-white border-secondary border-start-0 border-end-0" style="font-size: 0.75rem;" value="${item.quantity}" readonly>
+                                            <button class="btn btn-outline-secondary py-0 px-1" style="font-size: 0.7rem;" onclick="updateQty(${item.variantId}, 1)">+</button>
+                                        </div>
+                                        <span class="fw-bold text-primary" style="font-size: 0.75rem;">$${(item.unitPrice * item.quantity).toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    $cartItems.append(itemHtml);
+                });
+
+                $cartCount.text(count);
+                $floatingCartCount.text(count);
+                $('#checkoutBtn').prop('disabled', false);
+                updateTotals(subtotal);
+
+                if (!isCartVisible) {
+                    toggleCart(true);
+                }
+            }
+        };
+
+        function updateTotals(subtotal) {
+            const tax = subtotal * 0.10;
+            const total = subtotal + tax;
+
+            $('#cartSubtotal').text('$' + subtotal.toFixed(2));
+            $('#cartTax').text('$' + tax.toFixed(2));
+            $('#cartTotal').text('$' + total.toFixed(2));
+        }
+
+        window.updateQty = function(variantId, delta) {
+            const item = window.posCart.find(i => i.variantId === variantId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(variantId);
+                } else {
+                    window.renderCart();
+                }
+            }
+        };
+
+        window.removeFromCart = function(variantId) {
+            window.posCart = window.posCart.filter(i => i.variantId !== variantId);
+            window.renderCart();
+        };
+
+        window.clearCart = function() {
+            if (window.posCart.length > 0 && confirm('Clear all items from cart?')) {
+                window.posCart = [];
+                window.renderCart();
+            }
+        };
+
+        function checkout() {
+            if (window.posCart.length === 0) return;
+
+            const $btn = $('#checkoutBtn');
+            const originalText = $btn.text();
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>');
+
+            const payload = {
+                items: window.posCart.map(i => ({
+                    productVariantId: i.variantId,
+                    quantity: i.quantity,
+                    unitPrice: i.unitPrice
+                }))
+            };
+
+            $.ajax({
+                url: '/Cashier/Checkout',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function(response) {
+                    if (response.success) {
+                        printReceipt(response.receiptData);
+                        window.posCart = [];
+                        window.renderCart();
+                        alert('Order completed successfully!');
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred during checkout.');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text(originalText);
+                }
+            });
+        }
+
+        function printReceipt(data) {
+            const printWindow = window.open('', '_blank', 'width=400,height=600');
+            let itemsHtml = '';
+            data.items.forEach(item => {
+                itemsHtml += `
+                    <tr>
+                        <td style="padding: 5px 0;">${item.name}<br><small>${item.variantInfo}</small></td>
+                        <td style="text-align: center;">${item.quantity}</td>
+                        <td style="text-align: right;">$${(item.unitPrice * item.quantity).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            const html = `
+                <html>
+                <head>
+                    <title>Receipt #${data.saleId}</title>
+                    <style>
+                        body { font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.2; padding: 20px; }
+                        .text-center { text-align: center; }
+                        .border-top { border-top: 1px dashed #000; margin: 10px 0; padding-top: 10px; }
+                        table { width: 100%; border-collapse: collapse; }
+                    </style>
+                </head>
+                <body onload="window.print(); window.close();">
+                    <div class="text-center">
+                        <h3>POS SYSTEM</h3>
+                        <p>Receipt #${data.saleId}<br>${data.date}</p>
+                    </div>
+                    <div class="border-top">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left;">Item</th>
+                                    <th>Qty</th>
+                                    <th style="text-align: right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>${itemsHtml}</tbody>
+                        </table>
+                    </div>
+                    <div class="border-top">
+                        <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span><span>$${data.subtotal.toFixed(2)}</span></div>
+                        <div style="display: flex; justify-content: space-between;"><span>Tax (10%):</span><span>$${data.tax.toFixed(2)}</span></div>
+                        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 5px;">
+                            <span>TOTAL:</span><span>$${data.total.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="text-center border-top" style="margin-top: 20px;">
+                        <p>Thank you for your purchase!</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            printWindow.document.write(html);
+            printWindow.document.close();
+        }
+
+        $(document).ready(function() {
+            window.renderCart();
+
+            let searchTimer;
+            const $searchInput = $('#searchInput');
+            const $productListContainer = $('#productListContainer');
+
+            function loadProducts(page = 1) {
+                const searchTerm = $searchInput.val();
+                const stockFilter = $('.stock-radio-filter:checked').val() || 'all';
+                
+                // Show a subtle loading indicator
+                $productListContainer.css('opacity', '0.6');
+
+                $.ajax({
+                    url: '/Cashier/Index',
+                    data: {
+                        searchTerm: searchTerm,
+                        stockFilter: stockFilter,
+                        page: page
+                    },
+                    success: function(data) {
+                        $productListContainer.html(data);
+                    },
+                    error: function() {
+                        alert('Error loading products.');
+                    },
+                    complete: function() {
+                        $productListContainer.css('opacity', '1');
+                    }
+                });
+            }
+
+            $searchInput.on('input', function() {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function() {
+                    loadProducts(1);
+                }, 400);
+            });
+
+            // Handle sidebar stock radio changes
+            $(document).on('change', '.stock-radio-filter', function() {
+                loadProducts(1);
+            });
+
+            $(document).on('click', '.pagination-link', function(e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                if (page) {
+                    loadProducts(page);
+                }
+            });
+        });
     </script>
     <style>
-        body {
+        body, html {
+            height: 100%;
             background-color: #f8f9fa;
+        }
+        
+        #wrapper {
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        #content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #main-content-area {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        main[role="main"] {
+            height: 100%;
+            padding-bottom: 0 !important;
+        }
+
+        .transition-all {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .cart-sidebar {
+            width: 320px;
+            min-width: 320px;
+            transition: all 0.3s ease-in-out;
+            margin-right: 0;
+            background-color: #fff;
+        }
+
+        .cart-sidebar.hidden {
+            margin-right: -320px;
+            min-width: 0;
+            width: 0;
+            border-left: none !important;
+        }
+
+        .product-card {
+            transition: all 0.25s cubic-bezier(0.02, 0.01, 0.47, 1);
         }
 
         .product-card:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            transform: translateY(-2px);
-            border-color: #d1d5db !important;
-        }
-        
-        /* Polished Pagination Styles */
-        .pagination-rounded .page-item {
-            margin: 0 4px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06) !important;
+            transform: translateY(-3px);
         }
 
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .pagination-rounded .page-item { margin: 0 3px; }
         .pagination-rounded .page-link {
             border-radius: 50% !important;
-            width: 44px;
-            height: 44px;
+            border: none;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: none;
-            color: #495057;
             background-color: #fff;
-            font-weight: 500;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            color: #555;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .pagination-rounded .page-link:hover {
-            background-color: #e9ecef;
-            color: #0d6efd;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .pagination-rounded .page-item.active .page-link,
-        .pagination-rounded .page-item.active .page-link:hover {
+        .pagination-rounded .page-item.active .page-link {
             background-color: #0d6efd;
-            color: white;
-            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.35);
-            transform: translateY(-2px);
+            color: #fff;
         }
 
-        .pagination-rounded .page-item.disabled .page-link {
-            color: #adb5bd;
-            background-color: #fff;
-            box-shadow: none;
-            transform: none;
-            pointer-events: none;
+        .cart-item { transition: transform 0.2s, box-shadow 0.2s; }
+        .cart-item:hover { transform: translateX(2px); box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d0d0d0; }
+
+        #floatingCartBtn {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #floatingCartBtn:hover {
+            transform: scale(1.1);
         }
     </style>
 }

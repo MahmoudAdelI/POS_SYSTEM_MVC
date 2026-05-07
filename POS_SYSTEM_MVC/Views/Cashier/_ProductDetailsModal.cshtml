@@ -10,7 +10,7 @@
             <div class="modal-body p-4">
                 <div class="row">
                     <div class="col-md-5">
-                        <img src="/images/products/@(Model.Id).jpg" class="img-fluid rounded-4 shadow-sm" alt="@Model.Name" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x400?text=Product+Image'">
+                        <img src="/images/products/@(Model.Id).jpg" class="img-fluid rounded-4 shadow-sm" alt="@Model.Name" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x400?text=@(Uri.EscapeDataString(Model.Name))'">
                     </div>
                     <div class="col-md-7 ps-md-4 mt-3 mt-md-0">
                         <h2 class="fw-bold mb-1">@Model.Name</h2>
@@ -32,8 +32,9 @@
                                 <div class="d-flex flex-wrap gap-2">
                                     @foreach (var val in attrGroup.Select(v => v.AttributeValue.Value).Distinct())
                                     {
-                                        <input type="radio" class="btn-check attr-radio" name="attr_@attrGroup.Key" id="val_@val" value="@val" autocomplete="off" onchange="updateVariantDetails()">
-                                        <label class="btn btn-outline-secondary px-3 py-1 rounded-3" for="val_@val">@val</label>
+                                        var uniqueId = $"val_{attrGroup.Key.Replace(" ", "_")}_{val.Replace(" ", "_")}";
+                                        <input type="radio" class="btn-check attr-radio" name="attr_@attrGroup.Key" id="@uniqueId" value="@val" autocomplete="off" onchange="updateVariantDetails()">
+                                        <label class="btn btn-outline-secondary px-3 py-1 rounded-3" for="@uniqueId">@val</label>
                                     }
                                 </div>
                             </div>
@@ -42,7 +43,7 @@
                         <div class="row mt-4 align-items-center">
                             <div class="col-6">
                                 <span class="text-muted d-block small">Stock Available</span>
-                                <span class="text-success fw-bold" id="displayStock">Select options</span>
+                                <span class="fw-bold" id="displayStock">Select options</span>
                             </div>
                             <div class="col-6 text-end">
                                 <span class="text-muted d-block small text-end">SKU</span>
@@ -74,75 +75,114 @@
 </div>
 
 <script>
-    const variants = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Variants.Select(v => new {
-        id = v.Id,
-        price = v.UnitPrice,
-        stock = v.StockQuantity,
-        sku = v.SKU,
-        attributes = v.VariantAttributes.ToDictionary(va => va.AttributeValue.Attribute.Name, va => va.AttributeValue.Value)
-    })));
+    (function() {
+        // Use var for redeclaration safety in AJAX-loaded partials
+        var variants = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Variants.Select(v => new {
+            id = v.Id,
+            price = v.UnitPrice,
+            stock = v.StockQuantity,
+            sku = v.SKU,
+            attributes = v.VariantAttributes.ToDictionary(va => va.AttributeValue.Attribute.Name, va => va.AttributeValue.Value)
+        })));
 
-    function updateVariantDetails() {
-        const selections = {};
-        $('.attr-radio:checked').each(function() {
-            const attrName = $(this).attr('name').replace('attr_', '');
-            selections[attrName] = $(this).val();
-        });
+        var totalAttrsCount = @attributes.Count;
+        
+        // Reset global selection state
+        window.selectedVariantId = null;
+        window.currentUnitPrice = null;
 
-        // Check if all attributes are selected
-        const totalAttrs = @attributes.Count;
-        if (Object.keys(selections).length === totalAttrs) {
-            const variant = variants.find(v => {
-                return Object.entries(selections).every(([name, val]) => v.attributes[name] === val);
+        window.updateVariantDetails = function() {
+            var selections = {};
+            $('.attr-radio:checked').each(function() {
+                var attrName = $(this).attr('name').replace('attr_', '');
+                selections[attrName] = $(this).val();
             });
 
-            if (variant) {
-                $('#displayPrice').text('$' + variant.price.toFixed(2));
-                $('#displayStock').text(variant.stock + ' units');
-                $('#displaySKU').text(variant.sku);
-                $('#totalPriceDisplay').text('$' + (variant.price * parseInt($('#qtyInput').val())).toFixed(2));
-                $('#addToCartBtn').prop('disabled', variant.stock <= 0);
-                window.selectedVariantId = variant.id;
-                window.currentUnitPrice = variant.price;
+            var selectedCount = Object.keys(selections).length;
+
+            if (selectedCount === totalAttrsCount) {
+                var variant = variants.find(function(v) {
+                    return Object.entries(selections).every(function(entry) {
+                        return v.attributes[entry[0]] === entry[1];
+                    });
+                });
+
+                if (variant) {
+                    $('#displayPrice').text('$' + variant.price.toFixed(2));
+                    $('#displaySKU').text(variant.sku);
+                    $('#totalPriceDisplay').text('$' + (variant.price * parseInt($('#qtyInput').val())).toFixed(2));
+                    
+                    if (variant.stock <= 0) {
+                        $('#displayStock').text('Out of stock').removeClass('text-success').addClass('text-danger');
+                        $('#addToCartBtn').prop('disabled', true).addClass('btn-secondary').removeClass('btn-primary');
+                    } else {
+                        $('#displayStock').text(variant.stock + ' units').removeClass('text-danger').addClass('text-success');
+                        $('#addToCartBtn').prop('disabled', false).addClass('btn-primary').removeClass('btn-secondary');
+                    }
+                    
+                    window.selectedVariantId = variant.id;
+                    window.currentUnitPrice = variant.price;
+                } else {
+                    resetVariantDetails();
+                }
             } else {
                 resetVariantDetails();
             }
-        } else {
-            resetVariantDetails();
-        }
-    }
+        };
 
-    function resetVariantDetails() {
-        $('#displayStock').text('Select options');
-        $('#displaySKU').text('-');
-        $('#addToCartBtn').prop('disabled', true);
-        window.selectedVariantId = null;
-    }
-
-    function changeQty(amt) {
-        let current = parseInt($('#qtyInput').val());
-        current += amt;
-        if (current < 1) current = 1;
-        
-        // Optionally cap at stock if variant selected
-        const stockText = $('#displayStock').text();
-        if (stockText.includes('units')) {
-            const stock = parseInt(stockText);
-            if (current > stock) current = stock;
+        function resetVariantDetails() {
+            $('#displayStock').text('Select options').removeClass('text-danger text-success');
+            $('#displaySKU').text('-');
+            $('#addToCartBtn').prop('disabled', true);
+            window.selectedVariantId = null;
+            window.currentUnitPrice = null;
         }
 
-        $('#qtyInput').val(current);
-        if (window.currentUnitPrice) {
-            $('#totalPriceDisplay').text('$' + (window.currentUnitPrice * current).toFixed(2));
-        }
-    }
+        window.changeQty = function(amt) {
+            var current = parseInt($('#qtyInput').val());
+            current += amt;
+            if (current < 1) current = 1;
+            
+            var stockText = $('#displayStock').text();
+            if (stockText.includes('units')) {
+                var stock = parseInt(stockText);
+                if (current > stock) current = stock;
+            }
 
-    function addToCart() {
-        if (!window.selectedVariantId) return;
-        const qty = parseInt($('#qtyInput').val());
-        console.log('Adding to cart:', window.selectedVariantId, 'Qty:', qty);
-        // Implement actual cart logic here
-        $('#productDetailsModal').modal('hide');
-        alert('Added ' + qty + ' item(s) to cart');
-    }
+            $('#qtyInput').val(current);
+            if (window.currentUnitPrice) {
+                $('#totalPriceDisplay').text('$' + (window.currentUnitPrice * current).toFixed(2));
+            }
+        };
+
+        window.addToCart = function() {
+            if (!window.selectedVariantId) return;
+            
+            var qty = parseInt($('#qtyInput').val());
+            var variant = variants.find(v => v.id === window.selectedVariantId);
+            
+            var existingItem = window.posCart.find(i => i.variantId === window.selectedVariantId);
+            if (existingItem) {
+                existingItem.quantity += qty;
+            } else {
+                window.posCart.push({
+                    variantId: window.selectedVariantId,
+                    productId: @Model.Id,
+                    name: '@Html.Raw(Model.Name.Replace("'", "\\'"))',
+                    attributes: variant.attributes,
+                    unitPrice: variant.price,
+                    quantity: qty
+                });
+            }
+
+            $('#productDetailsModal').modal('hide');
+            
+            if (typeof window.renderCart === 'function') {
+                window.renderCart();
+            }
+        };
+
+        // Initial check in case product has no attributes or only one variant
+        window.updateVariantDetails();
+    })();
 </script>
