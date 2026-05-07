@@ -20,9 +20,28 @@ namespace POS_SYSTEM_MVC.Controllers
         // GET: /Account/Login --MOW#1
 
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user =
+                    await _userManager.GetUserAsync(User);
+
+                var roles =
+                    await _userManager.GetRolesAsync(user);
+
+                if (roles.Contains("admin"))
+                {
+                    return Redirect("/Admin/Dashboard");
+                }
+                else if (roles.Contains("cashier"))
+                {
+                    return Redirect("/Cashier");
+                }   
+            }
             return View();
+
+
         }
         // POST: /Account/Login --MOW#2
         [HttpPost]
@@ -38,7 +57,7 @@ namespace POS_SYSTEM_MVC.Controllers
                         await _signInManager.PasswordSignInAsync(
                             user,
                             model.Password,
-                            false,
+                            model.RememberMe,
                             false);
 
                     if (result.Succeeded)

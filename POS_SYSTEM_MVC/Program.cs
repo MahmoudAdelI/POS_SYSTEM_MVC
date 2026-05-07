@@ -49,6 +49,16 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<IBrandService, BrandService>();
             builder.Services.AddScoped<IUnitService, UnitService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+
+                options.AccessDeniedPath = "/Account/AccessDenied";
+
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+
+                options.SlidingExpiration = true;
+            });
             var app = builder.Build();
 
 
@@ -102,6 +112,7 @@ namespace POS_SYSTEM_MVC
             }
             #endregion
 
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -120,7 +131,7 @@ namespace POS_SYSTEM_MVC
                 pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Account}/{action=Login}")
                 .WithStaticAssets();
 
             app.Run();
