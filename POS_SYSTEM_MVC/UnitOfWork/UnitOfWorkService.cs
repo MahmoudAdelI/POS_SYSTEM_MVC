@@ -8,6 +8,7 @@ using POS_SYSTEM_MVC.Repositories.Brands;
 using POS_SYSTEM_MVC.Repositories.CategoryRepo;
 using POS_SYSTEM_MVC.Repositories.SubCategories;
 using POS_SYSTEM_MVC.Repositories.UnitRepo;
+using POS_SYSTEM_MVC.Repositories.ProductRepo;
 
 namespace POS_SYSTEM_MVC.UnitOfWork
 {
@@ -20,6 +21,7 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         public ISubCategoryRepository SubCategories { get; } = new SubCategoryRepository(context);
         public IBrandRepository Brands { get; } = new BrandRepository(context);
         public IUnitRepository Units { get; } = new UnitRepository(context);
+        public IProductRepository Products { get; } = new ProductRepository(context);
 
         public async Task BeginTransactionAsync()
         {
@@ -43,7 +45,7 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         }
 
         public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
-            
+
         public void Dispose()
         {
             _transaction?.Dispose();

@@ -1,0 +1,148 @@
+@model POS_SYSTEM_MVC.Models.Product
+
+<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Product Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-5">
+                        <img src="/images/products/@(Model.Id).jpg" class="img-fluid rounded-4 shadow-sm" alt="@Model.Name" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x400?text=Product+Image'">
+                    </div>
+                    <div class="col-md-7 ps-md-4 mt-3 mt-md-0">
+                        <h2 class="fw-bold mb-1">@Model.Name</h2>
+                        <p class="text-muted mb-3">@Model.Brand?.Name</p>
+                        
+                        <h3 class="text-primary fw-bold mb-4" id="displayPrice">$@Model.BasePrice.ToString("F2")</h3>
+
+                        @{
+                            var attributes = Model.Variants
+                                .SelectMany(v => v.VariantAttributes)
+                                .GroupBy(va => va.AttributeValue.Attribute.Name)
+                                .ToList();
+                        }
+
+                        @foreach (var attrGroup in attributes)
+                        {
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2">@attrGroup.Key</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var val in attrGroup.Select(v => v.AttributeValue.Value).Distinct())
+                                    {
+                                        <input type="radio" class="btn-check attr-radio" name="attr_@attrGroup.Key" id="val_@val" value="@val" autocomplete="off" onchange="updateVariantDetails()">
+                                        <label class="btn btn-outline-secondary px-3 py-1 rounded-3" for="val_@val">@val</label>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row mt-4 align-items-center">
+                            <div class="col-6">
+                                <span class="text-muted d-block small">Stock Available</span>
+                                <span class="text-success fw-bold" id="displayStock">Select options</span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span class="text-muted d-block small text-end">SKU</span>
+                                <span class="text-dark fw-bold small" id="displaySKU">-</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label class="fw-bold mb-2">Quantity</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="input-group" style="width: 140px;">
+                                    <button class="btn btn-outline-secondary border-1" type="button" onclick="changeQty(-1)"><i class="bi bi-dash"></i></button>
+                                    <input type="text" id="qtyInput" class="form-control text-center bg-white" value="1" readonly>
+                                    <button class="btn btn-outline-secondary border-1" type="button" onclick="changeQty(1)"><i class="bi bi-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-primary w-100 py-3 fw-bold rounded-3" id="addToCartBtn" disabled onclick="addToCart()">
+                                Add to Cart - <span id="totalPriceDisplay">$@Model.BasePrice.ToString("F2")</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const variants = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Variants.Select(v => new {
+        id = v.Id,
+        price = v.UnitPrice,
+        stock = v.StockQuantity,
+        sku = v.SKU,
+        attributes = v.VariantAttributes.ToDictionary(va => va.AttributeValue.Attribute.Name, va => va.AttributeValue.Value)
+    })));
+
+    function updateVariantDetails() {
+        const selections = {};
+        $('.attr-radio:checked').each(function() {
+            const attrName = $(this).attr('name').replace('attr_', '');
+            selections[attrName] = $(this).val();
+        });
+
+        // Check if all attributes are selected
+        const totalAttrs = @attributes.Count;
+        if (Object.keys(selections).length === totalAttrs) {
+            const variant = variants.find(v => {
+                return Object.entries(selections).every(([name, val]) => v.attributes[name] === val);
+            });
+
+            if (variant) {
+                $('#displayPrice').text('$' + variant.price.toFixed(2));
+                $('#displayStock').text(variant.stock + ' units');
+                $('#displaySKU').text(variant.sku);
+                $('#totalPriceDisplay').text('$' + (variant.price * parseInt($('#qtyInput').val())).toFixed(2));
+                $('#addToCartBtn').prop('disabled', variant.stock <= 0);
+                window.selectedVariantId = variant.id;
+                window.currentUnitPrice = variant.price;
+            } else {
+                resetVariantDetails();
+            }
+        } else {
+            resetVariantDetails();
+        }
+    }
+
+    function resetVariantDetails() {
+        $('#displayStock').text('Select options');
+        $('#displaySKU').text('-');
+        $('#addToCartBtn').prop('disabled', true);
+        window.selectedVariantId = null;
+    }
+
+    function changeQty(amt) {
+        let current = parseInt($('#qtyInput').val());
+        current += amt;
+        if (current < 1) current = 1;
+        
+        // Optionally cap at stock if variant selected
+        const stockText = $('#displayStock').text();
+        if (stockText.includes('units')) {
+            const stock = parseInt(stockText);
+            if (current > stock) current = stock;
+        }
+
+        $('#qtyInput').val(current);
+        if (window.currentUnitPrice) {
+            $('#totalPriceDisplay').text('$' + (window.currentUnitPrice * current).toFixed(2));
+        }
+    }
+
+    function addToCart() {
+        if (!window.selectedVariantId) return;
+        const qty = parseInt($('#qtyInput').val());
+        console.log('Adding to cart:', window.selectedVariantId, 'Qty:', qty);
+        // Implement actual cart logic here
+        $('#productDetailsModal').modal('hide');
+        alert('Added ' + qty + ' item(s) to cart');
+    }
+</script>

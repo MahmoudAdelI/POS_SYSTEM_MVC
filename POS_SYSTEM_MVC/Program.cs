@@ -8,6 +8,7 @@ using POS_SYSTEM_MVC.Services.CategoryServices;
 using POS_SYSTEM_MVC.Services.SubCategoriesServices;
 using POS_SYSTEM_MVC.Services.Unitservices;
 using POS_SYSTEM_MVC.Services.UnitServices;
+using POS_SYSTEM_MVC.Services.ProductServices;
 using POS_SYSTEM_MVC.UnitOfWork;
 
 namespace POS_SYSTEM_MVC
@@ -43,6 +44,7 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
             builder.Services.AddScoped<IBrandService, BrandService>();
             builder.Services.AddScoped<IUnitService, UnitService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             var app = builder.Build();
 
 
@@ -102,7 +104,7 @@ namespace POS_SYSTEM_MVC
 
             app.UseStaticFiles();
             app.UseRouting();
-         
+
             app.UseAuthentication();
             app.UseAuthorization();
 
