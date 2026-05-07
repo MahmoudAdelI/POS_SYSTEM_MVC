@@ -56,6 +56,7 @@ namespace POS_SYSTEM_MVC
 
                 // seed roles
                 string[] roles = { Role.Admin, Role.Cashier };
+
                 foreach (var role in roles)
                     if (!await roleManager.RoleExistsAsync(role))
                         await roleManager.CreateAsync(new IdentityRole(role));
@@ -109,6 +110,9 @@ namespace POS_SYSTEM_MVC
             app.UseAuthorization();
 
             app.MapStaticAssets();
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
