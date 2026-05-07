@@ -1,0 +1,181 @@
+﻿@using POS_SYSTEM_MVC.ViewModels
+@model CreateProductViewModel
+@{
+    ViewData["Title"] = "Add New Product";
+    // Dropdown data – in reality, populate these from the controller
+    var brands = ViewBag.Brands as SelectList;
+    var categories = ViewBag.Categories as SelectList;
+    var units = ViewBag.Units as SelectList;
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <form asp-action="Create" method="post" class="bg-white rounded shadow-sm border p-4">
+        <!-- Basic Product Info -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label class="form-label">Product Name</label>
+                <input class="form-control" placeholder="Enter product name" />
+                <span class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Brand</label>
+                <select asp-items="brands" class="form-select" required>
+                    <option value="">Select brand</option>
+                    @foreach (var b in Model.Brands)
+                    {
+                        <option value="@b.Id">@b.Name</option>
+                    }
+                </select>
+                <span class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Category</label>
+                <select  asp-items="categories" class="form-select" id="categorySelect" required>
+                    <option value="">Select category</option>
+                    @foreach(var c in Model.Categories)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
+                <span class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Subcategory</label>
+                <select class="form-select" id="subcategorySelect" disabled>
+                    <option value="">Select subcategory</option>
+                </select>
+                <span class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Unit</label>
+                <select asp-items="units" class="form-select" required>
+                    <option value="">Select unit</option>
+                    @foreach(var u in Model.Units)
+                    {
+                    <option value="@u.Id">@u.Name</option>
+                    }
+                </select>
+                <span class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Base Price ($)</label>
+                <input type="number" step="0.01" class="form-control" placeholder="0.00" />
+                <span class="text-danger small"></span>
+            </div>
+        </div>
+
+        <!-- Product Variants Section -->
+        <div class="border-top pt-4 mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Product Variants</h5>
+                <button type="button" class="btn btn-primary btn-sm d-flex align-items-center gap-2" id="addAttributeBtn">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Attribute
+                </button>
+            </div>
+
+            <!-- Empty State Placeholder -->
+            <div id="emptyAttributesPlaceholder" class="text-center py-3 bg-light rounded-4 border border-1 border-dashed border-secondary">
+                <p class="text-muted mb-2">No attributes added yet</p>
+                <p class="small text-secondary">Click "Add Attribute" to define product variations</p>
+            </div>
+
+
+            <!-- Attributes Container (initially hidden) -->
+            <div id="attributesContainer" class="d-none">
+                <!-- Attribute groups will be added here dynamically -->
+                
+            </div>
+
+            <!-- Generated Variants Table (initially hidden) -->
+            <div id="variantsSection" class="border-top pt-4 mt-4 d-none">
+                <h5 class="mb-3">Generated Variants</h5>
+                <div class="table-responsive bg-white border rounded">
+                    <table class="table table-hover mb-0" id="variantsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Variant</th>
+                                <th>SKU</th>
+                                <th>Quantity <span class="text-danger">*</span></th>
+                                <th>Unit Price ($)</th>
+                                <th>Attributes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows added by JS -->
+                            @* <tr>
+                                <td class="align-middle">Black</td>
+                                <td class="align-middle">
+                                    <input type="text" class="form-control form-control-sm" name="VariantEntries[0].Sku" value="SKU-CB-001" placeholder="SKU" />
+                                </td>
+                                <td class="align-middle">
+                                    <input type="number" class="form-control form-control-sm" style="width: 100px;" name="VariantEntries[0].StockQuantity" placeholder="0" min="0" required />
+                                </td>
+                                <td class="align-middle">
+                                    <input type="number" step="0.01" class="form-control form-control-sm" style="width: 120px;" name="VariantEntries[0].UnitPrice" placeholder="0.00" min="0" />
+                                </td>
+                                <td class="align-middle">
+                                    <!-- Hidden inputs for attribute value IDs -->
+                                    <input type="hidden" name="VariantEntries[0].SelectedAttributeValueIds" value="1" />
+                                    <span class="text-muted small">Color: Black</span>
+                                </td>
+                            </tr> *@
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-muted small mt-3">
+                    💡 Tip: Leave Unit Price empty to use the base price for all variants.
+                </p>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="reset" class="btn btn-outline-secondary">Clear</button>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </div>
+    </form>
+</div>
+
+
+
+@* Bind SubCategories to Categories *@
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Embed the categories with their subcategories as a JavaScript object
+        const categoriesData = @Html.Raw(Json.Serialize(Model.Categories));
+
+        document.getElementById('categorySelect').addEventListener('change', function() {
+            const categoryId = parseInt(this.value);
+            const subSelect = document.getElementById('subcategorySelect');
+
+            // Clear current options
+            subSelect.innerHTML = '<option value="">Select subcategory</option>';
+
+            if (!categoryId) {
+                subSelect.disabled = true;
+                return;
+            }
+
+            // Find the selected category in our embedded data
+            const category = categoriesData.find(c => c.id === categoryId);
+            if (category && category.subCategories) {
+                category.subCategories.forEach(sub => {
+                    subSelect.innerHTML += `<option value="${sub.id}">${sub.name}</option>`;
+                });
+                subSelect.disabled = false;
+            } else {
+                subSelect.disabled = true;
+            }
+        });
+    </script>
+    <script src="~/js/addProduct.js" type="module"></script>
+}
