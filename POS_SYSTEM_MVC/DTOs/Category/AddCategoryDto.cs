@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using POS_SYSTEM_MVC.DTOs.SubCategory;
+using System.ComponentModel.DataAnnotations;
 
-namespace POS_SYSTEM_MVC.DTOs
+namespace POS_SYSTEM_MVC.DTOs.Category
 {
     public class AddCategoryDto
     {

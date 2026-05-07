@@ -1,5 +1,4 @@
-﻿
-using POS_SYSTEM_MVC.DTOs;
+﻿using POS_SYSTEM_MVC.DTOs.Category;
 using POS_SYSTEM_MVC.Models;
 
 namespace POS_SYSTEM_MVC.Services.CategoryServices
@@ -8,5 +7,6 @@ namespace POS_SYSTEM_MVC.Services.CategoryServices
     {
         Task<int> AddCategoryAsync(AddCategoryDto dto);
         Task<IReadOnlyList<Category>> GetAllCategoriesAsync();
+        Task<IReadOnlyList<CategoryWithSubsDto>> GetAllWithSubsAsync();
     }
 }

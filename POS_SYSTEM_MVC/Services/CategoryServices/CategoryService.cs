@@ -1,4 +1,4 @@
-﻿using POS_SYSTEM_MVC.DTOs;
+﻿using POS_SYSTEM_MVC.DTOs.Category;
 using POS_SYSTEM_MVC.Models;
 using POS_SYSTEM_MVC.UnitOfWork;
 
@@ -17,6 +17,11 @@ namespace POS_SYSTEM_MVC.Services.CategoryServices
         public async Task<IReadOnlyList<Category>> GetAllCategoriesAsync()
         {
             return await unitOfWork.Categories.GetAllAsync(c => c.SubCategories);
+        }
+
+        public Task<IReadOnlyList<CategoryWithSubsDto>> GetAllWithSubsAsync()
+        {
+            return unitOfWork.Categories.GetAllWithSubsAsync();
         }
     }
 }

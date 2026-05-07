@@ -1,4 +1,4 @@
-﻿using POS_SYSTEM_MVC.DTOs;
+﻿using POS_SYSTEM_MVC.DTOs.SubCategory;
 using POS_SYSTEM_MVC.Models;
 using POS_SYSTEM_MVC.UnitOfWork;
 

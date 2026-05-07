@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using POS_SYSTEM_MVC.DTOs;
+using POS_SYSTEM_MVC.DTOs.SubCategory;
 using POS_SYSTEM_MVC.Services.SubCategoriesServices;
 
 namespace POS_SYSTEM_MVC.Controllers;
