@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
@@ -5,10 +6,10 @@ using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
 using POS_SYSTEM_MVC.Services.Brands;
 using POS_SYSTEM_MVC.Services.CategoryServices;
+using POS_SYSTEM_MVC.Services.ProductServices;
 using POS_SYSTEM_MVC.Services.SubCategoriesServices;
 using POS_SYSTEM_MVC.Services.Unitservices;
 using POS_SYSTEM_MVC.Services.UnitServices;
-using POS_SYSTEM_MVC.Services.ProductServices;
 using POS_SYSTEM_MVC.UnitOfWork;
 
 namespace POS_SYSTEM_MVC
@@ -34,11 +35,14 @@ namespace POS_SYSTEM_MVC
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
                     options.Password.RequiredLength = 4;
-                    options.Password.RequireUppercase = false;
+                    options.Password.RequireUppercase = true;
                 })
                 .AddEntityFrameworkStores<POSContext>()
                 .AddDefaultTokenProviders();
             //------------
+
+         
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWorkService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
@@ -46,6 +50,7 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<IUnitService, UnitService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             var app = builder.Build();
+
 
 
             #region seed users + roles
@@ -70,7 +75,7 @@ namespace POS_SYSTEM_MVC
                         FirstName = "Admin",
                         LastName = "User"
                     };
-                    var result = await userManager.CreateAsync(admin, "password");
+                    var result = await userManager.CreateAsync(admin, "Admin123!");
                     if (result.Succeeded)
                         await userManager.AddToRoleAsync(admin, Role.Admin);
                     else
@@ -87,7 +92,7 @@ namespace POS_SYSTEM_MVC
                         FirstName = "Cashier",
                         LastName = "User"
                     };
-                    var result = await userManager.CreateAsync(cashier, "password");
+                    var result = await userManager.CreateAsync(cashier, "Cashier123!");
                     if (result.Succeeded)
                         await userManager.AddToRoleAsync(cashier, Role.Cashier);
                     else
