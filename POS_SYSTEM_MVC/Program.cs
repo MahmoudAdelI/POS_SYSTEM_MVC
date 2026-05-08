@@ -11,6 +11,7 @@ using POS_SYSTEM_MVC.Services.SubCategoriesServices;
 using POS_SYSTEM_MVC.Services.Unitservices;
 using POS_SYSTEM_MVC.Services.UnitServices;
 using POS_SYSTEM_MVC.UnitOfWork;
+using POS_SYSTEM_MVC.Services.DashboardServices;
 
 namespace POS_SYSTEM_MVC
 {
@@ -49,6 +50,7 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<IBrandService, BrandService>();
             builder.Services.AddScoped<IUnitService, UnitService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";

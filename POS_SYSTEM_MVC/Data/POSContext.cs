@@ -220,6 +220,138 @@ namespace POS_SYSTEM_MVC.Data
                 new Discount { Id = 3, SaleTotalThreshold = 200, Type = DiscountType.Percentage, Value = 15, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) }
             );
             #endregion
+
+            #region Sales Seeding
+
+            builder.Entity<Sale>().HasData(
+                new Sale
+                {
+                    Id = 1,
+                    CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                    CreatedAt = new DateTime(2026, 5, 1),
+                    Status = SaleStatus.Completed,
+                    DiscountType = null,
+                    DiscountValue = null,
+                    DiscountAmount = null
+                },
+                new Sale
+                {
+                    Id = 2,
+                    CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                    CreatedAt = new DateTime(2026, 5, 1),
+                    Status = SaleStatus.Completed,
+                    DiscountType = null,
+                    DiscountValue = null,
+                    DiscountAmount = null
+                },
+                new Sale
+                {
+                    Id = 3,
+                    CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                    CreatedAt = new DateTime(2026, 5, 1),
+                    Status = SaleStatus.Completed,
+                    DiscountType = DiscountType.Percentage,
+                    DiscountValue = 15,
+                    DiscountAmount = 19.50m
+                },
+                new Sale
+                {
+                    Id = 4,
+                    CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                    CreatedAt = new DateTime(2026, 4, 30),
+                    Status = SaleStatus.Completed,
+                    DiscountType = null,
+                    DiscountValue = null,
+                    DiscountAmount = null
+                },
+                new Sale
+                {
+                    Id = 5,
+                    CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                    CreatedAt = new DateTime(2026, 4, 30),
+                    Status = SaleStatus.Canceled,
+                    DiscountType = null,
+                    DiscountValue = null,
+                    DiscountAmount = null
+                }
+            );
+
+            builder.Entity<SaleLine>().HasData(
+
+                // Sale 1 → Classic Tee White/M × 2
+                new SaleLine
+                {
+                    SaleId = 1,
+                    ProductVariantId = 4,
+                    Quantity = 2,
+                    OriginalUnitPrice = 28.00m,
+                    DiscountType = DiscountType.Fixed,
+                    DiscountValue = 5,
+                    DiscountAmount = 5.00m
+                },
+
+                // Sale 2 → Air Max 90 Red/41 × 1
+                new SaleLine
+                {
+                    SaleId = 2,
+                    ProductVariantId = 1,
+                    Quantity = 1,
+                    OriginalUnitPrice = 130.00m,
+                    DiscountType = DiscountType.Percentage,
+                    DiscountValue = 10,
+                    DiscountAmount = 13.00m
+                },
+
+                // Sale 3 → Air Max 90 Blue/41 × 1
+                new SaleLine
+                {
+                    SaleId = 3,
+                    ProductVariantId = 3,
+                    Quantity = 1,
+                    OriginalUnitPrice = 130.00m,
+                    DiscountType = null,
+                    DiscountValue = null,
+                    DiscountAmount = null
+                },
+
+                // Sale 3 → Classic Tee Black/L × 1
+                new SaleLine
+                {
+                    SaleId = 3,
+                    ProductVariantId = 5,
+                    Quantity = 1,
+                    OriginalUnitPrice = 28.00m,
+                    DiscountType = null,
+                    DiscountValue = null,
+                    DiscountAmount = null
+                },
+
+                // Sale 4 → G-Shock Black × 2
+                new SaleLine
+                {
+                    SaleId = 4,
+                    ProductVariantId = 6,
+                    Quantity = 2,
+                    OriginalUnitPrice = 80.00m,
+                    DiscountType = null,
+                    DiscountValue = null,
+                    DiscountAmount = null
+                },
+
+                // Sale 5 → Air Max 90 Red/42 × 1 (Canceled)
+                new SaleLine
+                {
+                    SaleId = 5,
+                    ProductVariantId = 2,
+                    Quantity = 1,
+                    OriginalUnitPrice = 130.00m,
+                    DiscountType = null,
+                    DiscountValue = null,
+                    DiscountAmount = null
+                }
+            );
+
+            #endregion
         }
     }
 }
