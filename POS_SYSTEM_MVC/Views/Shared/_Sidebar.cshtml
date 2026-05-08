@@ -1,14 +1,25 @@
 @using Microsoft.AspNetCore.Identity
 @using POS_SYSTEM_MVC.Constants
-@* Comment out real identity logic for now *@
-@* @inject SignInManager<ApplicationUser> SignInManager *@
-@* @inject UserManager<ApplicationUser> UserManager *@
+@using POS_SYSTEM_MVC.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
-    // Mock Data for UI Development
-    var isUserLoggedIn = true;
-    var userRole = "Cashier"; // Options: "Admin", "Cashier"
-    var userName = "Mohamed Fares";
+    var isUserLoggedIn = SignInManager.IsSignedIn(User);
+    var userRole = "Cashier"; // Default role
+    var userName = "Guest";
+
+    if (isUserLoggedIn)
+    {
+        var user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+            userName = String.Concat(user.FirstName, " ", user.LastName) ?? user.UserName ?? "User";
+            var roles = await UserManager.GetRolesAsync(user);
+            userRole = roles.FirstOrDefault() ?? "Cashier";
+        }
+    }
 }
 
 <nav id="sidebar">
@@ -32,7 +43,7 @@
             </div>
         </div>
 
-        @if (userRole == "Admin")
+        @if (userRole == "admin")
         {
             <h6 class="category-label">Admin Panel</h6>
             <ul class="list-unstyled components">

@@ -1,18 +1,22 @@
 @model IEnumerable<POS_SYSTEM_MVC.Models.Category>
+@{
+    var currentStockFilter = ViewBag.StockFilter as string;
+    var isAll = string.IsNullOrEmpty(currentStockFilter) || currentStockFilter == "all";
+}
 
 <li class="mb-3 px-3">
     <label class="form-label text-muted small fw-bold text-uppercase mb-2">Stock Availability</label>
     <div class="d-flex flex-column gap-1">
         <div class="form-check custom-sidebar-check">
-            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_all" value="all" checked>
+            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_all" value="all" @(isAll ? "checked" : "")>
             <label class="form-check-label small" for="stock_all">All Products</label>
         </div>
         <div class="form-check custom-sidebar-check">
-            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_in" value="inStock">
+            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_in" value="inStock" @(currentStockFilter == "inStock" ? "checked" : "")>
             <label class="form-check-label small" for="stock_in">In Stock Only</label>
         </div>
         <div class="form-check custom-sidebar-check">
-            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_out" value="outOfStock">
+            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_out" value="outOfStock" @(currentStockFilter == "outOfStock" ? "checked" : "")>
             <label class="form-check-label small" for="stock_out">Out of Stock</label>
         </div>
     </div>

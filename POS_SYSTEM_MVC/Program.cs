@@ -41,7 +41,7 @@ namespace POS_SYSTEM_MVC
                 .AddDefaultTokenProviders();
             //------------
 
-         
+
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWorkService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -131,7 +131,7 @@ namespace POS_SYSTEM_MVC
                 pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}")
+                pattern: "{controller=Account}/{action=Login}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

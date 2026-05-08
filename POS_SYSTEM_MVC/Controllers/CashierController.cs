@@ -23,9 +23,8 @@ namespace POS_SYSTEM_MVC.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string searchTerm, int? categoryId, int? subCategoryId, string stockFilter = "all", int page = 1)
+        public async Task<IActionResult> Index(string searchTerm, int? categoryId, int? subCategoryId, string stockFilter = "all", int page = 1, int pageSize = 12)
         {
-            const int pageSize = 12; // Increased pageSize for better layout
             var result = await _productService.GetProductsForCashierAsync(searchTerm, categoryId, subCategoryId, stockFilter, page, pageSize);
 
             ViewBag.SearchTerm = searchTerm;
@@ -33,9 +32,11 @@ namespace POS_SYSTEM_MVC.Controllers
             ViewBag.SubCategoryId = subCategoryId;
             ViewBag.StockFilter = stockFilter;
             ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = result.TotalItems;
             ViewBag.TotalPages = (int)Math.Ceiling((double)result.TotalItems / pageSize);
 
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" && Request.Query.ContainsKey("partial"))
             {
                 return PartialView("_ProductList", result.Products);
             }

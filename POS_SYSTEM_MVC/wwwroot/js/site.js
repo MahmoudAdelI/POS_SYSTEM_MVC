@@ -50,6 +50,25 @@ $(document).ready(function () {
             return;
         }
 
+        // If navigating to Cashier Index, preserve current filters
+        if (url.includes('/Cashier')) {
+            const stockFilter = $('.stock-radio-filter:checked').val();
+            const searchTerm = $('#searchInput').val();
+            const pageSize = $('#pageSizeSelect').val();
+            
+            const urlObj = new URL(url, window.location.origin);
+            if (stockFilter && stockFilter !== 'all') {
+                urlObj.searchParams.set('stockFilter', stockFilter);
+            }
+            if (searchTerm) {
+                urlObj.searchParams.set('searchTerm', searchTerm);
+            }
+            if (pageSize) {
+                urlObj.searchParams.set('pageSize', pageSize);
+            }
+            url = urlObj.pathname + urlObj.search;
+        }
+
         loadContent(url, true);
 
         // Update active class in sidebar
@@ -94,6 +113,9 @@ $(document).ready(function () {
                     history.pushState({ path: url }, '', url);
                 }
 
+                // Trigger an event that the page has changed, useful for re-initializing components
+                $(document).trigger('content-updated');
+
                 $('#ajax-loader').fadeOut(100);
             },
             error: function () {
@@ -103,5 +125,312 @@ $(document).ready(function () {
             }
         });
     }
+});
+
+// POS System Global State
+window.posCart = window.posCart || [];
+let isCartVisible = false;
+
+// Global POS Functions
+function openProductDetails(id) {
+    $.get('/Cashier/GetProductDetails/' + id, function (data) {
+        let $container = $('#modalContainer');
+        if ($container.length === 0) {
+            $('body').append('<div id="modalContainer"></div>');
+            $container = $('#modalContainer');
+        }
+        $container.html(data);
+        $('#productDetailsModal').modal('show');
+    });
+}
+
+function toggleCart(show) {
+    isCartVisible = show;
+    const $sidebar = $('#cartSidebar');
+    const $floatingBtn = $('#floatingCartBtn');
+
+    if ($sidebar.length === 0) return;
+
+    if (show) {
+        $sidebar.removeClass('hidden');
+        $floatingBtn.addClass('d-none');
+    } else {
+        $sidebar.addClass('hidden');
+        if (window.posCart.length > 0) {
+            $floatingBtn.removeClass('d-none');
+        }
+    }
+}
+
+function renderCart() {
+    const $cartItems = $('#cartItems');
+    if ($cartItems.length === 0) return; // Not on cashier page
+
+    const $cartCount = $('#cartCount');
+    const $floatingCartCount = $('#floatingCartCount');
+    const $emptyMsg = $('#emptyCartMessage');
+    
+    if (window.posCart.length === 0) {
+        $cartItems.find('.cart-item').remove();
+        $emptyMsg.show();
+        $cartCount.text(0);
+        $floatingCartCount.text(0);
+        $('#checkoutBtn').prop('disabled', true);
+        
+        if (isCartVisible) {
+            toggleCart(false);
+        }
+        $('#floatingCartBtn').addClass('d-none');
+    } else {
+        $emptyMsg.hide();
+        $cartItems.find('.cart-item').remove();
+        
+        let subtotal = 0;
+        let count = 0;
+
+        window.posCart.forEach(item => {
+            subtotal += item.unitPrice * item.quantity;
+            count += item.quantity;
+
+            const attrText = Object.entries(item.attributes).map(([k, v]) => `${k}: ${v}`).join(' - ');
+            
+            const itemHtml = `
+                <div class="cart-item p-2 mb-2 rounded-3 border bg-white shadow-sm" data-variant-id="${item.variantId}">
+                    <div class="d-flex gap-2">
+                        <img src="/images/products/${item.productId}.jpg" class="rounded" style="width: 45px; height: 45px; object-fit: cover;" 
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/45/eeeeee?text=?'">
+                        <div class="flex-grow-1 min-width-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="mb-0 fw-bold text-truncate" style="font-size: 0.75rem; max-width: 140px;">${item.name}</h6>
+                                <button class="btn btn-link text-danger p-0" onclick="removeFromCart(${item.variantId})">
+                                    <i class="fas fa-trash-alt" style="font-size: 0.7rem;"></i>
+                                </button>
+                            </div>
+                            <p class="text-muted mb-1 text-truncate" style="font-size: 0.7rem;">${attrText}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="input-group input-group-sm" style="width: 80px;">
+                                    <button class="btn btn-outline-secondary py-0 px-1" style="font-size: 0.7rem;" onclick="updateQty(${item.variantId}, -1)">-</button>
+                                    <input type="text" class="form-control text-center py-0 px-1 bg-white border-secondary border-start-0 border-end-0" style="font-size: 0.75rem;" value="${item.quantity}" readonly>
+                                    <button class="btn btn-outline-secondary py-0 px-1" style="font-size: 0.7rem;" onclick="updateQty(${item.variantId}, 1)">+</button>
+                                </div>
+                                <span class="fw-bold text-primary" style="font-size: 0.75rem;">$${(item.unitPrice * item.quantity).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $cartItems.append(itemHtml);
+        });
+
+        $cartCount.text(count);
+        $floatingCartCount.text(count);
+        $('#checkoutBtn').prop('disabled', false);
+        updateTotals(subtotal);
+
+        if (!isCartVisible) {
+            toggleCart(true);
+        }
+    }
+}
+
+function updateTotals(subtotal) {
+    const tax = subtotal * 0.10;
+    const total = subtotal + tax;
+
+    $('#cartSubtotal').text('$' + subtotal.toFixed(2));
+    $('#cartTax').text('$' + tax.toFixed(2));
+    $('#cartTotal').text('$' + total.toFixed(2));
+}
+
+function updateQty(variantId, delta) {
+    const item = window.posCart.find(i => i.variantId === variantId);
+    if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+            removeFromCart(variantId);
+        } else {
+            renderCart();
+        }
+    }
+}
+
+function removeFromCart(variantId) {
+    window.posCart = window.posCart.filter(i => i.variantId !== variantId);
+    renderCart();
+}
+
+function clearCart() {
+    if (window.posCart.length > 0 && confirm('Clear all items from cart?')) {
+        window.posCart = [];
+        renderCart();
+    }
+}
+
+function checkout() {
+    if (window.posCart.length === 0) return;
+
+    const $btn = $('#checkoutBtn');
+    const originalText = $btn.text();
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>');
+
+    const payload = {
+        items: window.posCart.map(i => ({
+            productVariantId: i.variantId,
+            quantity: i.quantity,
+            unitPrice: i.unitPrice
+        }))
+    };
+
+    $.ajax({
+        url: '/Cashier/Checkout',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        success: function(response) {
+            if (response.success) {
+                printReceipt(response.receiptData);
+                window.posCart = [];
+                renderCart();
+                alert('Order completed successfully!');
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function() {
+            alert('An error occurred during checkout.');
+        },
+        complete: function() {
+            $btn.prop('disabled', false).text(originalText);
+        }
+    });
+}
+
+function printReceipt(data) {
+    const printWindow = window.open('', '_blank', 'width=400,height=600');
+    let itemsHtml = '';
+    data.items.forEach(item => {
+        itemsHtml += `
+            <tr>
+                <td style="padding: 5px 0;">${item.name}<br><small>${item.variantInfo}</small></td>
+                <td style="text-align: center;">${item.quantity}</td>
+                <td style="text-align: right;">$${(item.unitPrice * item.quantity).toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    const html = `
+        <html>
+        <head>
+            <title>Receipt #${data.saleId}</title>
+            <style>
+                body { font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.2; padding: 20px; }
+                .text-center { text-align: center; }
+                .border-top { border-top: 1px dashed #000; margin: 10px 0; padding-top: 10px; }
+                table { width: 100%; border-collapse: collapse; }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+            <div class="text-center">
+                <h3>POS SYSTEM</h3>
+                <p>Receipt #${data.saleId}<br>${data.date}</p>
+            </div>
+            <div class="border-top">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Item</th>
+                            <th>Qty</th>
+                            <th style="text-align: right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>${itemsHtml}</tbody>
+                </table>
+            </div>
+            <div class="border-top">
+                <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span><span>$${data.subtotal.toFixed(2)}</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Tax (10%):</span><span>$${data.tax.toFixed(2)}</span></div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 5px;">
+                    <span>TOTAL:</span><span>$${data.total.toFixed(2)}</span>
+                </div>
+            </div>
+            <div class="text-center border-top" style="margin-top: 20px;">
+                <p>Thank you for your purchase!</p>
+            </div>
+        </body>
+        </html>
+    `;
+    printWindow.document.write(html);
+    printWindow.document.close();
+}
+
+// Product Loading Logic
+function loadProducts(page = 1) {
+    const $searchInput = $('#searchInput');
+    const $productListContainer = $('#productListContainer');
+    if ($productListContainer.length === 0) return;
+
+    const searchTerm = $searchInput.val() || '';
+    const stockFilter = $('.stock-radio-filter:checked').val() || 'all';
+    const categoryId = $('#currentCategoryId').val();
+    const subCategoryId = $('#currentSubCategoryId').val();
+    const pageSize = $('#pageSizeSelect').val() || 12;
+    
+    $productListContainer.css('opacity', '0.6');
+
+    $.ajax({
+        url: '/Cashier/Index',
+        data: {
+            searchTerm: searchTerm,
+            stockFilter: stockFilter,
+            categoryId: categoryId,
+            subCategoryId: subCategoryId,
+            page: page,
+            pageSize: pageSize,
+            partial: true
+        },
+        success: function(data) {
+            $productListContainer.html(data);
+        },
+        error: function() {
+            alert('Error loading products.');
+        },
+        complete: function() {
+            $productListContainer.css('opacity', '1');
+        }
+    });
+}
+
+// Event Handlers
+$(document).on('input', '#searchInput', function() {
+    clearTimeout(window.searchTimer);
+    window.searchTimer = setTimeout(function() {
+        loadProducts(1);
+    }, 400);
+});
+
+$(document).on('change', '.stock-radio-filter', function() {
+    loadProducts(1);
+});
+
+$(document).on('change', '#pageSizeSelect', function() {
+    loadProducts(1);
+});
+
+$(document).on('click', '.pagination-link', function(e) {
+    e.preventDefault();
+    const page = $(this).data('page');
+    if (page) {
+        loadProducts(page);
+    }
+});
+
+// Re-initialize on content update
+$(document).on('content-updated', function() {
+    renderCart();
+});
+
+// Initial load
+$(document).ready(function() {
+    renderCart();
 });
 
