@@ -1,4 +1,5 @@
 ﻿import cartesian from "./utils/cartesian.js";
+import syncUI from "./utils/syncUI.js";
 
 export default function renderVariants() {
     const groups = document.querySelectorAll(".attribute-group");
@@ -9,11 +10,14 @@ export default function renderVariants() {
         const attrId = Number(attributeSelectInput.value);
         const attrName = attributeSelectInput.options[attributeSelectInput.selectedIndex]?.text;
 
-        if (!attrId) return; // skip if no attribute selected
+        if (!attrId) {
+            return; // skip if no attribute selected
+        }
 
         const checkedBoxes = [...group.querySelectorAll(".btn-check:checked")]; // spread to convert to array not NodeList
-
-        if (checkedBoxes.length === 0) return; // skip if no values checked
+        if (checkedBoxes.length === 0) {
+            return; // skip if no values checked
+        }
 
 
         selected.push({
@@ -37,7 +41,9 @@ export default function renderVariants() {
         valueId: v.id,
         valueName: v.name
     }))));
+
     renderTable(combos);
+    syncUI();
 }
 
 
@@ -81,6 +87,6 @@ function renderTable(combos) {
 }
 
 function clearVariantsTable() {
-    const table = document.getElementById("#variantsSection");
-    if (table) teble.innerHTML = "";
+    const table = document.querySelector("#variantsSection");
+    if (table) table.innerHTML = "";
 }

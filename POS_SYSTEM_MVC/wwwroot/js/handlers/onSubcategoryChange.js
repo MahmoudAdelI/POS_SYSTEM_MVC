@@ -1,6 +1,7 @@
 ﻿import loadAttributesOptions  from "../utils/loadAttributesOptions.js";
 import fetchAttributes  from "../services/fetchAttributes.js";
 import syncUI from "../utils/syncUI.js";
+import renderVariants from "../renderVariants.js";
 import { state } from "../state.js";
 
 export default async function onSubcategoryChange(e) {
@@ -44,4 +45,5 @@ export default async function onSubcategoryChange(e) {
     if (variantsTbody) variantsTbody.innerHTML = '';
 
     syncUI();
+    renderVariants(); // Trigger re-render to update variants based on new attributes
 }
