@@ -71,6 +71,9 @@ namespace POS_SYSTEM_MVC
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+                const string AdminUserId = "B22D1111-2222-3333-4444-555555555555";
+                const string CashierUserId = "C33D1111-2222-3333-4444-555555555555";
+
                 // seed roles
                 string[] roles = { Role.Admin, Role.Cashier };
 
@@ -83,9 +86,12 @@ namespace POS_SYSTEM_MVC
                 {
                     var admin = new ApplicationUser
                     {
+                        Id = AdminUserId, // ????? ??? ID ?????? ???
                         UserName = "admin",
                         FirstName = "Admin",
-                        LastName = "User"
+                        LastName = "User",
+                        Email = "admin@pos.com", // ???? ????? ????? ????
+                        EmailConfirmed = true
                     };
                     var result = await userManager.CreateAsync(admin, "Admin123!");
                     if (result.Succeeded)
@@ -100,9 +106,12 @@ namespace POS_SYSTEM_MVC
                 {
                     var cashier = new ApplicationUser
                     {
+                        Id = CashierUserId, // ????? ??? ID ?????? ???
                         UserName = "cashier",
                         FirstName = "Cashier",
-                        LastName = "User"
+                        LastName = "User",
+                        Email = "cashier@pos.com",
+                        EmailConfirmed = true
                     };
                     var result = await userManager.CreateAsync(cashier, "Cashier123!");
                     if (result.Succeeded)
