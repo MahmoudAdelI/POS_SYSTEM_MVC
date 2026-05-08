@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using POS_SYSTEM_MVC.Services.Brands;
 using POS_SYSTEM_MVC.Services.CategoryServices;
 using POS_SYSTEM_MVC.Services.UnitServices;
@@ -6,6 +7,7 @@ using POS_SYSTEM_MVC.ViewModels;
 
 namespace POS_SYSTEM_MVC.Controllers
 {
+    [Authorize]
     public class AddProductController(ICategoryService categoryService, IUnitService unitService, IBrandService brandService) : Controller
     {
         public async Task<IActionResult> Index()

@@ -131,7 +131,7 @@ namespace POS_SYSTEM_MVC
                 pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}")
+                pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();
