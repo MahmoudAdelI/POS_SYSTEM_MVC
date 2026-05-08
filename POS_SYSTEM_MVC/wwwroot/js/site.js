@@ -306,7 +306,14 @@ function checkout() {
 }
 
 function printReceipt(data) {
-    const printWindow = window.open('', '_blank', 'width=400,height=600');
+    let iframe = document.getElementById('receiptPrinter');
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = 'receiptPrinter';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+    }
+
     let itemsHtml = '';
     data.items.forEach(item => {
         itemsHtml += `
@@ -329,7 +336,7 @@ function printReceipt(data) {
                 table { width: 100%; border-collapse: collapse; }
             </style>
         </head>
-        <body onload="window.print(); window.close();">
+        <body onload="window.print();">
             <div class="text-center">
                 <h3>POS SYSTEM</h3>
                 <p>Receipt #${data.saleId}<br>${data.date}</p>
@@ -359,8 +366,11 @@ function printReceipt(data) {
         </body>
         </html>
     `;
-    printWindow.document.write(html);
-    printWindow.document.close();
+    
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
 }
 
 // Product Loading Logic
