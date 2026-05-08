@@ -1,4 +1,4 @@
-﻿export default function updateUI() {
+﻿export default function syncUI() {
     const attributeCount = document.querySelectorAll('.attribute-group').length;
     const placeholder = document.getElementById('emptyAttributesPlaceholder');
     const container = document.getElementById('attributesContainer');
@@ -11,7 +11,6 @@
     } else {
         placeholder.classList.add('d-none');
         container.classList.remove('d-none');
-        //generateVariantTable(); // Your function to populate the variants table
         if (document.querySelectorAll('#variantsTable tbody tr').length > 0) {
             variantsSection.classList.remove('d-none');
         }

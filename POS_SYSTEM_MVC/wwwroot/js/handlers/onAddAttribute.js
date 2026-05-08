@@ -1,7 +1,10 @@
-﻿import { cache } from "./addProduct.js";
-import updateUI from "./updateUI.js";
+﻿import { state } from "../state.js";
+import renderVariants from "../renderVariants.js";
+import syncUI from "../utils/syncUI.js";
+import syncAttributeSelects from "../utils/syncAttributeSelects.js";
+import loadAttributesOptions from "../utils/loadAttributesOptions.js";
 
-export default function renderNewAttribute(e) {
+export default function onAddAttribute(e) {
     const container = document.getElementById("attributesContainer");
     const element = document.createElement("div");
     element.classList.add("bg-light", "rounded", "p-3", "mb-3", "attribute-group");
@@ -28,40 +31,34 @@ export default function renderNewAttribute(e) {
         </div>
     `
     container.appendChild(element);
-    updateUI();
 
-    const typeSelect = element.querySelector(".attribute-type");
-    cache.attributes.forEach(attr => {
-        const option = document.createElement("option");
-        option.value = attr.id;
-        option.textContent = attr.name;
-        typeSelect.appendChild(option);
-    });
+    // update attribute select input
+    const attributeSelectInput = element.querySelector(".attribute-type");
+    loadAttributesOptions(attributeSelectInput, state.attributes);
+    syncAttributeSelects(); // disable already-picked options in the new select
+    syncUI();
 
-
-    // When attribute type changes, show its values
-    typeSelect.addEventListener("change", (e) => {
+    // load attribute values on attribute select change
+    attributeSelectInput.addEventListener("change", (e) => {
         const selectedAttrId = Number(e.target.value);
-        const selectedAttr = cache.attributes.find(a => a.id === selectedAttrId);
+        const selectedAttr = state.attributes.find(a => a.id === selectedAttrId);
         const valueContainer = element.querySelector(".value-checkboxes");
 
-        if (selectedAttr && selectedAttr.values) {
-            valueContainer.innerHTML = selectedAttr.values.map(v => `
-                <input type="checkbox" class="btn-check" id="val-${v.id}" value="${v.id}">
-                <label class="btn btn-outline-secondary btn-sm" for="val-${v.id}">${v.value}</label>
-            `).join("");
-        } else {
-            valueContainer.innerHTML = "";
-        }
+        valueContainer.innerHTML = selectedAttr?.values?.map(v => `
+            <input type="checkbox" class="btn-check" id="val-${v.id}" value="${v.id}">
+            <label class="btn btn-outline-secondary btn-sm" for="val-${v.id}">${v.value}</label>
+        `).join("") ?? "";
+
+        syncAttributeSelects();
     });
 
 
-
+    // remove attribute group
     const removeBtn = element.querySelector("button");
     removeBtn.addEventListener("click", () => {
         element.remove()
-        updateUI();
+        syncAttributeSelects();
+        syncUI();
+        renderVariants();
     });
-
-    
 }

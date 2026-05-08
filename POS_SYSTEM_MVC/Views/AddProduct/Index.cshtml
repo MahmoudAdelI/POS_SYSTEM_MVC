@@ -80,6 +80,7 @@
                     Add Attribute
                 </button>
             </div>
+        </div>
 
             <!-- Empty State Placeholder -->
             <div id="emptyAttributesPlaceholder" class="text-center py-3 bg-light rounded-4 border border-1 border-dashed border-secondary">
@@ -95,46 +96,9 @@
             </div>
 
             <!-- Generated Variants Table (initially hidden) -->
-            <div id="variantsSection" class="border-top pt-4 mt-4 d-none">
-                <h5 class="mb-3">Generated Variants</h5>
-                <div class="table-responsive bg-white border rounded">
-                    <table class="table table-hover mb-0" id="variantsTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Variant</th>
-                                <th>SKU</th>
-                                <th>Quantity <span class="text-danger">*</span></th>
-                                <th>Unit Price ($)</th>
-                                <th>Attributes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Rows added by JS -->
-                            @* <tr>
-                                <td class="align-middle">Black</td>
-                                <td class="align-middle">
-                                    <input type="text" class="form-control form-control-sm" name="VariantEntries[0].Sku" value="SKU-CB-001" placeholder="SKU" />
-                                </td>
-                                <td class="align-middle">
-                                    <input type="number" class="form-control form-control-sm" style="width: 100px;" name="VariantEntries[0].StockQuantity" placeholder="0" min="0" required />
-                                </td>
-                                <td class="align-middle">
-                                    <input type="number" step="0.01" class="form-control form-control-sm" style="width: 120px;" name="VariantEntries[0].UnitPrice" placeholder="0.00" min="0" />
-                                </td>
-                                <td class="align-middle">
-                                    <!-- Hidden inputs for attribute value IDs -->
-                                    <input type="hidden" name="VariantEntries[0].SelectedAttributeValueIds" value="1" />
-                                    <span class="text-muted small">Color: Black</span>
-                                </td>
-                            </tr> *@
-                        </tbody>
-                    </table>
-                </div>
-                <p class="text-muted small mt-3">
-                    💡 Tip: Leave Unit Price empty to use the base price for all variants.
-                </p>
+            <div id="variantsSection" class="border-top pt-4 mt-4 ">
+            
             </div>
-        </div>
 
         <!-- Form Actions -->
         <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
