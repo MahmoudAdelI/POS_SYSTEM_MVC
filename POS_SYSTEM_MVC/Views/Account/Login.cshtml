@@ -1,24 +1,60 @@
 ﻿@model POS_SYSTEM_MVC.ViewModels.LoginVM
 
-<form asp-action="Login" method="post">
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Login";
+}
 
-    <div>
-        <label>Email</label>
-        <input asp-for="Username" class="form-control" />
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+
+    <div class="card shadow-lg p-5"
+         style="width: 550px; border-radius: 20px;">
+
+        <h2 class="text-center mb-4">
+            Wellcome to POS System dashboard
+        </h2>
+
+        <form asp-action="Login" method="post">
+
+            <div asp-validation-summary="All"
+                 class="text-danger mb-3">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    Username
+                </label>
+
+                <input asp-for="Username"
+                       class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    Password
+                </label>
+
+                <input asp-for="Password"
+                       type="password"
+                       class="form-control" />
+            </div>
+            <div class="form-check mb-3">
+
+                <input asp-for="RememberMe"
+                       class="form-check-input" />
+
+                <label asp-for="RememberMe"
+                       class="form-check-label">
+                    Remember Me
+                </label>
+
+            </div>
+
+            <button class="btn btn-primary w-100">
+                Login
+            </button>
+
+        </form>
     </div>
-
-    <div>
-        <label>Password</label>
-        <input asp-for="Password" class="form-control" />
-    </div>
-
-    <div>
-        <input asp-for="RememberMe" />
-        <label>Remember Me</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        Login
-    </button>
-
-</form>
+</div>

@@ -14,6 +14,7 @@ namespace POS_SYSTEM_MVC.Models
         public string LastName { get; set; }
 
 
+
         public DateOnly? HireDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 
 

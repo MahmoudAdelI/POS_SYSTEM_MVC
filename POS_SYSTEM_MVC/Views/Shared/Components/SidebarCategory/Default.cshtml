@@ -1,5 +1,27 @@
 @model IEnumerable<POS_SYSTEM_MVC.Models.Category>
 
+<li class="mb-3 px-3">
+    <label class="form-label text-muted small fw-bold text-uppercase mb-2">Stock Availability</label>
+    <div class="d-flex flex-column gap-1">
+        <div class="form-check custom-sidebar-check">
+            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_all" value="all" checked>
+            <label class="form-check-label small" for="stock_all">All Products</label>
+        </div>
+        <div class="form-check custom-sidebar-check">
+            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_in" value="inStock">
+            <label class="form-check-label small" for="stock_in">In Stock Only</label>
+        </div>
+        <div class="form-check custom-sidebar-check">
+            <input class="form-check-input stock-radio-filter" type="radio" name="stockFilterSide" id="stock_out" value="outOfStock">
+            <label class="form-check-label small" for="stock_out">Out of Stock</label>
+        </div>
+    </div>
+</li>
+
+<li class="mb-2 px-3">
+    <label class="form-label text-muted small fw-bold text-uppercase mb-0">Categories</label>
+</li>
+
 @foreach (var category in Model)
 {
     <li>

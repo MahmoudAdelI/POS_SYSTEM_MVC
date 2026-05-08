@@ -12,9 +12,9 @@ public class ProductService : IProductService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<(IReadOnlyList<Product> Products, int TotalItems)> GetProductsForCashierAsync(string searchTerm, int? categoryId, int? subCategoryId, int page, int pageSize)
+    public async Task<(IReadOnlyList<Product> Products, int TotalItems)> GetProductsForCashierAsync(string searchTerm, int? categoryId, int? subCategoryId, string stockFilter, int page, int pageSize)
     {
-        return await _unitOfWork.Products.GetProductsForCashierAsync(searchTerm, categoryId, subCategoryId, page, pageSize);
+        return await _unitOfWork.Products.GetProductsForCashierAsync(searchTerm, categoryId, subCategoryId, stockFilter, page, pageSize);
     }
 
     public async Task<Product?> GetProductDetailsAsync(int id)
