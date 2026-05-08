@@ -18,11 +18,11 @@ namespace POS_SYSTEM_MVC.Migrations
                 columns: new[] { "Id", "CashierId", "CreatedAt", "DiscountAmount", "DiscountType", "DiscountValue", "Status" },
                 values: new object[,]
                 {
-                    { 1, "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2", new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Completed" },
-                    { 2, "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2", new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Completed" },
-                    { 3, "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2", new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 19.50m, "Percentage", 15m, "Completed" },
-                    { 4, "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2", new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Completed" },
-                    { 5, "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2", new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Canceled" }
+                    { 1, "C33D1111-2222-3333-4444-555555555555", new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Completed" },
+                    { 2, "C33D1111-2222-3333-4444-555555555555", new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Completed" },
+                    { 3, "C33D1111-2222-3333-4444-555555555555", new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 19.50m, "Percentage", 15m, "Completed" },
+                    { 4, "C33D1111-2222-3333-4444-555555555555", new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Completed" },
+                    { 5, "C33D1111-2222-3333-4444-555555555555", new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Canceled" }
                 });
 
             migrationBuilder.InsertData(

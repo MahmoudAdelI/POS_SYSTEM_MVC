@@ -751,21 +751,21 @@ namespace POS_SYSTEM_MVC.Migrations
                         new
                         {
                             Id = 1,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                            CashierId = "C33D1111-2222-3333-4444-555555555555",
                             CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed"
                         },
                         new
                         {
                             Id = 2,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                            CashierId = "C33D1111-2222-3333-4444-555555555555",
                             CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed"
                         },
                         new
                         {
                             Id = 3,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                            CashierId = "C33D1111-2222-3333-4444-555555555555",
                             CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DiscountAmount = 19.50m,
                             DiscountType = "Percentage",
@@ -775,14 +775,14 @@ namespace POS_SYSTEM_MVC.Migrations
                         new
                         {
                             Id = 4,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                            CashierId = "C33D1111-2222-3333-4444-555555555555",
                             CreatedAt = new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed"
                         },
                         new
                         {
                             Id = 5,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
+                            CashierId = "C33D1111-2222-3333-4444-555555555555",
                             CreatedAt = new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Canceled"
                         });
