@@ -251,7 +251,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
 
                     b.HasData(
                         new
@@ -286,7 +286,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -345,7 +345,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasIndex("ProductVariantId");
 
-                    b.ToTable("Discounts");
+                    b.ToTable("Discounts", (string)null);
 
                     b.HasData(
                         new
@@ -410,7 +410,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
 
                     b.HasData(
                         new
@@ -466,7 +466,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductAttributes");
+                    b.ToTable("ProductAttributes", (string)null);
 
                     b.HasData(
                         new
@@ -507,7 +507,7 @@ namespace POS_SYSTEM_MVC.Migrations
                     b.HasIndex("SubCategoryId", "AttributeId", "Value")
                         .IsUnique();
 
-                    b.ToTable("ProductAttributeValues");
+                    b.ToTable("ProductAttributeValues", (string)null);
 
                     b.HasData(
                         new
@@ -660,7 +660,7 @@ namespace POS_SYSTEM_MVC.Migrations
                     b.HasIndex("SKU")
                         .IsUnique();
 
-                    b.ToTable("ProductVariants");
+                    b.ToTable("ProductVariants", (string)null);
 
                     b.HasData(
                         new
@@ -745,47 +745,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasIndex("CashierId");
 
-                    b.ToTable("Sales");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
-                            CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
-                            CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
-                            CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DiscountAmount = 19.50m,
-                            DiscountType = "Percentage",
-                            DiscountValue = 15m,
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
-                            CreatedAt = new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CashierId = "c51c4f1e-4ab2-41bc-bf77-266ebdbd88b2",
-                            CreatedAt = new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Canceled"
-                        });
+                    b.ToTable("Sales", (string)null);
                 });
 
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.SaleLine", b =>
@@ -815,57 +775,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasIndex("ProductVariantId");
 
-                    b.ToTable("SaleLines");
-
-                    b.HasData(
-                        new
-                        {
-                            SaleId = 1,
-                            ProductVariantId = 4,
-                            DiscountAmount = 5.00m,
-                            DiscountType = "Fixed",
-                            DiscountValue = 5m,
-                            OriginalUnitPrice = 28.00m,
-                            Quantity = 2
-                        },
-                        new
-                        {
-                            SaleId = 2,
-                            ProductVariantId = 1,
-                            DiscountAmount = 13.00m,
-                            DiscountType = "Percentage",
-                            DiscountValue = 10m,
-                            OriginalUnitPrice = 130.00m,
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            SaleId = 3,
-                            ProductVariantId = 3,
-                            OriginalUnitPrice = 130.00m,
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            SaleId = 3,
-                            ProductVariantId = 5,
-                            OriginalUnitPrice = 28.00m,
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            SaleId = 4,
-                            ProductVariantId = 6,
-                            OriginalUnitPrice = 80.00m,
-                            Quantity = 2
-                        },
-                        new
-                        {
-                            SaleId = 5,
-                            ProductVariantId = 2,
-                            OriginalUnitPrice = 130.00m,
-                            Quantity = 1
-                        });
+                    b.ToTable("SaleLines", (string)null);
                 });
 
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.SubCategory", b =>
@@ -888,7 +798,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("SubCategories");
+                    b.ToTable("SubCategories", (string)null);
 
                     b.HasData(
                         new
@@ -941,7 +851,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasIndex("AttributeId");
 
-                    b.ToTable("SubCategoryAttributes");
+                    b.ToTable("SubCategoryAttributes", (string)null);
 
                     b.HasData(
                         new
@@ -1011,7 +921,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
 
                     b.HasData(
                         new
@@ -1038,7 +948,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasIndex("AttributeValueId");
 
-                    b.ToTable("VariantAttributes");
+                    b.ToTable("VariantAttributes", (string)null);
 
                     b.HasData(
                         new
