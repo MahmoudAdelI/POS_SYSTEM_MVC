@@ -11,6 +11,8 @@ using POS_SYSTEM_MVC.Services.SubCategoriesServices;
 using POS_SYSTEM_MVC.Services.Unitservices;
 using POS_SYSTEM_MVC.Services.UnitServices;
 using POS_SYSTEM_MVC.UnitOfWork;
+using POS_SYSTEM_MVC.Services.DashboardServices;
+using POS_SYSTEM_MVC.Services.InventoryServices;
 
 namespace POS_SYSTEM_MVC
 {
@@ -41,7 +43,7 @@ namespace POS_SYSTEM_MVC
                 .AddDefaultTokenProviders();
             //------------
 
-         
+
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWorkService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -49,6 +51,8 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<IBrandService, BrandService>();
             builder.Services.AddScoped<IUnitService, UnitService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
+            builder.Services.AddScoped<IInventoryService, InventoryService>();
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
@@ -69,6 +73,9 @@ namespace POS_SYSTEM_MVC
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+                const string AdminUserId = "B22D1111-2222-3333-4444-555555555555";
+                const string CashierUserId = "C33D1111-2222-3333-4444-555555555555";
+
                 // seed roles
                 string[] roles = { Role.Admin, Role.Cashier };
 
@@ -81,9 +88,12 @@ namespace POS_SYSTEM_MVC
                 {
                     var admin = new ApplicationUser
                     {
+                        Id = AdminUserId, // ????? ??? ID ?????? ???
                         UserName = "admin",
                         FirstName = "Admin",
-                        LastName = "User"
+                        LastName = "User",
+                        Email = "admin@pos.com", // ???? ????? ????? ????
+                        EmailConfirmed = true
                     };
                     var result = await userManager.CreateAsync(admin, "Admin123!");
                     if (result.Succeeded)
@@ -98,9 +108,12 @@ namespace POS_SYSTEM_MVC
                 {
                     var cashier = new ApplicationUser
                     {
+                        Id = CashierUserId, // ????? ??? ID ?????? ???
                         UserName = "cashier",
                         FirstName = "Cashier",
-                        LastName = "User"
+                        LastName = "User",
+                        Email = "cashier@pos.com",
+                        EmailConfirmed = true
                     };
                     var result = await userManager.CreateAsync(cashier, "Cashier123!");
                     if (result.Succeeded)
