@@ -55,7 +55,7 @@ $(document).ready(function () {
             const stockFilter = $('.stock-radio-filter:checked').val();
             const searchTerm = $('#searchInput').val();
             const pageSize = $('#pageSizeSelect').val();
-            
+
             const urlObj = new URL(url, window.location.origin);
             if (stockFilter && stockFilter !== 'all') {
                 urlObj.searchParams.set('stockFilter', stockFilter);
@@ -169,14 +169,14 @@ function renderCart() {
     const $cartCount = $('#cartCount');
     const $floatingCartCount = $('#floatingCartCount');
     const $emptyMsg = $('#emptyCartMessage');
-    
+
     if (window.posCart.length === 0) {
         $cartItems.find('.cart-item').remove();
         $emptyMsg.show();
         $cartCount.text(0);
         $floatingCartCount.text(0);
         $('#checkoutBtn').prop('disabled', true);
-        
+
         if (isCartVisible) {
             toggleCart(false);
         }
@@ -184,7 +184,7 @@ function renderCart() {
     } else {
         $emptyMsg.hide();
         $cartItems.find('.cart-item').remove();
-        
+
         let subtotal = 0;
         let count = 0;
 
@@ -193,12 +193,12 @@ function renderCart() {
             count += item.quantity;
 
             const attrText = Object.entries(item.attributes).map(([k, v]) => `${k}: ${v}`).join(' - ');
-            
+
             const itemHtml = `
                 <div class="cart-item p-2 mb-2 rounded-3 border bg-white shadow-sm" data-variant-id="${item.variantId}">
                     <div class="d-flex gap-2">
-                        <img src="/images/products/${item.productId}.jpg" class="rounded" style="width: 45px; height: 45px; object-fit: cover;" 
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/45/eeeeee?text=?'">
+                            <img src="/images/products/${item.productId}.jpg" class="rounded" style="width: 45px; height: 45px; object-fit: cover;" 
+                                onerror="this.onerror=null; this.src='https://placehold.co/45x45/eeeeee/555555?text=?'">
                         <div class="flex-grow-1 min-width-0">
                             <div class="d-flex justify-content-between align-items-start">
                                 <h6 class="mb-0 fw-bold text-truncate" style="font-size: 0.75rem; max-width: 140px;">${item.name}</h6>
@@ -286,7 +286,7 @@ function checkout() {
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(payload),
-        success: function(response) {
+        success: function (response) {
             if (response.success) {
                 printReceipt(response.receiptData);
                 window.posCart = [];
@@ -296,10 +296,10 @@ function checkout() {
                 alert('Error: ' + response.message);
             }
         },
-        error: function() {
+        error: function () {
             alert('An error occurred during checkout.');
         },
-        complete: function() {
+        complete: function () {
             $btn.prop('disabled', false).text(originalText);
         }
     });
@@ -366,7 +366,7 @@ function printReceipt(data) {
         </body>
         </html>
     `;
-    
+
     const doc = iframe.contentWindow.document;
     doc.open();
     doc.write(html);
@@ -384,7 +384,7 @@ function loadProducts(page = 1) {
     const categoryId = $('#currentCategoryId').val();
     const subCategoryId = $('#currentSubCategoryId').val();
     const pageSize = $('#pageSizeSelect').val() || 12;
-    
+
     $productListContainer.css('opacity', '0.6');
 
     $.ajax({
@@ -398,35 +398,35 @@ function loadProducts(page = 1) {
             pageSize: pageSize,
             partial: true
         },
-        success: function(data) {
+        success: function (data) {
             $productListContainer.html(data);
         },
-        error: function() {
+        error: function () {
             alert('Error loading products.');
         },
-        complete: function() {
+        complete: function () {
             $productListContainer.css('opacity', '1');
         }
     });
 }
 
 // Event Handlers
-$(document).on('input', '#searchInput', function() {
+$(document).on('input', '#searchInput', function () {
     clearTimeout(window.searchTimer);
-    window.searchTimer = setTimeout(function() {
+    window.searchTimer = setTimeout(function () {
         loadProducts(1);
     }, 400);
 });
 
-$(document).on('change', '.stock-radio-filter', function() {
+$(document).on('change', '.stock-radio-filter', function () {
     loadProducts(1);
 });
 
-$(document).on('change', '#pageSizeSelect', function() {
+$(document).on('change', '#pageSizeSelect', function () {
     loadProducts(1);
 });
 
-$(document).on('click', '.pagination-link', function(e) {
+$(document).on('click', '.pagination-link', function (e) {
     e.preventDefault();
     const page = $(this).data('page');
     if (page) {
@@ -435,12 +435,12 @@ $(document).on('click', '.pagination-link', function(e) {
 });
 
 // Re-initialize on content update
-$(document).on('content-updated', function() {
+$(document).on('content-updated', function () {
     renderCart();
 });
 
 // Initial load
-$(document).ready(function() {
+$(document).ready(function () {
     renderCart();
 });
 
