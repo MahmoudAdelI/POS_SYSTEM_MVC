@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.DTOs.Checkout;
 using POS_SYSTEM_MVC.Models;
 using POS_SYSTEM_MVC.Services.ProductServices;
@@ -15,12 +16,14 @@ namespace POS_SYSTEM_MVC.Controllers
         private readonly IProductService _productService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly POSContext _context;
 
-        public CashierController(IProductService productService, IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public CashierController(IProductService productService, IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, POSContext context)
         {
             _productService = productService;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _context = context;
         }
 
         public async Task<IActionResult> Index(string searchTerm, int? categoryId, int? subCategoryId, string stockFilter = "all", int page = 1, int pageSize = 12)
@@ -52,6 +55,29 @@ namespace POS_SYSTEM_MVC.Controllers
             if (product == null) return NotFound();
 
             return PartialView("_ProductDetailsModal", product);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetActiveDiscountRules()
+        {
+            var now = DateTime.Now;
+
+            var discounts = await _context.Discounts
+                .AsNoTracking()
+                .Where(d => d.IsActive && (!d.ExpiresAt.HasValue || d.ExpiresAt > now))
+                .Select(d => new
+                {
+                    id = d.Id,
+                    type = d.Type.ToString(),
+                    value = (double)d.Value,
+                    productId = d.ProductId,
+                    productVariantId = d.ProductVariantId,
+                    saleTotalThreshold = d.SaleTotalThreshold.HasValue ? (double?)d.SaleTotalThreshold.Value : null,
+                    createdAt = d.CreatedAt
+                })
+                .ToListAsync();
+
+            return Json(new { success = true, discounts });
         }
 
         [HttpPost]
@@ -100,22 +126,35 @@ namespace POS_SYSTEM_MVC.Controllers
                 };
 
                 decimal subtotal = 0;
+                decimal lineDiscountTotal = 0;
                 var receiptItems = new List<object>();
+                var activeDiscounts = await GetActiveDiscountsAsync();
 
                 foreach (var item in request.Items)
                 {
+                    if (item.Quantity <= 0) continue;
+
                     var variant = await _unitOfWork.Products.GetVariantByIdAsync(item.ProductVariantId);
                     if (variant == null) continue;
+
+                    var lineSubtotal = variant.UnitPrice * item.Quantity;
+                    var lineDiscountRule = GetLineDiscountRule(activeDiscounts, variant.Id, variant.ProductId);
+                    var lineDiscountAmount = CalculateDiscountAmount(lineDiscountRule, lineSubtotal);
+                    var lineTotal = lineSubtotal - lineDiscountAmount;
 
                     var saleLine = new SaleLine
                     {
                         ProductVariantId = item.ProductVariantId,
                         Quantity = item.Quantity,
                         OriginalUnitPrice = variant.UnitPrice,
+                        DiscountType = lineDiscountRule?.Type,
+                        DiscountValue = lineDiscountRule?.Value,
+                        DiscountAmount = lineDiscountAmount > 0 ? lineDiscountAmount : null,
                     };
 
                     sale.SaleLines.Add(saleLine);
-                    subtotal += variant.UnitPrice * item.Quantity;
+                    subtotal += lineSubtotal;
+                    lineDiscountTotal += lineDiscountAmount;
 
                     var variantInfo = string.Join(", ", variant.VariantAttributes.Select(va => va.AttributeValue.Value));
                     receiptItems.Add(new
@@ -123,18 +162,33 @@ namespace POS_SYSTEM_MVC.Controllers
                         name = variant.Product.Name,
                         variantInfo = variantInfo,
                         quantity = item.Quantity,
-                        unitPrice = (double)variant.UnitPrice
+                        unitPrice = (double)variant.UnitPrice,
+                        discountAmount = (double)lineDiscountAmount,
+                        lineTotal = (double)lineTotal
                     });
 
                     // Update stock
                     variant.StockQuantity -= item.Quantity;
                 }
 
+                if (!sale.SaleLines.Any())
+                {
+                    return Json(new { success = false, message = "Cart has no valid items." });
+                }
+
+                var subtotalAfterLineDiscount = subtotal - lineDiscountTotal;
+                var orderDiscountRule = GetOrderDiscountRule(activeDiscounts, subtotalAfterLineDiscount);
+                var orderDiscountAmount = CalculateDiscountAmount(orderDiscountRule, subtotalAfterLineDiscount);
+
+                sale.DiscountType = orderDiscountRule?.Type;
+                sale.DiscountValue = orderDiscountRule?.Value;
+                sale.DiscountAmount = orderDiscountAmount > 0 ? orderDiscountAmount : null;
+
+                var totalDiscount = lineDiscountTotal + orderDiscountAmount;
+                var total = subtotal - totalDiscount;
+
                 await _unitOfWork.Sales.AddAsync(sale);
                 await _unitOfWork.SaveChangesAsync();
-
-                var tax = subtotal * 0.10m;
-                var total = subtotal + tax;
 
                 return Json(new
                 {
@@ -145,7 +199,9 @@ namespace POS_SYSTEM_MVC.Controllers
                         date = sale.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
                         items = receiptItems,
                         subtotal = (double)subtotal,
-                        tax = (double)tax,
+                        lineDiscountTotal = (double)lineDiscountTotal,
+                        orderDiscount = (double)orderDiscountAmount,
+                        totalDiscount = (double)totalDiscount,
                         total = (double)total
                     }
                 });
@@ -156,6 +212,68 @@ namespace POS_SYSTEM_MVC.Controllers
                 if (ex.InnerException != null) errorMsg += " | Inner: " + ex.InnerException.Message;
                 return Json(new { success = false, message = "Checkout failed: " + errorMsg });
             }
+        }
+
+        private async Task<List<Discount>> GetActiveDiscountsAsync()
+        {
+            var now = DateTime.Now;
+            return await _context.Discounts
+                .AsNoTracking()
+                .Where(d => d.IsActive && (!d.ExpiresAt.HasValue || d.ExpiresAt > now))
+                .ToListAsync();
+        }
+
+        private static Discount? GetLineDiscountRule(IEnumerable<Discount> discounts, int variantId, int productId)
+        {
+            var variantRule = discounts
+                .Where(d => !d.SaleTotalThreshold.HasValue && d.ProductVariantId == variantId)
+                .OrderByDescending(d => d.CreatedAt)
+                .FirstOrDefault();
+
+            if (variantRule != null)
+            {
+                return variantRule;
+            }
+
+            return discounts
+                .Where(d => !d.SaleTotalThreshold.HasValue && !d.ProductVariantId.HasValue && d.ProductId == productId)
+                .OrderByDescending(d => d.CreatedAt)
+                .FirstOrDefault();
+        }
+
+        private static Discount? GetOrderDiscountRule(IEnumerable<Discount> discounts, decimal subtotalAfterLineDiscount)
+        {
+            return discounts
+                .Where(d => d.SaleTotalThreshold.HasValue && subtotalAfterLineDiscount >= d.SaleTotalThreshold.Value)
+                .OrderByDescending(d => d.CreatedAt)
+                .FirstOrDefault();
+        }
+
+        private static decimal CalculateDiscountAmount(Discount? rule, decimal amountBase)
+        {
+            if (rule == null || amountBase <= 0)
+            {
+                return 0;
+            }
+
+            decimal discountAmount = rule.Type switch
+            {
+                DiscountType.Fixed => rule.Value,
+                DiscountType.Percentage => amountBase * (rule.Value / 100m),
+                _ => 0
+            };
+
+            if (discountAmount < 0)
+            {
+                discountAmount = 0;
+            }
+
+            if (discountAmount > amountBase)
+            {
+                discountAmount = amountBase;
+            }
+
+            return Math.Round(discountAmount, 2);
         }
     }
 }
