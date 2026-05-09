@@ -16,4 +16,7 @@ document.querySelector("form").addEventListener("reset", () => {
     document.getElementById("variantsSection").innerHTML = "";
 });
 
-document.querySelector("form").addEventListener("submit", onAddProductSubmit);
+const token = document.querySelector("[name='__RequestVerificationToken']").value;
+document.querySelector("form").addEventListener("submit", (e) => {
+    onAddProductSubmit(e, token);
+});

@@ -12,6 +12,7 @@
     <h2 class="mb-4">@ViewData["Title"]</h2>
 
     <form class="bg-white rounded shadow-sm border p-4">
+        @Html.AntiForgeryToken()
         <!-- Basic Product Info -->
         <div class="row g-3 mb-4">
             <div class="col-md-6">
