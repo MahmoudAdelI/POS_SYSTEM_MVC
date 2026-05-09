@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Services.Brands;
 using POS_SYSTEM_MVC.Services.CategoryServices;
 using POS_SYSTEM_MVC.Services.UnitServices;
 using POS_SYSTEM_MVC.ViewModels;
 
-namespace POS_SYSTEM_MVC.Controllers
+namespace POS_SYSTEM_MVC.Areas.Admin.Controllers
 {
-    [Authorize]
-    public class AddProductController(ICategoryService categoryService, IUnitService unitService, IBrandService brandService) : Controller
+    [Area("Admin")]
+    [Authorize(Roles = Role.Admin)]
+    public class ProductController(ICategoryService categoryService, IUnitService unitService, IBrandService brandService) : Controller
     {
         public async Task<IActionResult> Index()
         {
@@ -17,6 +19,13 @@ namespace POS_SYSTEM_MVC.Controllers
             var brands = await brandService.GetAllAsync();
             var vm = new CreateProductViewModel { Categories = categories, Units = units, Brands = brands };
             return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create()
+        {
+            return Ok("ok");
         }
     }
 }
