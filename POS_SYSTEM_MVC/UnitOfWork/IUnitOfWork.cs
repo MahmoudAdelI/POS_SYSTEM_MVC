@@ -6,6 +6,7 @@ using POS_SYSTEM_MVC.Repositories.SubCategories;
 using POS_SYSTEM_MVC.Repositories.UnitRepo;
 using POS_SYSTEM_MVC.Repositories.ProductRepo;
 using POS_SYSTEM_MVC.Repositories.SalesRepo;
+using POS_SYSTEM_MVC.Repositories.ProductVariantRepo;
 
 namespace POS_SYSTEM_MVC.UnitOfWork
 {
@@ -17,6 +18,7 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         IUnitRepository Units { get; }
         IProductRepository Products { get; }
         ISaleRepository Sales { get; }
+        IProductVariantRepository ProductVariants { get; }
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();

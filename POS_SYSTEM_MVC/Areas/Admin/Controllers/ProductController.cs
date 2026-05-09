@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS_SYSTEM_MVC.Constants;
+using POS_SYSTEM_MVC.DTOs.Product;
 using POS_SYSTEM_MVC.Services.Brands;
 using POS_SYSTEM_MVC.Services.CategoryServices;
+using POS_SYSTEM_MVC.Services.ProductServices;
 using POS_SYSTEM_MVC.Services.UnitServices;
 using POS_SYSTEM_MVC.ViewModels;
 
@@ -10,7 +12,12 @@ namespace POS_SYSTEM_MVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = Role.Admin)]
-    public class ProductController(ICategoryService categoryService, IUnitService unitService, IBrandService brandService) : Controller
+    [Route("/products")]
+    public class ProductController(ICategoryService categoryService,
+        IUnitService unitService,
+        IBrandService brandService,
+        IProductService productService
+        ) : Controller
     {
         public async Task<IActionResult> Index()
         {
@@ -21,11 +28,14 @@ namespace POS_SYSTEM_MVC.Areas.Admin.Controllers
             return View(vm);
         }
 
-        [HttpPost]
+        [HttpPost("/products/create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create([FromBody] AddProductDto productDto)
         {
-            return Ok("ok");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            await productService.AddProductWithVariants(productDto);
+
+            return Ok(productDto);
         }
     }
 }
