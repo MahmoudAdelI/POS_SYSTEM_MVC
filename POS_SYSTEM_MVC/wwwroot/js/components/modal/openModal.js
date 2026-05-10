@@ -1,10 +1,14 @@
 ﻿import { MODAL_CONFIGS } from "./modalConfigs.js";
-import { setActiveConfig } from "../modal/modalState.js";
-export default function openModal(key) {
+import { setModalState, genericModal } from "../modal/modalState.js";
+export default function openModal(key, context, extraData = null) {
     const config = MODAL_CONFIGS[key];
     if (!config) return;
 
-    setActiveConfig(config);
+    setModalState({
+        config,
+        ctx: context,
+        extra: extraData
+    });
 
     document.getElementById('genericModalTitle').textContent = config.title;
 
@@ -16,5 +20,5 @@ export default function openModal(key) {
     </div>
   `).join('');
 
-    new bootstrap.Modal(document.getElementById('genericModal')).show();
+    genericModal.show();
 }

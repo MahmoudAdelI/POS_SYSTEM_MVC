@@ -31,7 +31,7 @@
                             <option value="@b.Id">@b.Name</option>
                         }
                     </select>
-                    <button type="button" class="btn btn-outline-secondary ms-1 add-new-btn" data-field="brand">
+                    <button type="button" class="btn btn-outline-secondary ms-1 add-new-btn" data-target="brandSelect" data-modal="brand">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -48,7 +48,7 @@
                         <option value="@c.Id">@c.Name</option>
                     }
                 </select>
-                <button type="button" class="btn btn-outline-secondary ms-1 add-new-btn" data-field="category">
+                    <button type="button" class="btn btn-outline-secondary ms-1 add-new-btn" data-target="categorySelect" data-modal="category">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
@@ -61,7 +61,12 @@
                 <select class="form-select" id="subcategorySelect" disabled>
                     <option value="">Select subcategory</option>
                 </select>
-                <button type="button" class="btn btn-outline-secondary ms-1 add-new-btn" data-field="subcategory" disabled>
+                    <button type="button" class="btn btn-outline-secondary ms-1 add-new-btn"
+                    data-target="subcategorySelect" 
+                    data-modal="subcategory"
+                    data-parent-id="categorySelect"
+                    data-parent-key="categoryId"
+                    disabled>
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
@@ -78,7 +83,7 @@
                     <option value="@u.Id">@u.Name</option>
                     }
                 </select>
-                <button type="button" class="btn btn-outline-secondary ms-1 add-new-btn" data-field="unit">
+                    <button type="button" class="btn btn-outline-secondary ms-1 add-new-btn" data-target="unitSelect" data-modal="unit">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
@@ -157,7 +162,7 @@
         document.getElementById('categorySelect').addEventListener('change', function() {
             const categoryId = parseInt(this.value);
             const subSelect = document.getElementById('subcategorySelect');
-            const addSubCategoryBtn = document.querySelector("[data-field='subcategory']")
+            const addSubCategoryBtn = document.querySelector("[data-modal='subcategory']")
             // Clear current options
             subSelect.innerHTML = '<option value="">Select subcategory</option>';
 

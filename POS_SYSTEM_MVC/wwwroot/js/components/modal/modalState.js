@@ -1,10 +1,15 @@
-﻿// modalState.js
+﻿export const genericModal = new bootstrap.Modal(
+    document.getElementById('genericModal')
+);
+
 let activeConfig = null;
+let context = null;
+let extraData = null;
 
-export function setActiveConfig(config) {
+export const setModalState = ({ config, ctx, extra = null }) => {
     activeConfig = config;
-}
+    context = ctx;
+    extraData = extra;
+};
 
-export function getActiveConfig() {
-    return activeConfig;
-}
+export const getModalState = () => ({ activeConfig, context, extraData });

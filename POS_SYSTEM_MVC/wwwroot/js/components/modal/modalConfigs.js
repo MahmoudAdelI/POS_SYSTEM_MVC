@@ -1,11 +1,14 @@
-﻿export const MODAL_CONFIGS = {
+﻿import loadNewOption from "../../utils/loadNewOption.js";
+import loadNewCheckBox from "../../utils/loadNewCheckBox.js";
+
+export const MODAL_CONFIGS = {
     brand: {
         title: 'Add New Brand',
         fields: [
             { name: 'name', label: 'Brand Name', required: true },
         ],
         endpoint: '/api/brand',
-        targetSelect: 'brandSelect',
+        onSuccess: loadNewOption
     },
     category: {
         title: 'Add New Category',
@@ -13,7 +16,7 @@
             { name: 'name', label: 'Category Name', required: true },
         ],
         endpoint: '/api/category',
-        targetSelect: 'categorySelect',
+        onSuccess: loadNewOption
     },
     subcategory: {
         title: 'Add New Subcategory',
@@ -21,9 +24,7 @@
             { name: 'name', label: 'Subcategory Name', required: true },
         ],
         endpoint: '/api/subcategory',
-        targetSelect: 'subcategorySelect',
-        // extra hidden data to send with the request
-        extraData: () => ({ categoryId: document.getElementById('categorySelect').value }),
+        onSuccess: loadNewOption,
     },
     unit: {
         title: 'Add New Unit',
@@ -31,6 +32,18 @@
             { name: 'name', label: 'Unit Name', required: true }
         ],
         endpoint: '/api/unit',
-        targetSelect: 'unitSelect',
+        onSuccess: loadNewOption
     },
+    attribute: {
+        title: 'Add New Attribute',
+        fields: [{ name: 'name', label: 'Attribute Name', required: true }],
+        endpoint: '/api/attribute',
+        onSuccess: loadNewOption
+    },
+    attributeValue: {
+        title: 'Add New Value',
+        fields: [{ name: 'value', label: 'Value', required: true }],
+        endpoint: '/api/attribute/value',
+        onSuccess: loadNewCheckBox
+    }
 };
