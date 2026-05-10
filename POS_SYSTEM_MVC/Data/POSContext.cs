@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Models;
+using static POS_SYSTEM_MVC.Constants.Enums;
 
 namespace POS_SYSTEM_MVC.Data
 {
@@ -213,11 +214,11 @@ namespace POS_SYSTEM_MVC.Data
 
             builder.Entity<Discount>().HasData(
                 // 10% off Air Max 90 variant 1
-                new Discount { Id = 1, ProductVariantId = 1, Type = DiscountType.Percentage, Value = 10, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
+                new Discount { Id = 1, ProductVariantId = 1, Type = DiscountTypeENUM.Percentage, Value = 10, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
                 // 5.00 fixed off Classic Tee variant 4
-                new Discount { Id = 2, ProductVariantId = 4, Type = DiscountType.Fixed, Value = 5, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
+                new Discount { Id = 2, ProductVariantId = 4, Type = DiscountTypeENUM.Fixed, Value = 5, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
                 // Sale-level: 15% off when total >= 200
-                new Discount { Id = 3, SaleTotalThreshold = 200, Type = DiscountType.Percentage, Value = 15, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) }
+                new Discount { Id = 3, SaleTotalThreshold = 200, Type = DiscountTypeENUM.Percentage, Value = 15, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) }
             );
             #endregion
 
@@ -250,7 +251,7 @@ namespace POS_SYSTEM_MVC.Data
                     CashierId = "C33D1111-2222-3333-4444-555555555555",
                     CreatedAt = new DateTime(2026, 5, 1),
                     Status = SaleStatus.Completed,
-                    DiscountType = DiscountType.Percentage,
+                    DiscountType = DiscountTypeENUM.Percentage,
                     DiscountValue = 15,
                     DiscountAmount = 19.50m
                 },
@@ -285,7 +286,7 @@ namespace POS_SYSTEM_MVC.Data
                     ProductVariantId = 4,
                     Quantity = 2,
                     OriginalUnitPrice = 28.00m,
-                    DiscountType = DiscountType.Fixed,
+                    DiscountType = DiscountTypeENUM.Fixed,
                     DiscountValue = 5,
                     DiscountAmount = 5.00m
                 },
@@ -297,7 +298,7 @@ namespace POS_SYSTEM_MVC.Data
                     ProductVariantId = 1,
                     Quantity = 1,
                     OriginalUnitPrice = 130.00m,
-                    DiscountType = DiscountType.Percentage,
+                    DiscountType = DiscountTypeENUM.Percentage,
                     DiscountValue = 10,
                     DiscountAmount = 13.00m
                 },

@@ -4,14 +4,18 @@ using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
+using POS_SYSTEM_MVC.Repositories.DiscountRepo;
+using POS_SYSTEM_MVC.Repositories.ProductRepo;
+using POS_SYSTEM_MVC.Repositories.ProductVariantRepo;
 using POS_SYSTEM_MVC.Services.Brands;
 using POS_SYSTEM_MVC.Services.CategoryServices;
+using POS_SYSTEM_MVC.Services.DashboardServices;
+using POS_SYSTEM_MVC.Services.DiscountServices;
 using POS_SYSTEM_MVC.Services.ProductServices;
 using POS_SYSTEM_MVC.Services.SubCategoriesServices;
 using POS_SYSTEM_MVC.Services.Unitservices;
 using POS_SYSTEM_MVC.Services.UnitServices;
 using POS_SYSTEM_MVC.UnitOfWork;
-using POS_SYSTEM_MVC.Services.DashboardServices;
 
 namespace POS_SYSTEM_MVC
 {
@@ -51,6 +55,12 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<IUnitService, UnitService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
+            builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+            builder.Services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IDiscountService,DiscountService>();
+
+
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
@@ -140,6 +150,9 @@ namespace POS_SYSTEM_MVC
             app.MapControllerRoute(
                 name: "areas",
                 pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Discount}/{action=Index}/{id?}");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}")
