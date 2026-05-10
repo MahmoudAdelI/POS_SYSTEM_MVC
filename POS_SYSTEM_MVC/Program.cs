@@ -44,7 +44,11 @@ namespace POS_SYSTEM_MVC
                 .AddDefaultTokenProviders();
             //------------
 
-
+            // To read RequestVerificationToken from header
+            builder.Services.AddAntiforgery(options => {
+                options.HeaderName = "RequestVerificationToken";
+            });
+            //------------
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWorkService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();

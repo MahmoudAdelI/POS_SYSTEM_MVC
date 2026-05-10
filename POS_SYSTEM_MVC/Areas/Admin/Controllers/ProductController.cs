@@ -21,21 +21,31 @@ namespace POS_SYSTEM_MVC.Areas.Admin.Controllers
     {
         public async Task<IActionResult> Index()
         {
-            var categories = await categoryService.GetAllWithSubsAsync();
-            var units = await unitService.GetAllAsync();
-            var brands = await brandService.GetAllAsync();
-            var vm = new CreateProductViewModel { Categories = categories, Units = units, Brands = brands };
+            var vm = new CreateProductViewModel
+            {
+                Categories = await categoryService.GetAllWithSubsAsync(),
+                Units = await unitService.GetAllAsync(),
+                Brands = await brandService.GetAllAsync()
+            };
+
             return View(vm);
         }
 
-        [HttpPost("/products/create")]
+        [HttpPost("create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] AddProductDto productDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            await productService.AddProductWithVariants(productDto);
 
-            return Ok(productDto);
+            try
+            {
+                await productService.AddProductWithVariants(productDto);
+                return Ok("Product created successfully");
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, new { message = "Failed to create product", detail = ex.Message });
+            }
         }
     }
 }

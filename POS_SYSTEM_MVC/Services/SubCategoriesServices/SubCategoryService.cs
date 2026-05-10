@@ -16,7 +16,7 @@ namespace POS_SYSTEM_MVC.Services.SubCategoriesServices
 
             var subCategory = new SubCategory
             {
-                Name = dto.SubCategoryName,
+                Name = dto.Name,
                 CategoryId = category.Id
             };
 
