@@ -5,6 +5,6 @@ namespace POS_SYSTEM_MVC.Services.Brands;
 
 public interface IBrandService
 {
-    Task<int> AddBrandAsync(AddBrandDto dto);
+    Task<BrandResponseDto> AddBrandAsync(AddBrandDto dto);
     Task<IReadOnlyList<BrandResponseDto>> GetAllAsync();
 }

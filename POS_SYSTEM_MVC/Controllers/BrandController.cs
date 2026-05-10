@@ -16,8 +16,15 @@ public class BrandController(IBrandService brandService) : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var id = await brandService.AddBrandAsync(dto);
-        return Ok(new { id });
+        try
+        {
+            var brand = await brandService.AddBrandAsync(dto);
+            return Ok(brand);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpGet]
