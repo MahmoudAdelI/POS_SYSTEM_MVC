@@ -20,6 +20,7 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         ISaleRepository Sales { get; }
         IProductVariantRepository ProductVariants { get; }
         IBaseRepository<ProductAttribute> Attributes { get; }
+        IBaseRepository<ProductAttributeValue> AttributeValues { get; }
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();

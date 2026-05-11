@@ -23,5 +23,20 @@ namespace POS_SYSTEM_MVC.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+        [HttpPost("value")]
+        public async Task<IActionResult> Create([FromBody] AddAttributeValueDto dto)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var attributeValue = await attributeService.AddAttributeValueAsync(dto);
+                return Ok(attributeValue);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
     }
 }

@@ -29,6 +29,8 @@ namespace POS_SYSTEM_MVC.UnitOfWork
 
         public IBaseRepository<ProductAttribute> Attributes => new BaseRepository<ProductAttribute>(context);
 
+        public IBaseRepository<ProductAttributeValue> AttributeValues => new BaseRepository<ProductAttributeValue>(context);
+
         public async Task BeginTransactionAsync()
         {
             _transaction = await _context.Database.BeginTransactionAsync();
