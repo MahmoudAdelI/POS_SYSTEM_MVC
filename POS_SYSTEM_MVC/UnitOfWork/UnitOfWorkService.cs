@@ -27,6 +27,8 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         public ISaleRepository Sales { get; } = new SaleRepository(context);
         public IProductVariantRepository ProductVariants { get; } = new ProductVariantRepository(context);
 
+        public IBaseRepository<ProductAttribute> Attributes => new BaseRepository<ProductAttribute>(context);
+
         public async Task BeginTransactionAsync()
         {
             _transaction = await _context.Database.BeginTransactionAsync();
