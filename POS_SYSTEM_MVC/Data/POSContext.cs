@@ -17,7 +17,6 @@ namespace POS_SYSTEM_MVC.Data
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<ProductAttribute> ProductAttributes { get; set; }
         public DbSet<ProductAttributeValue> ProductAttributeValues { get; set; }
-        public DbSet<SubCategoryAttribute> SubCategoryAttributes { get; set; }
         public DbSet<VariantAttribute> VariantAttributes { get; set; }
         public DbSet<Discount> Discounts { get; set; }
         public DbSet<Sale> Sales { get; set; }
@@ -34,7 +33,6 @@ namespace POS_SYSTEM_MVC.Data
 
             #region Composite Primary Keys
             builder.Entity<VariantAttribute>().HasKey(e => new { e.ProductVariantId, e.AttributeValueId});
-            builder.Entity<SubCategoryAttribute>().HasKey(e => new { e.SubCategoryId, e.AttributeId });
             builder.Entity<SaleLine>().HasKey(e => new { e.SaleId, e.ProductVariantId});
             #endregion
 
@@ -49,18 +47,6 @@ namespace POS_SYSTEM_MVC.Data
                 .HasOne(e => e.AttributeValue)
                 .WithMany(e => e.VariantAttributes)
                 .HasForeignKey(e => e.AttributeValueId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<SubCategoryAttribute>()
-                .HasOne(e => e.SubCategory)
-                .WithMany(e => e.SubCategoryAttributes)
-                .HasForeignKey(e => e.SubCategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<SubCategoryAttribute>()
-                .HasOne(e => e.Attribute)
-                .WithMany(e => e.SubCategoryAttributes)
-                .HasForeignKey(e => e.AttributeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<SaleLine>()
@@ -126,25 +112,6 @@ namespace POS_SYSTEM_MVC.Data
             builder.Entity<ProductAttribute>().HasData(
                 new ProductAttribute { Id = 1, Name = "Color" },
                 new ProductAttribute { Id = 2, Name = "Size" }
-            );
-
-            builder.Entity<SubCategoryAttribute>().HasData(
-                // Sneakers → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 1, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 1, AttributeId = 2 },
-                // Sandals → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 2, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 2, AttributeId = 2 },
-                // T-Shirts → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 3, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 3, AttributeId = 2 },
-                // Jackets → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 4, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 4, AttributeId = 2 },
-                // Watches → Color
-                new SubCategoryAttribute { SubCategoryId = 5, AttributeId = 1 },
-                // Bags → Color
-                new SubCategoryAttribute { SubCategoryId = 6, AttributeId = 1 }
             );
 
             builder.Entity<ProductAttributeValue>().HasData(
