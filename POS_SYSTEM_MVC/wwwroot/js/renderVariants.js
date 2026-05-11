@@ -1,5 +1,6 @@
 ﻿import cartesian from "./utils/cartesian.js";
 import syncUI from "./utils/syncUI.js";
+import toggleVariantsSection from "./utils/toggleVariantsSection.js";
 
 export default function renderVariants() {
     const groups = document.querySelectorAll(".attribute-group");
@@ -43,7 +44,8 @@ export default function renderVariants() {
     }))));
 
     renderTable(combos);
-    syncUI();
+    //syncUI();
+    toggleVariantsSection();
 }
 
 

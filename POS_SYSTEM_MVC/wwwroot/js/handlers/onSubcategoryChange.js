@@ -1,50 +1,38 @@
-﻿import loadAttributesOptions  from "../utils/loadAttributesOptions.js";
+﻿import { state } from "../state.js";
 import fetchAttributes  from "../services/fetchAttributes.js";
-import syncUI from "../utils/syncUI.js";
+import loadAttributesOptions  from "../utils/loadAttributesOptions.js";
+import renderAttributeValues from "../components/attributeGroup/renderAttributeValues.js";
+import syncAttributeSelects from "../components/attributeGroup/syncAttributeSelects.js";
 import renderVariants from "../renderVariants.js";
-import { state } from "../state.js";
 
 export default async function onSubcategoryChange(e) {
     const subCategoryId = Number(e.target.value);
     state.attributes = await fetchAttributes(subCategoryId);
 
-    // Refresh any existing attribute groups to reflect the new cached attributes
-    const attributeGroups = document.querySelectorAll('.attribute-group');
-    attributeGroups.forEach(group => {
-        const attributeSelectInput = group.querySelector('.attribute-type');
+    // rebuild each existing group against the new attribute list
+    document.querySelectorAll('.attribute-group').forEach(group => {
+        const attributeSelect = group.querySelector('.attribute-type');
         const valueContainer = group.querySelector('.value-checkboxes');
+        const newValueBtn = group.querySelector('.new-value-btn');
 
-        // Remember previous selection
-        const prevSelected = Number(attributeSelectInput.value);
+        const prevId = Number(attributeSelect.value);
 
-        // Rebuild options from cache (keep default placeholder)
-        attributeSelectInput.innerHTML = '<option value="">Select attribute...</option>';
-        loadAttributesOptions(attributeSelectInput, state.attributes);
+        // rebuild options
+        attributeSelect.innerHTML = '<option value="">Select attribute...</option>';
+        loadAttributesOptions(attributeSelect, state.attributes);
 
-        // If the previously selected attribute still exists, restore it and refill its values
-        const stillExists = state.attributes.find(a => a.id === prevSelected);
+        // restore previous selection if it still exists
+        const stillExists = state.attributes.find(a => a.id === prevId);
         if (stillExists) {
-            attributeSelectInput.value = String(prevSelected);
-            if (stillExists.values) {
-                valueContainer.innerHTML = stillExists.values.map(v => `
-                    <input type="checkbox" class="btn-check" id="val-${v.id}" value="${v.id}">
-                    <label class="btn btn-outline-secondary btn-sm" for="val-${v.id}">${v.value}</label>
-                `).join("");
-
-            } else {
-                valueContainer.innerHTML = '';
-            }
+            attributeSelect.value = String(prevId);
+            renderAttributeValues(stillExists, valueContainer);
         } else {
-            // Reset selection and clear values
-            attributeSelectInput.value = '';
+            attributeSelect.value = '';
             valueContainer.innerHTML = '';
+            newValueBtn.disabled = true;
         }
     });
 
-    // Clear variants table body so variants are regenerated later when you implement that logic
-    const variantsTbody = document.querySelector('#variantsTable tbody');
-    if (variantsTbody) variantsTbody.innerHTML = '';
-
-    syncUI();
-    renderVariants(); // Trigger re-render to update variants based on new attributes
+    syncAttributeSelects();
+    renderVariants();
 }

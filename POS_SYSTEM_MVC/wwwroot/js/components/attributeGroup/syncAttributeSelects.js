@@ -1,4 +1,4 @@
-﻿import { state } from "../state.js";
+﻿import { state } from "../../state.js";
 
 export default function syncAttributeSelects() {
     const allSelects = [...document.querySelectorAll(".attribute-type")];
