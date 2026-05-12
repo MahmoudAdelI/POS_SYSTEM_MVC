@@ -15,7 +15,7 @@ export default function syncAttributeSelects() {
     });
 
     // Toggle add button
-    const addBtn = document.getElementById("addAttributeBtn");
-    const allUsed = allSelects.length >= state.attributes.length;
-    addBtn.classList.toggle("disabled", allUsed);
+    //const addBtn = document.getElementById("addAttributeBtn");
+    //const allUsed = allSelects.length >= state.attributes.length;
+    //addBtn.classList.toggle("disabled", allUsed);
 }

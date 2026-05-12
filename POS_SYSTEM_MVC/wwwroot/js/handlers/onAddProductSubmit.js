@@ -4,8 +4,8 @@ import syncUI from "../utils/syncUI.js";
 export default async function onAddProductSubmit(e, token) {
     e.preventDefault();
 
-    const payload = collectFormData();
-
+    const payload = await collectFormData();
+    console.log(payload);
     // Basic guard
     if (!payload.variants.length) {
         alert("Please configure at least one variant.");

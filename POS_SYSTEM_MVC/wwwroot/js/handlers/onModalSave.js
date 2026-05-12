@@ -13,7 +13,6 @@ export default async function onModalSave() {
     // Merge any extra data (like categoryId for subcategory)
     if (extraData) Object.assign(payload, extraData);
 
-
     // Get the anti-forgery token from the hidden field Razor injects
     const token = document.querySelector('[name=__RequestVerificationToken]').value;
     const baseURL = "http://localhost:5050";

@@ -1,5 +1,6 @@
 ﻿import { state } from "../../state.js";
 import loadAttributesOptions from "../../utils/loadAttributesOptions.js";
+import openModal from "../modal/openModal.js";
 import syncAttributeSelects from "./syncAttributeSelects.js";
 import renderVariants from "../../renderVariants.js";
 import renderAttributeValues from "./renderAttributeValues.js";
@@ -38,7 +39,8 @@ export default function bindAttributeGroup(el) {
     // extraData computed at click time from the closure
     newValueBtn.addEventListener('click', () => {
         openModal('attributeValue', valueContainer, {
-            attributeId: Number(attributeSelect.value)
+            attributeId: Number(attributeSelect.value),
+            SubcategoryId: Number(document.getElementById("subcategorySelect").value)
         });
     });
 

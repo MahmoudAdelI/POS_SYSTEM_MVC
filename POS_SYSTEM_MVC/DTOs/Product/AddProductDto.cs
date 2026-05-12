@@ -24,10 +24,17 @@ namespace POS_SYSTEM_MVC.DTOs.Product
         [Required(ErrorMessage = "Unit is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Please select a valid unit")]
         public int UnitId { get; set; }
-
+        public ImageDto Image { get; set; }
         // Validate variants exist
         [MinLength(1, ErrorMessage = "At least one variant is required")]
         public List<ProductVariantDto> Variants { get; set; }
+    }
+
+    public class ImageDto
+    {
+        public string Data { get; set; }      // base64 string
+        public string MimeType { get; set; }  // "image/jpeg"
+        public string FileName { get; set; }
     }
     public class ProductVariantDto
     {

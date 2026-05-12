@@ -37,6 +37,7 @@ namespace POS_SYSTEM_MVC.Services.InventoryServices
                 ProductId = p.Id,
                 ProductName = p.Name,
                 BrandName = p.Brand?.Name ?? "",
+                ImageUrl = p.ImageUrl,
                 CategoryName = p.SubCategory?.Category?.Name ?? "",
                 TotalStock = p.Variants.Sum(v => v.StockQuantity),
                 VariantsCount = p.Variants.Count,

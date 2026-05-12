@@ -16,15 +16,27 @@ public class ProductService(IUnitOfWork _unitOfWork) : IProductService
         return await _unitOfWork.Products.GetProductDetailsAsync(id);
     }
 
-    public async Task AddProductWithVariants(AddProductDto dto)
+    public async Task<Product> AddProductWithVariants(AddProductDto dto)
     {
+        string? ImageUrl = null;
+        if (dto.Image != null)
+        {
+            var bytes = Convert.FromBase64String(dto.Image.Data);
+            var extension = Path.GetExtension(dto.Image.FileName);
+            var uniqueFileName = $"{Guid.NewGuid()}{extension}";
+            var uploadsFolder = Path.Combine("wwwroot", "images");
+            Directory.CreateDirectory(uploadsFolder);
+            await System.IO.File.WriteAllBytesAsync(Path.Combine(uploadsFolder, uniqueFileName), bytes);
+            ImageUrl = $"/images/{uniqueFileName}";
+        }
         var product = new Product
         {
             Name = dto.Name,
             BrandId = dto.BrandId,
             SubCategoryId = dto.SubcategoryId,
             UnitId = dto.UnitId,
-            BasePrice = dto.BasePrice
+            BasePrice = dto.BasePrice,
+            ImageUrl = ImageUrl
         };
 
         await _unitOfWork.Products.AddAsync(product);
@@ -48,6 +60,7 @@ public class ProductService(IUnitOfWork _unitOfWork) : IProductService
         }
 
         await _unitOfWork.SaveChangesAsync();
+        return product;
     }
 
     private string GenerateSKU(string productName)

@@ -11,10 +11,24 @@
 <div class="mx-5 p-5">
     <h2 class="mb-4">@ViewData["Title"]</h2>
 
-    <form class="bg-white rounded shadow-sm border p-4">
+    <form enctype ="multipart/form-data" class="bg-white rounded shadow-sm border p-4">
         @Html.AntiForgeryToken()
         <!-- Basic Product Info -->
         <div class="row g-3 mb-4">
+                <div class="">
+                    <label class="form-label">Product Image</label>
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="upload-box" id="uploadBox" title="Click to upload image">
+                            <input type="file" id="imageInput" name="ProductImage" accept="image/*" />
+                            <img id="imagePreview" alt="Preview" />
+                            <button type="button" class="remove-btn" id="removeImageBtn" title="Remove image">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <span class="plus-icon"><i class="fa-solid fa-plus"></i></span>
+                            <span class="upload-label-text">Upload image</span>
+                        </div>
+                    </div>
+                </div>
             <div class="col-md-6">
                 <label class="form-label">Product Name</label>
                 <input class="form-control" id="productName" placeholder="Enter product name" />
@@ -150,7 +164,30 @@
         </div>
     </div>
 </div>
+<script>
+        const imgInput = document.getElementById('imageInput');
+    const imgPreview = document.getElementById('imagePreview');
+    const uploadBox = document.getElementById('uploadBox');
+    const removeImageBtn = document.getElementById('removeImageBtn');
 
+    imgInput.addEventListener('change', () => {
+        const file = imgInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            imgPreview.src = e.target.result;
+            uploadBox.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    removeImageBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        imgPreview.src = '';
+        imgInput.value = '';
+        uploadBox.classList.remove('has-image');
+    });
+</script>
 
 @* Bind SubCategories to Categories *@
 @section Scripts {

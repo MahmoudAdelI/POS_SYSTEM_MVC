@@ -21,7 +21,9 @@
         <div>
             <label class="form-label small text-muted">Select Values</label>
             <div class="d-flex flex-wrap gap-2 align-items-center value-checkboxes"></div>
-            <button type="button" class="btn btn-outline-secondary btn-sm mt-2 new-value-btn" disabled>
+            <button type="button"
+                class="btn btn-outline-secondary btn-sm mt-2 new-value-btn"
+                disabled>
                 <i class="fa-solid fa-plus"></i>
             </button>
         </div>

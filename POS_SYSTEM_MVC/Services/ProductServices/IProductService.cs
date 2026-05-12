@@ -8,5 +8,5 @@ public interface IProductService
 {
     Task<(IReadOnlyList<Product> Products, int TotalItems)> GetProductsForCashierAsync(string searchTerm, int? categoryId, int? subCategoryId, string stockFilter, int page, int pageSize);
     Task<Product?> GetProductDetailsAsync(int id);
-    Task AddProductWithVariants(AddProductDto product);
+    Task<Product> AddProductWithVariants(AddProductDto product);
 }

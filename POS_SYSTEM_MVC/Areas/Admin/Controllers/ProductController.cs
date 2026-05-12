@@ -39,8 +39,12 @@ namespace POS_SYSTEM_MVC.Areas.Admin.Controllers
 
             try
             {
-                await productService.AddProductWithVariants(productDto);
-                return Ok("Product created successfully");
+                var newProduct = await productService.AddProductWithVariants(productDto);
+                return Created($"chashier/GetProductDetails/{newProduct.Id}", new
+                {
+                    newProduct.Id,
+                    newProduct.Name,
+                });
             }
             catch (Exception ex) 
             {
