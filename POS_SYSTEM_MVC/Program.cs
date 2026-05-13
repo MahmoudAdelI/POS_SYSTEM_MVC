@@ -15,6 +15,7 @@ using POS_SYSTEM_MVC.Services.DashboardServices;
 using POS_SYSTEM_MVC.Services.InventoryServices;
 using POS_SYSTEM_MVC.Services.SalesHistoryServices;
 using POS_SYSTEM_MVC.Services.AttributeServices;
+using POS_SYSTEM_MVC.Services.DiscountServices;
 
 namespace POS_SYSTEM_MVC
 {
@@ -61,6 +62,7 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<IInventoryService, InventoryService>();
             builder.Services.AddScoped<ISalesHistoryService, SalesHistoryService>();
             builder.Services.AddScoped<IAttributeService, AttributeService>();
+            builder.Services.AddScoped<IDiscountService, DiscountService>();
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";

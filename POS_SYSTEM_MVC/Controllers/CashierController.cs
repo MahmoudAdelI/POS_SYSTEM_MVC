@@ -8,6 +8,7 @@ using POS_SYSTEM_MVC.Services.ProductServices;
 using POS_SYSTEM_MVC.UnitOfWork;
 using System.Linq;
 using System.Security.Claims;
+using static POS_SYSTEM_MVC.Constants.Enums;
 
 namespace POS_SYSTEM_MVC.Controllers
 {
@@ -258,8 +259,8 @@ namespace POS_SYSTEM_MVC.Controllers
 
             decimal discountAmount = rule.Type switch
             {
-                DiscountType.Fixed => rule.Value,
-                DiscountType.Percentage => amountBase * (rule.Value / 100m),
+                DiscountTypeENUM.Fixed => rule.Value,
+                DiscountTypeENUM.Percentage => amountBase * (rule.Value / 100m),
                 _ => 0
             };
 

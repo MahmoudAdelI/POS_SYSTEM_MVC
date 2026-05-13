@@ -11,6 +11,7 @@ using POS_SYSTEM_MVC.Repositories.UnitRepo;
 using POS_SYSTEM_MVC.Repositories.ProductRepo;
 using POS_SYSTEM_MVC.Repositories.SalesRepo;
 using POS_SYSTEM_MVC.Repositories.ProductVariantRepo;
+using POS_SYSTEM_MVC.Repositories.DiscountRepo;
 
 namespace POS_SYSTEM_MVC.UnitOfWork
 {
@@ -26,6 +27,7 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         public IProductRepository Products { get; } = new ProductRepository(context);
         public ISaleRepository Sales { get; } = new SaleRepository(context);
         public IProductVariantRepository ProductVariants { get; } = new ProductVariantRepository(context);
+        public IDiscountRepository Discounts { get; } = new DiscountRepository(context);
 
         public IBaseRepository<ProductAttribute> Attributes => new BaseRepository<ProductAttribute>(context);
 

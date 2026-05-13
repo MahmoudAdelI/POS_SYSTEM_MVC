@@ -7,6 +7,7 @@ using POS_SYSTEM_MVC.Repositories.UnitRepo;
 using POS_SYSTEM_MVC.Repositories.ProductRepo;
 using POS_SYSTEM_MVC.Repositories.SalesRepo;
 using POS_SYSTEM_MVC.Repositories.ProductVariantRepo;
+using POS_SYSTEM_MVC.Repositories.DiscountRepo;
 
 namespace POS_SYSTEM_MVC.UnitOfWork
 {
@@ -19,6 +20,7 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         IProductRepository Products { get; }
         ISaleRepository Sales { get; }
         IProductVariantRepository ProductVariants { get; }
+        IDiscountRepository Discounts { get; }
         IBaseRepository<ProductAttribute> Attributes { get; }
         IBaseRepository<ProductAttributeValue> AttributeValues { get; }
         Task<int> SaveChangesAsync();
