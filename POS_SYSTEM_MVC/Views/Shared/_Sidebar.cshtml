@@ -43,39 +43,35 @@
             </div>
         </div>
 
-        @{
-            var currentPath = ViewContext.HttpContext.Request.Path.Value?.ToLowerInvariant() ?? "/";
-        }
-
         @if (userRole == "admin")
         {
             <h6 class="category-label">Admin Panel</h6>
             <ul class="list-unstyled components">
-                <li class="@((currentPath == "/admin" || currentPath.StartsWith("/admin/dashboard")) ? "active" : "")">
+                <li class="active">
                     <a href="/Admin/Dashboard" class="ajax-link">
                         <i class="fas fa-chart-line fa-fw"></i>
                         <span class="ms-2">Dashboard</span>
                     </a>
                 </li>
-                <li class="@((currentPath.StartsWith("/products")) ? "active" : "")">
-                    <a href="/products" class="ajax-link">
+                <li>
+                    <a href="/Admin/Products" class="ajax-link">
                         <i class="fas fa-cube fa-fw"></i>
                         <span class="ms-2">Products</span>
                     </a>
                 </li>
-                <li class="@((currentPath.StartsWith("/admin/inventory")) ? "active" : "")">
+                <li>
                     <a href="/Admin/Inventory" class="ajax-link">
                         <i class="fas fa-box fa-fw"></i>
                         <span class="ms-2">Inventory</span>
                     </a>
                 </li>
-                <li class="@((currentPath.StartsWith("/admin/discounts")) ? "active" : "")">
-                    <a href="/Admin/Discounts" class="ajax-link">
+                <li>
+                    <a href="/Admin/Discount" class="ajax-link">
                         <i class="fas fa-tag fa-fw"></i>
                         <span class="ms-2">Discounts</span>
                     </a>
                 </li>
-                <li class="@((currentPath.StartsWith("/admin/saleshistory")) ? "active" : "")">
+                <li>
                     <a href="/Admin/SalesHistory" class="ajax-link">
                         <i class="fas fa-receipt fa-fw"></i>
                         <span class="ms-2">Sales History</span>
@@ -88,7 +84,7 @@
         {
             <h6 class="category-label">Category</h6>
             <ul class="list-unstyled components">
-                <li class="@((currentPath.StartsWith("/cashier") || currentPath == "/") ? "active" : "")">
+                <li class="active">
                     <a href="@Url.Action("Index", "Cashier")" class="ajax-link">
                         <span class="ms-2">All Products</span>
                     </a>

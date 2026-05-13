@@ -4,9 +4,10 @@ using POS_SYSTEM_MVC.Repositories.Base;
 
 namespace POS_SYSTEM_MVC.Repositories.ProductVariantRepo
 {
-    public class ProductVariantRepository(POSContext context) 
-        : BaseRepository<ProductVariant>(context), IProductVariantRepository
+    public class ProductVariantRepository : BaseRepository<ProductVariant>, IProductVariantRepository
     {
-
+        public ProductVariantRepository(POSContext context) : base(context)
+        {
+        }
     }
 }

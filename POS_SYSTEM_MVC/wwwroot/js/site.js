@@ -55,7 +55,7 @@ $(document).ready(function () {
             const stockFilter = $('.stock-radio-filter:checked').val();
             const searchTerm = $('#searchInput').val();
             const pageSize = $('#pageSizeSelect').val();
-
+            
             const urlObj = new URL(url, window.location.origin);
             if (stockFilter && stockFilter !== 'all') {
                 urlObj.searchParams.set('stockFilter', stockFilter);
@@ -129,9 +129,7 @@ $(document).ready(function () {
 
 // POS System Global State
 window.posCart = window.posCart || [];
-window.activeDiscountRules = window.activeDiscountRules || [];
 let isCartVisible = false;
-let isDiscountRulesLoading = false;
 
 // Global POS Functions
 function openProductDetails(id) {
@@ -171,21 +169,14 @@ function renderCart() {
     const $cartCount = $('#cartCount');
     const $floatingCartCount = $('#floatingCartCount');
     const $emptyMsg = $('#emptyCartMessage');
-
+    
     if (window.posCart.length === 0) {
         $cartItems.find('.cart-item').remove();
         $emptyMsg.show();
         $cartCount.text(0);
         $floatingCartCount.text(0);
         $('#checkoutBtn').prop('disabled', true);
-        updateTotals({
-            subtotal: 0,
-            lineDiscountTotal: 0,
-            orderDiscount: 0,
-            totalDiscount: 0,
-            total: 0
-        });
-
+        
         if (isCartVisible) {
             toggleCart(false);
         }
@@ -193,7 +184,7 @@ function renderCart() {
     } else {
         $emptyMsg.hide();
         $cartItems.find('.cart-item').remove();
-
+        
         let subtotal = 0;
         let count = 0;
 
@@ -202,15 +193,12 @@ function renderCart() {
             count += item.quantity;
 
             const attrText = Object.entries(item.attributes).map(([k, v]) => `${k}: ${v}`).join(' - ');
-            const safeName = encodeURIComponent(item.name || '?');
-            const placeholder = 'https://placehold.co/45x45/eeeeee/555555?text=' + safeName;
-            const src = item.imageUrl || placeholder;
-
+            
             const itemHtml = `
                 <div class="cart-item p-2 mb-2 rounded-3 border bg-white shadow-sm" data-variant-id="${item.variantId}">
                     <div class="d-flex gap-2">
-                            <img src="${src}" class="rounded" style="width: 45px; height: 45px; object-fit: cover;" 
-                                onerror="this.onerror=null; this.src='${placeholder}';">
+                        <img src="/images/products/${item.productId}.jpg" class="rounded" style="width: 45px; height: 45px; object-fit: cover;" 
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/45/eeeeee?text=?'">
                         <div class="flex-grow-1 min-width-0">
                             <div class="d-flex justify-content-between align-items-start">
                                 <h6 class="mb-0 fw-bold text-truncate" style="font-size: 0.75rem; max-width: 140px;">${item.name}</h6>
@@ -237,9 +225,7 @@ function renderCart() {
         $cartCount.text(count);
         $floatingCartCount.text(count);
         $('#checkoutBtn').prop('disabled', false);
-
-        const totals = calculateCartTotals(subtotal);
-        updateTotals(totals);
+        updateTotals(subtotal);
 
         if (!isCartVisible) {
             toggleCart(true);
@@ -247,128 +233,13 @@ function renderCart() {
     }
 }
 
-function updateTotals(totals) {
-    $('#cartSubtotal').text('$' + totals.subtotal.toFixed(2));
-    $('#cartLineDiscount').text('-$' + totals.lineDiscountTotal.toFixed(2));
-    $('#cartOrderDiscount').text('-$' + totals.orderDiscount.toFixed(2));
-    $('#cartTotalDiscount').text('-$' + totals.totalDiscount.toFixed(2));
-    $('#cartTotal').text('$' + totals.total.toFixed(2));
-}
+function updateTotals(subtotal) {
+    const tax = subtotal * 0.10;
+    const total = subtotal + tax;
 
-function calculateCartTotals(subtotal) {
-    const lineDiscountTotal = calculateLineDiscountTotal();
-    const subtotalAfterLineDiscount = Math.max(0, subtotal - lineDiscountTotal);
-    const orderDiscount = calculateOrderDiscount(subtotalAfterLineDiscount);
-    const totalDiscount = lineDiscountTotal + orderDiscount;
-    const total = Math.max(0, subtotal - totalDiscount);
-
-    return {
-        subtotal: subtotal,
-        lineDiscountTotal: lineDiscountTotal,
-        orderDiscount: orderDiscount,
-        totalDiscount: totalDiscount,
-        total: total
-    };
-}
-
-function calculateLineDiscountTotal() {
-    let lineDiscountTotal = 0;
-
-    window.posCart.forEach(item => {
-        const lineSubtotal = item.unitPrice * item.quantity;
-        const lineRule = getLineDiscountRule(item);
-        const lineDiscount = calculateDiscountAmount(lineRule, lineSubtotal);
-        lineDiscountTotal += lineDiscount;
-    });
-
-    return roundMoney(lineDiscountTotal);
-}
-
-function calculateOrderDiscount(subtotalAfterLineDiscount) {
-    const orderRule = getOrderDiscountRule(subtotalAfterLineDiscount);
-    return calculateDiscountAmount(orderRule, subtotalAfterLineDiscount);
-}
-
-function getLineDiscountRule(item) {
-    const variantRule = window.activeDiscountRules
-        .filter(r => !hasThreshold(r) && r.productVariantId === item.variantId)
-        .sort((a, b) => getRuleTimestamp(b) - getRuleTimestamp(a))[0];
-
-    if (variantRule) {
-        return variantRule;
-    }
-
-    return window.activeDiscountRules
-        .filter(r => !hasThreshold(r) && !r.productVariantId && r.productId === item.productId)
-        .sort((a, b) => getRuleTimestamp(b) - getRuleTimestamp(a))[0] || null;
-}
-
-function getOrderDiscountRule(subtotalAfterLineDiscount) {
-    return window.activeDiscountRules
-        .filter(r => hasThreshold(r) && subtotalAfterLineDiscount >= Number(r.saleTotalThreshold || 0))
-        .sort((a, b) => getRuleTimestamp(b) - getRuleTimestamp(a))[0] || null;
-}
-
-function calculateDiscountAmount(rule, amountBase) {
-    if (!rule || amountBase <= 0) {
-        return 0;
-    }
-
-    let discountAmount = 0;
-    if (rule.type === 'Fixed') {
-        discountAmount = Number(rule.value || 0);
-    } else if (rule.type === 'Percentage') {
-        discountAmount = amountBase * (Number(rule.value || 0) / 100);
-    }
-
-    if (discountAmount < 0) {
-        discountAmount = 0;
-    }
-
-    if (discountAmount > amountBase) {
-        discountAmount = amountBase;
-    }
-
-    return roundMoney(discountAmount);
-}
-
-function hasThreshold(rule) {
-    return rule && rule.saleTotalThreshold !== null && rule.saleTotalThreshold !== undefined;
-}
-
-function getRuleTimestamp(rule) {
-    if (!rule || !rule.createdAt) {
-        return 0;
-    }
-
-    const ts = new Date(rule.createdAt).getTime();
-    return Number.isNaN(ts) ? 0 : ts;
-}
-
-function roundMoney(value) {
-    return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
-}
-
-function loadActiveDiscountRules() {
-    if (isDiscountRulesLoading) {
-        return;
-    }
-
-    isDiscountRulesLoading = true;
-
-    $.ajax({
-        url: '/Cashier/GetActiveDiscountRules',
-        type: 'GET',
-        success: function (response) {
-            if (response && response.success && Array.isArray(response.discounts)) {
-                window.activeDiscountRules = response.discounts;
-                renderCart();
-            }
-        },
-        complete: function () {
-            isDiscountRulesLoading = false;
-        }
-    });
+    $('#cartSubtotal').text('$' + subtotal.toFixed(2));
+    $('#cartTax').text('$' + tax.toFixed(2));
+    $('#cartTotal').text('$' + total.toFixed(2));
 }
 
 function updateQty(variantId, delta) {
@@ -404,7 +275,6 @@ function checkout() {
 
     const payload = {
         items: window.posCart.map(i => ({
-
             productVariantId: i.variantId,
             quantity: i.quantity,
             unitPrice: i.unitPrice
@@ -416,7 +286,7 @@ function checkout() {
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(payload),
-        success: function (response) {
+        success: function(response) {
             if (response.success) {
                 printReceipt(response.receiptData);
                 window.posCart = [];
@@ -426,10 +296,10 @@ function checkout() {
                 alert('Error: ' + response.message);
             }
         },
-        error: function () {
+        error: function() {
             alert('An error occurred during checkout.');
         },
-        complete: function () {
+        complete: function() {
             $btn.prop('disabled', false).text(originalText);
         }
     });
@@ -450,7 +320,7 @@ function printReceipt(data) {
             <tr>
                 <td style="padding: 5px 0;">${item.name}<br><small>${item.variantInfo}</small></td>
                 <td style="text-align: center;">${item.quantity}</td>
-                <td style="text-align: right;">$${Number(item.lineTotal).toFixed(2)}</td>
+                <td style="text-align: right;">$${(item.unitPrice * item.quantity).toFixed(2)}</td>
             </tr>
         `;
     });
@@ -485,9 +355,7 @@ function printReceipt(data) {
             </div>
             <div class="border-top">
                 <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span><span>$${data.subtotal.toFixed(2)}</span></div>
-                <div style="display: flex; justify-content: space-between;"><span>Item Discounts:</span><span>-$${data.lineDiscountTotal.toFixed(2)}</span></div>
-                <div style="display: flex; justify-content: space-between;"><span>Order Discount:</span><span>-$${data.orderDiscount.toFixed(2)}</span></div>
-                <div style="display: flex; justify-content: space-between;"><span>Total Discounts:</span><span>-$${data.totalDiscount.toFixed(2)}</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Tax (10%):</span><span>$${data.tax.toFixed(2)}</span></div>
                 <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-top: 5px;">
                     <span>TOTAL:</span><span>$${data.total.toFixed(2)}</span>
                 </div>
@@ -498,7 +366,7 @@ function printReceipt(data) {
         </body>
         </html>
     `;
-
+    
     const doc = iframe.contentWindow.document;
     doc.open();
     doc.write(html);
@@ -516,7 +384,7 @@ function loadProducts(page = 1) {
     const categoryId = $('#currentCategoryId').val();
     const subCategoryId = $('#currentSubCategoryId').val();
     const pageSize = $('#pageSizeSelect').val() || 12;
-
+    
     $productListContainer.css('opacity', '0.6');
 
     $.ajax({
@@ -530,35 +398,35 @@ function loadProducts(page = 1) {
             pageSize: pageSize,
             partial: true
         },
-        success: function (data) {
+        success: function(data) {
             $productListContainer.html(data);
         },
-        error: function () {
+        error: function() {
             alert('Error loading products.');
         },
-        complete: function () {
+        complete: function() {
             $productListContainer.css('opacity', '1');
         }
     });
 }
 
 // Event Handlers
-$(document).on('input', '#searchInput', function () {
+$(document).on('input', '#searchInput', function() {
     clearTimeout(window.searchTimer);
-    window.searchTimer = setTimeout(function () {
+    window.searchTimer = setTimeout(function() {
         loadProducts(1);
     }, 400);
 });
 
-$(document).on('change', '.stock-radio-filter', function () {
+$(document).on('change', '.stock-radio-filter', function() {
     loadProducts(1);
 });
 
-$(document).on('change', '#pageSizeSelect', function () {
+$(document).on('change', '#pageSizeSelect', function() {
     loadProducts(1);
 });
 
-$(document).on('click', '.pagination-link', function (e) {
+$(document).on('click', '.pagination-link', function(e) {
     e.preventDefault();
     const page = $(this).data('page');
     if (page) {
@@ -567,14 +435,12 @@ $(document).on('click', '.pagination-link', function (e) {
 });
 
 // Re-initialize on content update
-$(document).on('content-updated', function () {
-    loadActiveDiscountRules();
+$(document).on('content-updated', function() {
     renderCart();
 });
 
 // Initial load
-$(document).ready(function () {
-    loadActiveDiscountRules();
+$(document).ready(function() {
     renderCart();
 });
 

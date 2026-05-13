@@ -14,6 +14,7 @@ namespace POS_SYSTEM_MVC.Models
         public Category Category { get; set; }
 
         public ICollection<Product> Products { get; set; } = [];
+        public ICollection<SubCategoryAttribute> SubCategoryAttributes { get; set; } = [];
         public ICollection<ProductAttributeValue> AttributeValues { get; set; } = [];
 
     }
