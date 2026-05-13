@@ -202,12 +202,15 @@ function renderCart() {
             count += item.quantity;
 
             const attrText = Object.entries(item.attributes).map(([k, v]) => `${k}: ${v}`).join(' - ');
+            const safeName = encodeURIComponent(item.name || '?');
+            const placeholder = 'https://placehold.co/45x45/eeeeee/555555?text=' + safeName;
+            const src = item.imageUrl || placeholder;
 
             const itemHtml = `
                 <div class="cart-item p-2 mb-2 rounded-3 border bg-white shadow-sm" data-variant-id="${item.variantId}">
                     <div class="d-flex gap-2">
-                            <img src="/images/products/${item.productId}.jpg" class="rounded" style="width: 45px; height: 45px; object-fit: cover;" 
-                                onerror="this.onerror=null; this.src='https://placehold.co/45x45/eeeeee/555555?text=?'">
+                            <img src="${src}" class="rounded" style="width: 45px; height: 45px; object-fit: cover;" 
+                                onerror="this.onerror=null; this.src='${placeholder}';">
                         <div class="flex-grow-1 min-width-0">
                             <div class="d-flex justify-content-between align-items-start">
                                 <h6 class="mb-0 fw-bold text-truncate" style="font-size: 0.75rem; max-width: 140px;">${item.name}</h6>
@@ -401,6 +404,7 @@ function checkout() {
 
     const payload = {
         items: window.posCart.map(i => ({
+
             productVariantId: i.variantId,
             quantity: i.quantity,
             unitPrice: i.unitPrice

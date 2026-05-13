@@ -14,6 +14,11 @@ namespace POS_SYSTEM_MVC.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.InsertData(
+                table: "users",
+                columns: new[] { "Id", "FirstName", "LastName", "HireDate", "Salary", "UserName", "Email", "EmailConfirmed", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled", "AccessFailedCount" },
+                values: new object[] { "C33D1111-2222-3333-4444-555555555555", "Ahmed", "Hassan", new DateOnly(2026, 1, 1), 5000m, "ahmed.hassan", "ahmed@pos.com", false, false, false, false, 0 });
+
+            migrationBuilder.InsertData(
                 table: "Sales",
                 columns: new[] { "Id", "CashierId", "CreatedAt", "DiscountAmount", "DiscountType", "DiscountValue", "Status" },
                 values: new object[,]
@@ -72,6 +77,7 @@ namespace POS_SYSTEM_MVC.Migrations
                 keyColumns: new[] { "ProductVariantId", "SaleId" },
                 keyValues: new object[] { 2, 5 });
 
+
             migrationBuilder.DeleteData(
                 table: "Sales",
                 keyColumn: "Id",
@@ -96,6 +102,11 @@ namespace POS_SYSTEM_MVC.Migrations
                 table: "Sales",
                 keyColumn: "Id",
                 keyValue: 5);
+
+            migrationBuilder.DeleteData(
+                table: "users",
+                keyColumn: "Id",
+                keyValue: "C33D1111-2222-3333-4444-555555555555");
         }
     }
 }
