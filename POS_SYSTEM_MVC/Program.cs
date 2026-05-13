@@ -47,7 +47,8 @@ namespace POS_SYSTEM_MVC
             //------------
 
             // To read RequestVerificationToken from header
-            builder.Services.AddAntiforgery(options => {
+            builder.Services.AddAntiforgery(options =>
+            {
                 options.HeaderName = "RequestVerificationToken";
             });
             //------------

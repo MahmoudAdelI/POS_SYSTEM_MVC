@@ -7,7 +7,7 @@ using static POS_SYSTEM_MVC.Constants.Enums;
 
 namespace POS_SYSTEM_MVC.Data
 {
-    public class POSContext(DbContextOptions<POSContext> options) 
+    public class POSContext(DbContextOptions<POSContext> options)
         : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<Unit> Units { get; set; }
@@ -33,8 +33,8 @@ namespace POS_SYSTEM_MVC.Data
             #endregion
 
             #region Composite Primary Keys
-            builder.Entity<VariantAttribute>().HasKey(e => new { e.ProductVariantId, e.AttributeValueId});
-            builder.Entity<SaleLine>().HasKey(e => new { e.SaleId, e.ProductVariantId});
+            builder.Entity<VariantAttribute>().HasKey(e => new { e.ProductVariantId, e.AttributeValueId });
+            builder.Entity<SaleLine>().HasKey(e => new { e.SaleId, e.ProductVariantId });
             #endregion
 
             #region turning off cascade
@@ -148,14 +148,14 @@ namespace POS_SYSTEM_MVC.Data
             );
 
             builder.Entity<ProductVariant>().HasData(
-                // Air Max 90 — Red/41, Red/42, Blue/41
+                // Air Max 90 ï¿½ Red/41, Red/42, Blue/41
                 new ProductVariant { Id = 1, ProductId = 1, UnitPrice = 130.00m, StockQuantity = 10, SKU = "AM90-RED-41" },
                 new ProductVariant { Id = 2, ProductId = 1, UnitPrice = 130.00m, StockQuantity = 8, SKU = "AM90-RED-42" },
                 new ProductVariant { Id = 3, ProductId = 1, UnitPrice = 130.00m, StockQuantity = 5, SKU = "AM90-BLU-41" },
-                // Classic Tee — White/M, Black/L
+                // Classic Tee ï¿½ White/M, Black/L
                 new ProductVariant { Id = 4, ProductId = 3, UnitPrice = 28.00m, StockQuantity = 20, SKU = "TEE-WHT-M" },
                 new ProductVariant { Id = 5, ProductId = 3, UnitPrice = 28.00m, StockQuantity = 15, SKU = "TEE-BLK-L" },
-                // G-Shock — Black
+                // G-Shock ï¿½ Black
                 new ProductVariant { Id = 6, ProductId = 4, UnitPrice = 80.00m, StockQuantity = 7, SKU = "GSH-BLK" }
             );
 
@@ -246,7 +246,7 @@ namespace POS_SYSTEM_MVC.Data
 
             builder.Entity<SaleLine>().HasData(
 
-                // Sale 1 ? Classic Tee White/M × 2
+                // Sale 1 ? Classic Tee White/M ï¿½ 2
                 new SaleLine
                 {
                     SaleId = 1,
@@ -258,7 +258,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = 5.00m
                 },
 
-                // Sale 2 ? Air Max 90 Red/41 × 1
+                // Sale 2 ? Air Max 90 Red/41 ï¿½ 1
                 new SaleLine
                 {
                     SaleId = 2,
@@ -270,7 +270,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = 13.00m
                 },
 
-                // Sale 3 ? Air Max 90 Blue/41 × 1
+                // Sale 3 ? Air Max 90 Blue/41 ï¿½ 1
                 new SaleLine
                 {
                     SaleId = 3,
@@ -282,7 +282,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = null
                 },
 
-                // Sale 3 ? Classic Tee Black/L × 1
+                // Sale 3 ? Classic Tee Black/L ï¿½ 1
                 new SaleLine
                 {
                     SaleId = 3,
@@ -294,7 +294,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = null
                 },
 
-                // Sale 4 ? G-Shock Black × 2
+                // Sale 4 ? G-Shock Black ï¿½ 2
                 new SaleLine
                 {
                     SaleId = 4,
@@ -306,7 +306,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = null
                 },
 
-                // Sale 5 ? Air Max 90 Red/42 × 1 (Canceled)
+                // Sale 5 ? Air Max 90 Red/42 ï¿½ 1 (Canceled)
                 new SaleLine
                 {
                     SaleId = 5,
