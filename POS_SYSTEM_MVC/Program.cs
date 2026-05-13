@@ -58,7 +58,7 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
             builder.Services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IDiscountService,DiscountService>();
+            builder.Services.AddScoped<IDiscountService, DiscountService>();
 
 
             builder.Services.ConfigureApplicationCookie(options =>
@@ -112,53 +112,54 @@ namespace POS_SYSTEM_MVC
                 }
 
                 // seed cashier user
-                if (await userManager.FindByNameAsync("cashier") == null)
-                {
-                    var cashier = new ApplicationUser
-                    {
-                        Id = CashierUserId, // ????? ??? ID ?????? ???
-                        UserName = "cashier",
-                        FirstName = "Cashier",
-                        LastName = "User",
-                        Email = "cashier@pos.com",
-                        EmailConfirmed = true
-                    };
-                    var result = await userManager.CreateAsync(cashier, "Cashier123!");
-                    if (result.Succeeded)
-                        await userManager.AddToRoleAsync(cashier, Role.Cashier);
-                    else
-                        foreach (var error in result.Errors)
-                            Console.WriteLine($" {error.Description}");
-                }
-            }
+                //    if (await userManager.FindByNameAsync("cashier") == null)
+                //    {
+                //        var cashier = new ApplicationUser
+                //        {
+                //            Id = CashierUserId, // ????? ??? ID ?????? ???
+                //            UserName = "cashier",
+                //            FirstName = "Cashier",
+                //            LastName = "User",
+                //            Email = "cashier@pos.com",
+                //            EmailConfirmed = true
+                //        };
+                //        var result = await userManager.CreateAsync(cashier, "Cashier123!");
+                //        if (result.Succeeded)
+                //            await userManager.AddToRoleAsync(cashier, Role.Cashier);
+                //        else
+                //            foreach (var error in result.Errors)
+                //                Console.WriteLine($" {error.Description}");
+                //    }
+                //}
             #endregion
 
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
+                // Configure the HTTP request pipeline.
+                if (!app.Environment.IsDevelopment())
+                {
+                    app.UseExceptionHandler("/Home/Error");
+                }
+
+                app.UseStaticFiles();
+                app.UseRouting();
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.MapStaticAssets();
+                app.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+                app.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Discount}/{action=Index}/{id?}");
+                app.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Account}/{action=Login}/{id?}")
+                    .WithStaticAssets();
+
+                app.Run();
             }
-
-            app.UseStaticFiles();
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.MapStaticAssets();
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Discount}/{action=Index}/{id?}");
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}")
-                .WithStaticAssets();
-
-            app.Run();
         }
     }
 }
