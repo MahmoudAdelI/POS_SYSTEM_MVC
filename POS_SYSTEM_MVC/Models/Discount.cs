@@ -1,14 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using static POS_SYSTEM_MVC.Constants.Enums;
 
 namespace POS_SYSTEM_MVC.Models
 {
-    public enum DiscountType { Fixed, Percentage }
 
     public class Discount
     {
         public int Id { get; set; }
 
-        public DiscountType Type { get; set; }
+        public string? Name { get; set; }
+
+        public DiscountTypeENUM Type { get; set; }
 
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Value { get; set; }
@@ -32,8 +34,8 @@ namespace POS_SYSTEM_MVC.Models
         [NotMapped]
         public string TypeName => Type switch
         {
-            DiscountType.Fixed => "Fixed",
-            DiscountType.Percentage => "Percentage",
+            DiscountTypeENUM.Fixed => "Fixed",
+            DiscountTypeENUM.Percentage => "Percentage",
             _ => "Unknown"
         };
 
