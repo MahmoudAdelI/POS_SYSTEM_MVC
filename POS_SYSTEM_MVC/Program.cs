@@ -76,66 +76,7 @@ namespace POS_SYSTEM_MVC
             });
             var app = builder.Build();
 
-
-
-            #region seed users + roles
-            using (var scope = app.Services.CreateScope())
-            {
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-                const string AdminUserId = "B22D1111-2222-3333-4444-555555555555";
-                const string CashierUserId = "C33D1111-2222-3333-4444-555555555555";
-
-                // seed roles
-                string[] roles = { Role.Admin, Role.Cashier };
-
-                foreach (var role in roles)
-                    if (!await roleManager.RoleExistsAsync(role))
-                        await roleManager.CreateAsync(new IdentityRole(role));
-
-                // seed admin user
-                if (await userManager.FindByNameAsync("admin") == null)
-                {
-                    var admin = new ApplicationUser
-                    {
-                        Id = AdminUserId, // ????? ??? ID ?????? ???
-                        UserName = "admin",
-                        FirstName = "Admin",
-                        LastName = "User",
-                        Email = "admin@pos.com", // ???? ????? ????? ????
-                        EmailConfirmed = true
-                    };
-                    var result = await userManager.CreateAsync(admin, "Admin123!");
-                    if (result.Succeeded)
-                        await userManager.AddToRoleAsync(admin, Role.Admin);
-                    else
-                        foreach (var error in result.Errors)
-                            Console.WriteLine($" {error.Description}");
-                }
-
-                // seed cashier user
-                if (await userManager.FindByNameAsync("cashier") == null)
-                {
-                    var cashier = new ApplicationUser
-                    {
-                        Id = CashierUserId, // ????? ??? ID ?????? ???
-                        UserName = "cashier",
-                        FirstName = "Cashier",
-                        LastName = "User",
-                        Email = "cashier@pos.com",
-                        EmailConfirmed = true
-                    };
-                    var result = await userManager.CreateAsync(cashier, "Cashier123!");
-                    if (result.Succeeded)
-                        await userManager.AddToRoleAsync(cashier, Role.Cashier);
-                    else
-                        foreach (var error in result.Errors)
-                            Console.WriteLine($" {error.Description}");
-                }
-            }
-            #endregion
-
+            await DatabaseSeeder.SeedAsync(app.Services);
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

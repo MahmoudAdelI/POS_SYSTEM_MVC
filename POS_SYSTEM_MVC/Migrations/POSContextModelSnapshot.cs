@@ -46,7 +46,7 @@ namespace POS_SYSTEM_MVC.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("roles", (string)null);
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -133,7 +133,7 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("user_roles", (string)null);
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -233,7 +233,7 @@ namespace POS_SYSTEM_MVC.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.Brand", b =>
@@ -424,6 +424,7 @@ namespace POS_SYSTEM_MVC.Migrations
                             Id = 1,
                             BasePrice = 120.00m,
                             BrandId = 1,
+                            ImageUrl = "/images/air-max-90.webp",
                             Name = "Air Max 90",
                             SubCategoryId = 1,
                             UnitId = 2
@@ -433,6 +434,7 @@ namespace POS_SYSTEM_MVC.Migrations
                             Id = 2,
                             BasePrice = 90.00m,
                             BrandId = 2,
+                            ImageUrl = "/images/stan-smith.webp",
                             Name = "Stan Smith",
                             SubCategoryId = 1,
                             UnitId = 2
@@ -442,6 +444,7 @@ namespace POS_SYSTEM_MVC.Migrations
                             Id = 3,
                             BasePrice = 25.00m,
                             BrandId = 2,
+                            ImageUrl = "/images/classic-tee.webp",
                             Name = "Classic Tee",
                             SubCategoryId = 3,
                             UnitId = 1
@@ -451,6 +454,7 @@ namespace POS_SYSTEM_MVC.Migrations
                             Id = 4,
                             BasePrice = 75.00m,
                             BrandId = 3,
+                            ImageUrl = "/images/g-shock-dw.webp",
                             Name = "G-Shock DW",
                             SubCategoryId = 5,
                             UnitId = 1
@@ -752,46 +756,6 @@ namespace POS_SYSTEM_MVC.Migrations
                     b.HasIndex("CashierId");
 
                     b.ToTable("Sales");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CashierId = "C33D1111-2222-3333-4444-555555555555",
-                            CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CashierId = "C33D1111-2222-3333-4444-555555555555",
-                            CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CashierId = "C33D1111-2222-3333-4444-555555555555",
-                            CreatedAt = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DiscountAmount = 19.50m,
-                            DiscountType = "Percentage",
-                            DiscountValue = 15m,
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CashierId = "C33D1111-2222-3333-4444-555555555555",
-                            CreatedAt = new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CashierId = "C33D1111-2222-3333-4444-555555555555",
-                            CreatedAt = new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Canceled"
-                        });
                 });
 
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.SaleLine", b =>
@@ -822,56 +786,6 @@ namespace POS_SYSTEM_MVC.Migrations
                     b.HasIndex("ProductVariantId");
 
                     b.ToTable("SaleLines");
-
-                    b.HasData(
-                        new
-                        {
-                            SaleId = 1,
-                            ProductVariantId = 4,
-                            DiscountAmount = 5.00m,
-                            DiscountType = "Fixed",
-                            DiscountValue = 5m,
-                            OriginalUnitPrice = 28.00m,
-                            Quantity = 2
-                        },
-                        new
-                        {
-                            SaleId = 2,
-                            ProductVariantId = 1,
-                            DiscountAmount = 13.00m,
-                            DiscountType = "Percentage",
-                            DiscountValue = 10m,
-                            OriginalUnitPrice = 130.00m,
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            SaleId = 3,
-                            ProductVariantId = 3,
-                            OriginalUnitPrice = 130.00m,
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            SaleId = 3,
-                            ProductVariantId = 5,
-                            OriginalUnitPrice = 28.00m,
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            SaleId = 4,
-                            ProductVariantId = 6,
-                            OriginalUnitPrice = 80.00m,
-                            Quantity = 2
-                        },
-                        new
-                        {
-                            SaleId = 5,
-                            ProductVariantId = 2,
-                            OriginalUnitPrice = 130.00m,
-                            Quantity = 1
-                        });
                 });
 
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.SubCategory", b =>
