@@ -3,7 +3,7 @@ using POS_SYSTEM_MVC.Repositories.Base;
 
 namespace POS_SYSTEM_MVC.Repositories.ProductVariantRepo
 {
-    public interface IProductVariantRepository:IBaseRepository<ProductVariant>
+    public interface IProductVariantRepository : IBaseRepository<ProductVariant>
     {
     }
 }

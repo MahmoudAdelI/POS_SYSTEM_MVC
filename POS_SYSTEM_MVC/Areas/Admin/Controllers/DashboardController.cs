@@ -21,6 +21,5 @@ namespace POS_SYSTEM_MVC.Areas.Admin.Controllers
             var data = await _dashboardService.GetDashboardDataAsync();
             return View(data);
         }
-
     }
 }

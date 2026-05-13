@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Models;
-using static POS_SYSTEM_MVC.Constants.Enums;
 
 namespace POS_SYSTEM_MVC.Data
 {
@@ -18,7 +17,6 @@ namespace POS_SYSTEM_MVC.Data
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<ProductAttribute> ProductAttributes { get; set; }
         public DbSet<ProductAttributeValue> ProductAttributeValues { get; set; }
-        public DbSet<SubCategoryAttribute> SubCategoryAttributes { get; set; }
         public DbSet<VariantAttribute> VariantAttributes { get; set; }
         public DbSet<Discount> Discounts { get; set; }
         public DbSet<Sale> Sales { get; set; }
@@ -35,7 +33,6 @@ namespace POS_SYSTEM_MVC.Data
 
             #region Composite Primary Keys
             builder.Entity<VariantAttribute>().HasKey(e => new { e.ProductVariantId, e.AttributeValueId});
-            builder.Entity<SubCategoryAttribute>().HasKey(e => new { e.SubCategoryId, e.AttributeId });
             builder.Entity<SaleLine>().HasKey(e => new { e.SaleId, e.ProductVariantId});
             #endregion
 
@@ -50,18 +47,6 @@ namespace POS_SYSTEM_MVC.Data
                 .HasOne(e => e.AttributeValue)
                 .WithMany(e => e.VariantAttributes)
                 .HasForeignKey(e => e.AttributeValueId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<SubCategoryAttribute>()
-                .HasOne(e => e.SubCategory)
-                .WithMany(e => e.SubCategoryAttributes)
-                .HasForeignKey(e => e.SubCategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<SubCategoryAttribute>()
-                .HasOne(e => e.Attribute)
-                .WithMany(e => e.SubCategoryAttributes)
-                .HasForeignKey(e => e.AttributeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<SaleLine>()
@@ -127,25 +112,6 @@ namespace POS_SYSTEM_MVC.Data
             builder.Entity<ProductAttribute>().HasData(
                 new ProductAttribute { Id = 1, Name = "Color" },
                 new ProductAttribute { Id = 2, Name = "Size" }
-            );
-
-            builder.Entity<SubCategoryAttribute>().HasData(
-                // Sneakers → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 1, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 1, AttributeId = 2 },
-                // Sandals → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 2, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 2, AttributeId = 2 },
-                // T-Shirts → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 3, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 3, AttributeId = 2 },
-                // Jackets → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 4, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 4, AttributeId = 2 },
-                // Watches → Color
-                new SubCategoryAttribute { SubCategoryId = 5, AttributeId = 1 },
-                // Bags → Color
-                new SubCategoryAttribute { SubCategoryId = 6, AttributeId = 1 }
             );
 
             builder.Entity<ProductAttributeValue>().HasData(
@@ -214,11 +180,11 @@ namespace POS_SYSTEM_MVC.Data
 
             builder.Entity<Discount>().HasData(
                 // 10% off Air Max 90 variant 1
-                new Discount { Id = 1, ProductVariantId = 1, Type = DiscountTypeENUM.Percentage, Value = 10, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
+                new Discount { Id = 1, ProductVariantId = 1, Type = DiscountType.Percentage, Value = 10, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
                 // 5.00 fixed off Classic Tee variant 4
-                new Discount { Id = 2, ProductVariantId = 4, Type = DiscountTypeENUM.Fixed, Value = 5, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
+                new Discount { Id = 2, ProductVariantId = 4, Type = DiscountType.Fixed, Value = 5, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) },
                 // Sale-level: 15% off when total >= 200
-                new Discount { Id = 3, SaleTotalThreshold = 200, Type = DiscountTypeENUM.Percentage, Value = 15, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) }
+                new Discount { Id = 3, SaleTotalThreshold = 200, Type = DiscountType.Percentage, Value = 15, IsActive = true, CreatedAt = new DateTime(2026, 1, 1) }
             );
             #endregion
 
@@ -251,7 +217,7 @@ namespace POS_SYSTEM_MVC.Data
                     CashierId = "C33D1111-2222-3333-4444-555555555555",
                     CreatedAt = new DateTime(2026, 5, 1),
                     Status = SaleStatus.Completed,
-                    DiscountType = DiscountTypeENUM.Percentage,
+                    DiscountType = DiscountType.Percentage,
                     DiscountValue = 15,
                     DiscountAmount = 19.50m
                 },
@@ -286,7 +252,7 @@ namespace POS_SYSTEM_MVC.Data
                     ProductVariantId = 4,
                     Quantity = 2,
                     OriginalUnitPrice = 28.00m,
-                    DiscountType = DiscountTypeENUM.Fixed,
+                    DiscountType = DiscountType.Fixed,
                     DiscountValue = 5,
                     DiscountAmount = 5.00m
                 },
@@ -298,7 +264,7 @@ namespace POS_SYSTEM_MVC.Data
                     ProductVariantId = 1,
                     Quantity = 1,
                     OriginalUnitPrice = 130.00m,
-                    DiscountType = DiscountTypeENUM.Percentage,
+                    DiscountType = DiscountType.Percentage,
                     DiscountValue = 10,
                     DiscountAmount = 13.00m
                 },

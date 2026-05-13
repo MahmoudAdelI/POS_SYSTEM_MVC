@@ -323,9 +323,6 @@ namespace POS_SYSTEM_MVC.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
@@ -393,6 +390,9 @@ namespace POS_SYSTEM_MVC.Migrations
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -932,73 +932,6 @@ namespace POS_SYSTEM_MVC.Migrations
                         });
                 });
 
-            modelBuilder.Entity("POS_SYSTEM_MVC.Models.SubCategoryAttribute", b =>
-                {
-                    b.Property<int>("SubCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AttributeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SubCategoryId", "AttributeId");
-
-                    b.HasIndex("AttributeId");
-
-                    b.ToTable("SubCategoryAttributes");
-
-                    b.HasData(
-                        new
-                        {
-                            SubCategoryId = 1,
-                            AttributeId = 1
-                        },
-                        new
-                        {
-                            SubCategoryId = 1,
-                            AttributeId = 2
-                        },
-                        new
-                        {
-                            SubCategoryId = 2,
-                            AttributeId = 1
-                        },
-                        new
-                        {
-                            SubCategoryId = 2,
-                            AttributeId = 2
-                        },
-                        new
-                        {
-                            SubCategoryId = 3,
-                            AttributeId = 1
-                        },
-                        new
-                        {
-                            SubCategoryId = 3,
-                            AttributeId = 2
-                        },
-                        new
-                        {
-                            SubCategoryId = 4,
-                            AttributeId = 1
-                        },
-                        new
-                        {
-                            SubCategoryId = 4,
-                            AttributeId = 2
-                        },
-                        new
-                        {
-                            SubCategoryId = 5,
-                            AttributeId = 1
-                        },
-                        new
-                        {
-                            SubCategoryId = 6,
-                            AttributeId = 1
-                        });
-                });
-
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.Unit", b =>
                 {
                     b.Property<int>("Id")
@@ -1265,25 +1198,6 @@ namespace POS_SYSTEM_MVC.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("POS_SYSTEM_MVC.Models.SubCategoryAttribute", b =>
-                {
-                    b.HasOne("POS_SYSTEM_MVC.Models.ProductAttribute", "Attribute")
-                        .WithMany("SubCategoryAttributes")
-                        .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("POS_SYSTEM_MVC.Models.SubCategory", "SubCategory")
-                        .WithMany("SubCategoryAttributes")
-                        .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Attribute");
-
-                    b.Navigation("SubCategory");
-                });
-
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.VariantAttribute", b =>
                 {
                     b.HasOne("POS_SYSTEM_MVC.Models.ProductAttributeValue", "AttributeValue")
@@ -1327,8 +1241,6 @@ namespace POS_SYSTEM_MVC.Migrations
 
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.ProductAttribute", b =>
                 {
-                    b.Navigation("SubCategoryAttributes");
-
                     b.Navigation("Values");
                 });
 
@@ -1356,8 +1268,6 @@ namespace POS_SYSTEM_MVC.Migrations
                     b.Navigation("AttributeValues");
 
                     b.Navigation("Products");
-
-                    b.Navigation("SubCategoryAttributes");
                 });
 
             modelBuilder.Entity("POS_SYSTEM_MVC.Models.Unit", b =>

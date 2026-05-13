@@ -1,0 +1,134 @@
+﻿@model POS_SYSTEM_MVC.DTOs.SalesHistory.SalesHistoryDto
+@{
+    ViewData["Title"] = "Sales History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var filter = ViewData["Filter"] as string ?? "all";
+}
+
+<div class="p-4">
+    <h4 class="fw-bold mb-1">Sales History</h4>
+    <p class="text-muted mb-4">View and analyze all transactions</p>
+
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <div class="mb-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center"
+                         style="width:48px;height:48px;background:#D1FAE5;">
+                        <i class="fas fa-dollar-sign" style="color:#059669;font-size:1.2rem;"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-0">$@Model.TotalRevenue.ToString("N2")</h4>
+                <p class="text-muted small mb-0">Total Revenue</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <div class="mb-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center"
+                         style="width:48px;height:48px;background:#EEF2FF;">
+                        <i class="fas fa-cart-shopping" style="color:#4F6EF7;font-size:1.2rem;"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-0">@Model.TotalOrders</h4>
+                <p class="text-muted small mb-0">Total Orders</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <div class="mb-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center"
+                         style="width:48px;height:48px;background:#F3E8FF;">
+                        <i class="fas fa-cart-shopping" style="color:#9333EA;font-size:1.2rem;"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-0">$@Model.AverageOrder.ToString("N2")</h4>
+                <p class="text-muted small mb-0">Average Order</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Filter -->
+    <div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <i class="fas fa-filter text-muted"></i>
+            <span class="text-muted">Filter by:</span>
+            <a asp-action="Index" asp-area="Admin" asp-controller="SalesHistory"
+               asp-route-filter="today"
+               class="btn btn-sm rounded-pill px-4 @(filter == "today" ? "btn-primary" : "btn-light fw-bold")">
+                Today
+            </a>
+            <a asp-action="Index" asp-area="Admin" asp-controller="SalesHistory"
+               asp-route-filter="all"
+               class="btn btn-sm rounded-pill px-4 @(filter == "all" ? "btn-primary" : "btn-light fw-bold")">
+                All Time
+            </a>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="table-responsive">
+            <table class="table table-borderless align-middle mb-0">
+                <thead style="background:#F8F9FA;">
+                    <tr class="text-muted small">
+                        <th class="px-4 py-3 fw-semibold">Order ID</th>
+                        <th class="py-3 fw-semibold">Cashier</th>
+                        <th class="py-3 fw-semibold">Items</th>
+                        <th class="py-3 fw-semibold">Subtotal</th>
+                        <th class="py-3 fw-semibold">Discount</th>
+                        <th class="py-3 fw-semibold">Total</th>
+                        <th class="py-3 fw-semibold">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Sales.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="fas fa-receipt fa-2x mb-2 d-block"></i>
+                                No sales found.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var sale in Model.Sales)
+                        {
+                            <tr class="border-top">
+                                <td class="px-4 py-3">
+                                    <span class="text-primary fw-semibold">@sale.OrderId</span>
+                                </td>
+                                <td class="py-3">@sale.CashierName</td>
+                                <td class="py-3 text-muted">@sale.ItemsCount</td>
+                                <td class="py-3">$@sale.Subtotal.ToString("N2")</td>
+                                <td class="py-3">
+                                    @if (sale.DiscountAmount.HasValue && sale.DiscountAmount > 0)
+                                    {
+                                        <span class="text-danger">-$@sale.DiscountAmount.Value.ToString("N2")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td class="py-3 fw-semibold">$@sale.Total.ToString("N2")</td>
+                                <td class="py-3">
+                                    <span class="badge rounded-pill px-3 py-2 small fw-semibold"
+                                          style="@sale.StatusBadgeStyle">
+                                        @sale.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

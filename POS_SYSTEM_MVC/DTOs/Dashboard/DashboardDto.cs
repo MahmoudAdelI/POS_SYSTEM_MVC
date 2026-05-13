@@ -11,5 +11,6 @@
 
         public List<RecentSaleDto> RecentSales { get; set; } = new();
         public List<TopProductDto> TopProducts { get; set; } = new();
+        public List<SalesChartDto> SalesChart { get; set; } = new();
     }
 }

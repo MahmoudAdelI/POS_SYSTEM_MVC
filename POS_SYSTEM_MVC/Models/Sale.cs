@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static POS_SYSTEM_MVC.Constants.Enums;
-
 
 namespace POS_SYSTEM_MVC.Models
 {
@@ -16,7 +14,7 @@ namespace POS_SYSTEM_MVC.Models
 
         public SaleStatus Status { get; set; }
 
-        public DiscountTypeENUM? DiscountType { get; set; }
+        public DiscountType? DiscountType { get; set; }
 
         [Column(TypeName = "decimal(10, 2)")]
         public decimal? DiscountValue { get; set; }
