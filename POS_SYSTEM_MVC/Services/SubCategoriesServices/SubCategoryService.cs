@@ -1,4 +1,5 @@
-﻿using POS_SYSTEM_MVC.DTOs.SubCategory;
+﻿using POS_SYSTEM_MVC.DTOs.Attribute;
+using POS_SYSTEM_MVC.DTOs.SubCategory;
 using POS_SYSTEM_MVC.Models;
 using POS_SYSTEM_MVC.UnitOfWork;
 
@@ -15,13 +16,18 @@ namespace POS_SYSTEM_MVC.Services.SubCategoriesServices
 
             var subCategory = new SubCategory
             {
-                Name = dto.SubCategoryName,
+                Name = dto.Name,
                 CategoryId = category.Id
             };
 
             await unitOfWork.SubCategories.AddAsync(subCategory);
             await unitOfWork.SaveChangesAsync();
             return new SubCategoryResponseDto { Id = subCategory.Id, Name = subCategory.Name };
+        }
+
+        public async Task<IEnumerable<AttributeWithValuesDto>> GetAttributesWithValuesAsync(int subCategoryId)
+        {
+            return await unitOfWork.SubCategories.GetAttributesWithValuesAsync(subCategoryId);
         }
     }
 }

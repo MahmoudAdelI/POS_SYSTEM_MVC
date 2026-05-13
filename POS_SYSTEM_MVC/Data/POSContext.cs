@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
@@ -18,7 +18,6 @@ namespace POS_SYSTEM_MVC.Data
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<ProductAttribute> ProductAttributes { get; set; }
         public DbSet<ProductAttributeValue> ProductAttributeValues { get; set; }
-        public DbSet<SubCategoryAttribute> SubCategoryAttributes { get; set; }
         public DbSet<VariantAttribute> VariantAttributes { get; set; }
         public DbSet<Discount> Discounts { get; set; }
         public DbSet<Sale> Sales { get; set; }
@@ -35,7 +34,6 @@ namespace POS_SYSTEM_MVC.Data
 
             #region Composite Primary Keys
             builder.Entity<VariantAttribute>().HasKey(e => new { e.ProductVariantId, e.AttributeValueId});
-            builder.Entity<SubCategoryAttribute>().HasKey(e => new { e.SubCategoryId, e.AttributeId });
             builder.Entity<SaleLine>().HasKey(e => new { e.SaleId, e.ProductVariantId});
             #endregion
 
@@ -50,18 +48,6 @@ namespace POS_SYSTEM_MVC.Data
                 .HasOne(e => e.AttributeValue)
                 .WithMany(e => e.VariantAttributes)
                 .HasForeignKey(e => e.AttributeValueId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<SubCategoryAttribute>()
-                .HasOne(e => e.SubCategory)
-                .WithMany(e => e.SubCategoryAttributes)
-                .HasForeignKey(e => e.SubCategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<SubCategoryAttribute>()
-                .HasOne(e => e.Attribute)
-                .WithMany(e => e.SubCategoryAttributes)
-                .HasForeignKey(e => e.AttributeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<SaleLine>()
@@ -129,45 +115,26 @@ namespace POS_SYSTEM_MVC.Data
                 new ProductAttribute { Id = 2, Name = "Size" }
             );
 
-            builder.Entity<SubCategoryAttribute>().HasData(
-                // Sneakers → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 1, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 1, AttributeId = 2 },
-                // Sandals → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 2, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 2, AttributeId = 2 },
-                // T-Shirts → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 3, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 3, AttributeId = 2 },
-                // Jackets → Color, Size
-                new SubCategoryAttribute { SubCategoryId = 4, AttributeId = 1 },
-                new SubCategoryAttribute { SubCategoryId = 4, AttributeId = 2 },
-                // Watches → Color
-                new SubCategoryAttribute { SubCategoryId = 5, AttributeId = 1 },
-                // Bags → Color
-                new SubCategoryAttribute { SubCategoryId = 6, AttributeId = 1 }
-            );
-
             builder.Entity<ProductAttributeValue>().HasData(
-                // Color → Sneakers
+                // Color ? Sneakers
                 new ProductAttributeValue { Id = 1, AttributeId = 1, SubCategoryId = 1, Value = "Red" },
                 new ProductAttributeValue { Id = 2, AttributeId = 1, SubCategoryId = 1, Value = "Blue" },
                 new ProductAttributeValue { Id = 3, AttributeId = 1, SubCategoryId = 1, Value = "Black" },
-                // Size → Sneakers (EU)
+                // Size ? Sneakers (EU)
                 new ProductAttributeValue { Id = 4, AttributeId = 2, SubCategoryId = 1, Value = "40" },
                 new ProductAttributeValue { Id = 5, AttributeId = 2, SubCategoryId = 1, Value = "41" },
                 new ProductAttributeValue { Id = 6, AttributeId = 2, SubCategoryId = 1, Value = "42" },
                 new ProductAttributeValue { Id = 7, AttributeId = 2, SubCategoryId = 1, Value = "43" },
-                // Color → T-Shirts
+                // Color ? T-Shirts
                 new ProductAttributeValue { Id = 8, AttributeId = 1, SubCategoryId = 3, Value = "White" },
                 new ProductAttributeValue { Id = 9, AttributeId = 1, SubCategoryId = 3, Value = "Black" },
                 new ProductAttributeValue { Id = 10, AttributeId = 1, SubCategoryId = 3, Value = "Gray" },
-                // Size → T-Shirts (letter)
+                // Size ? T-Shirts (letter)
                 new ProductAttributeValue { Id = 11, AttributeId = 2, SubCategoryId = 3, Value = "S" },
                 new ProductAttributeValue { Id = 12, AttributeId = 2, SubCategoryId = 3, Value = "M" },
                 new ProductAttributeValue { Id = 13, AttributeId = 2, SubCategoryId = 3, Value = "L" },
                 new ProductAttributeValue { Id = 14, AttributeId = 2, SubCategoryId = 3, Value = "XL" },
-                // Color → Watches
+                // Color ? Watches
                 new ProductAttributeValue { Id = 15, AttributeId = 1, SubCategoryId = 5, Value = "Silver" },
                 new ProductAttributeValue { Id = 16, AttributeId = 1, SubCategoryId = 5, Value = "Gold" },
                 new ProductAttributeValue { Id = 17, AttributeId = 1, SubCategoryId = 5, Value = "Black" }
@@ -181,34 +148,34 @@ namespace POS_SYSTEM_MVC.Data
             );
 
             builder.Entity<ProductVariant>().HasData(
-                // Air Max 90 — Red/41, Red/42, Blue/41
+                // Air Max 90 � Red/41, Red/42, Blue/41
                 new ProductVariant { Id = 1, ProductId = 1, UnitPrice = 130.00m, StockQuantity = 10, SKU = "AM90-RED-41" },
                 new ProductVariant { Id = 2, ProductId = 1, UnitPrice = 130.00m, StockQuantity = 8, SKU = "AM90-RED-42" },
                 new ProductVariant { Id = 3, ProductId = 1, UnitPrice = 130.00m, StockQuantity = 5, SKU = "AM90-BLU-41" },
-                // Classic Tee — White/M, Black/L
+                // Classic Tee � White/M, Black/L
                 new ProductVariant { Id = 4, ProductId = 3, UnitPrice = 28.00m, StockQuantity = 20, SKU = "TEE-WHT-M" },
                 new ProductVariant { Id = 5, ProductId = 3, UnitPrice = 28.00m, StockQuantity = 15, SKU = "TEE-BLK-L" },
-                // G-Shock — Black
+                // G-Shock � Black
                 new ProductVariant { Id = 6, ProductId = 4, UnitPrice = 80.00m, StockQuantity = 7, SKU = "GSH-BLK" }
             );
 
             builder.Entity<VariantAttribute>().HasData(
-                // AM90-RED-41 → Color=Red(1), Size=41(5)
+                // AM90-RED-41 ? Color=Red(1), Size=41(5)
                 new VariantAttribute { ProductVariantId = 1, AttributeValueId = 1 },
                 new VariantAttribute { ProductVariantId = 1, AttributeValueId = 5 },
-                // AM90-RED-42 → Color=Red(1), Size=42(6)
+                // AM90-RED-42 ? Color=Red(1), Size=42(6)
                 new VariantAttribute { ProductVariantId = 2, AttributeValueId = 1 },
                 new VariantAttribute { ProductVariantId = 2, AttributeValueId = 6 },
-                // AM90-BLU-41 → Color=Blue(2), Size=41(5)
+                // AM90-BLU-41 ? Color=Blue(2), Size=41(5)
                 new VariantAttribute { ProductVariantId = 3, AttributeValueId = 2 },
                 new VariantAttribute { ProductVariantId = 3, AttributeValueId = 5 },
-                // TEE-WHT-M → Color=White(8), Size=M(12)
+                // TEE-WHT-M ? Color=White(8), Size=M(12)
                 new VariantAttribute { ProductVariantId = 4, AttributeValueId = 8 },
                 new VariantAttribute { ProductVariantId = 4, AttributeValueId = 12 },
-                // TEE-BLK-L → Color=Black(9), Size=L(13)
+                // TEE-BLK-L ? Color=Black(9), Size=L(13)
                 new VariantAttribute { ProductVariantId = 5, AttributeValueId = 9 },
                 new VariantAttribute { ProductVariantId = 5, AttributeValueId = 13 },
-                // GSH-BLK → Color=Black(17)
+                // GSH-BLK ? Color=Black(17)
                 new VariantAttribute { ProductVariantId = 6, AttributeValueId = 17 }
             );
 
@@ -279,7 +246,7 @@ namespace POS_SYSTEM_MVC.Data
 
             builder.Entity<SaleLine>().HasData(
 
-                // Sale 1 → Classic Tee White/M × 2
+                // Sale 1 ? Classic Tee White/M � 2
                 new SaleLine
                 {
                     SaleId = 1,
@@ -291,7 +258,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = 5.00m
                 },
 
-                // Sale 2 → Air Max 90 Red/41 × 1
+                // Sale 2 ? Air Max 90 Red/41 � 1
                 new SaleLine
                 {
                     SaleId = 2,
@@ -303,7 +270,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = 13.00m
                 },
 
-                // Sale 3 → Air Max 90 Blue/41 × 1
+                // Sale 3 ? Air Max 90 Blue/41 � 1
                 new SaleLine
                 {
                     SaleId = 3,
@@ -315,7 +282,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = null
                 },
 
-                // Sale 3 → Classic Tee Black/L × 1
+                // Sale 3 ? Classic Tee Black/L � 1
                 new SaleLine
                 {
                     SaleId = 3,
@@ -327,7 +294,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = null
                 },
 
-                // Sale 4 → G-Shock Black × 2
+                // Sale 4 ? G-Shock Black � 2
                 new SaleLine
                 {
                     SaleId = 4,
@@ -339,7 +306,7 @@ namespace POS_SYSTEM_MVC.Data
                     DiscountAmount = null
                 },
 
-                // Sale 5 → Air Max 90 Red/42 × 1 (Canceled)
+                // Sale 5 ? Air Max 90 Red/42 � 1 (Canceled)
                 new SaleLine
                 {
                     SaleId = 5,
