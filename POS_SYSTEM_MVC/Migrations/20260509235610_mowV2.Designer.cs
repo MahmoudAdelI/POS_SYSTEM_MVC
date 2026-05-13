@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POS_SYSTEM_MVC.Data;
 
@@ -11,9 +12,11 @@ using POS_SYSTEM_MVC.Data;
 namespace POS_SYSTEM_MVC.Migrations
 {
     [DbContext(typeof(POSContext))]
-    partial class POSContextModelSnapshot : ModelSnapshot
+    [Migration("20260509235610_mowV2")]
+    partial class mowV2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

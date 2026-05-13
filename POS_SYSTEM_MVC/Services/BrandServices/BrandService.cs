@@ -6,12 +6,12 @@ namespace POS_SYSTEM_MVC.Services.Brands;
 
 public class BrandService(IUnitOfWork unitOfWork) : IBrandService
 {
-    public async Task<BrandResponseDto> AddBrandAsync(AddBrandDto dto)
+    public async Task<int> AddBrandAsync(AddBrandDto dto)
     {
         var brand = new Brand { Name = dto.Name };
         await unitOfWork.Brands.AddAsync(brand);
         await unitOfWork.SaveChangesAsync();
-        return new BrandResponseDto { Id = brand.Id, Name = brand.Name};
+        return brand.Id;
     }
 
     public async Task<IReadOnlyList<BrandResponseDto>> GetAllAsync()

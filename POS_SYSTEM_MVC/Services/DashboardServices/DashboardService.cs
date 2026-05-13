@@ -20,7 +20,9 @@ namespace POS_SYSTEM_MVC.Services.DashboardServices
         public async Task<DashboardDto> GetDashboardDataAsync()
         {
             // ---- جيبي كل الـ Sales مع SaleLines والـ ProductVariant ----
-            var allSales = await _uow.Sales.GetSalesWithDetailsAsync();
+            var allSales = await _uow.Sales.GetAllAsync(
+                s => s.SaleLines
+            );
 
             var completedSales = allSales
                 .Where(s => s.Status == SaleStatus.Completed)
@@ -135,23 +137,6 @@ namespace POS_SYSTEM_MVC.Services.DashboardServices
             for (int i = 0; i < topProducts.Count; i++)
                 topProducts[i].Rank = i + 1;
 
-
-
-            var salesChart = completedSales
-                .Where(s => s.CreatedAt >= startOfMonth) // الشهر الحالي بس
-                .GroupBy(s => s.CreatedAt.Day)           // بنجمع على اليوم
-                .Select(g => new SalesChartDto
-                {
-                     Label = $"May {g.Key}",
-                     Amount = g.Sum(s =>
-                     s.SaleLines.Sum(sl =>
-                    sl.OriginalUnitPrice * sl.Quantity
-                   - (sl.DiscountAmount ?? 0))
-                   - (s.DiscountAmount ?? 0))
-                })
-               .OrderBy(x => x.Label)
-               .ToList();
-
             return new DashboardDto
             {
                 TotalSales = totalSales,
@@ -160,8 +145,7 @@ namespace POS_SYSTEM_MVC.Services.DashboardServices
                 SalesGrowth = Math.Round(salesGrowth, 1),
                 OrdersGrowth = Math.Round(ordersGrowth, 1),
                 RecentSales = recentSales,
-                TopProducts = topProducts,
-                SalesChart = salesChart
+                TopProducts = topProducts
             };
         }
     }

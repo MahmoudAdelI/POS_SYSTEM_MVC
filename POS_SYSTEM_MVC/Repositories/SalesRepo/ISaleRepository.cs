@@ -5,6 +5,5 @@ namespace POS_SYSTEM_MVC.Repositories.SalesRepo
 {
     public interface ISaleRepository : IBaseRepository<Sale>
     {
-        Task<IReadOnlyList<Sale>> GetSalesWithDetailsAsync();
     }
 }

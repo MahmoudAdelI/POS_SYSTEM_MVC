@@ -8,6 +8,7 @@
     <h4 class="fw-bold mb-1">Dashboard</h4>
     <p class="text-muted mb-4">Welcome back! Here's what's happening with your store.</p>
 
+    
     <div class="row g-3 mb-4">
 
         <div class="col-md-4">
@@ -39,7 +40,8 @@
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-3 p-3">
                 <div class="d-flex justify-content-between align-items-start">
-                    <div class="rounded-2 p-2" style="background-color:#EEEDFE">
+                    <div class="bg-purple bg-opacity-10 rounded-2 p-2"
+                         style="background-color:#EEEDFE !important">
                         <i class="fas fa-box" style="color:#534AB7"></i>
                     </div>
                 </div>
@@ -49,6 +51,7 @@
         </div>
     </div>
 
+    
     <div class="card border-0 shadow-sm rounded-3 p-4 mb-4">
         <h5 class="fw-bold mb-3">Recent Sales</h5>
         <div class="table-responsive">
@@ -91,6 +94,7 @@
         </div>
     </div>
 
+   
     <div class="card border-0 shadow-sm rounded-3 p-4 mb-4">
         <h5 class="fw-bold mb-3">Top Products</h5>
         @foreach (var product in Model.TopProducts)
@@ -109,59 +113,12 @@
         }
     </div>
 
+    
     <div class="card border-0 shadow-sm rounded-3 p-4">
         <h5 class="fw-bold mb-3">Sales Overview</h5>
-        <canvas id="salesChart" height="100"></canvas>
+        <div class="d-flex flex-column align-items-center justify-content-center py-5 text-muted">
+            <i class="fas fa-chart-bar fa-2x mb-2"></i>
+            <p class="mb-0 small">Sales chart visualization would go here</p>
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const labels = @Html.Raw(Json.Serialize(Model.SalesChart.Select(x => x.Label)));
-        const data = @Html.Raw(Json.Serialize(Model.SalesChart.Select(x => x.Amount)));
-
-        new Chart(document.getElementById('salesChart'), {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Sales',
-                    data: data,
-                    borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13,110,253,0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#0d6efd',
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => '$' + ctx.parsed.y.toFixed(2)
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: value => '$' + value
-                        },
-                        grid: {
-                            color: 'rgba(0,0,0,0.05)'
-                        }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-    </script>
-}

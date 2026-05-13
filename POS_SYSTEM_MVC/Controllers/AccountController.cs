@@ -101,8 +101,6 @@ namespace POS_SYSTEM_MVC.Controllers
         public IActionResult AccessDenied()
         {
             return View();
-
-
         }
     }
 }

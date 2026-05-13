@@ -13,7 +13,6 @@ namespace POS_SYSTEM_MVC.Models
         [Column(TypeName = "smallmoney")]
         public decimal BasePrice { get; set; }
 
-        public string? ImageUrl { get; set; }
 
         public int UnitId { get; set; }
         public int BrandId { get; set; }
