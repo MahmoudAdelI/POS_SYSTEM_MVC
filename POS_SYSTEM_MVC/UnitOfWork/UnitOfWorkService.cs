@@ -6,15 +6,11 @@ using POS_SYSTEM_MVC.Repositories;
 using POS_SYSTEM_MVC.Repositories.Base;
 using POS_SYSTEM_MVC.Repositories.Brands;
 using POS_SYSTEM_MVC.Repositories.CategoryRepo;
-using POS_SYSTEM_MVC.Repositories.DiscountRepo;
-using POS_SYSTEM_MVC.Repositories.ProductRepo;
-using POS_SYSTEM_MVC.Repositories.SalesRepo;
-<<<<<<< HEAD
-using POS_SYSTEM_MVC.Repositories.ProductVariantRepo;
-=======
 using POS_SYSTEM_MVC.Repositories.SubCategories;
 using POS_SYSTEM_MVC.Repositories.UnitRepo;
->>>>>>> Discount_MOW
+using POS_SYSTEM_MVC.Repositories.ProductRepo;
+using POS_SYSTEM_MVC.Repositories.SalesRepo;
+using POS_SYSTEM_MVC.Repositories.ProductVariantRepo;
 
 namespace POS_SYSTEM_MVC.UnitOfWork
 {
@@ -29,15 +25,11 @@ namespace POS_SYSTEM_MVC.UnitOfWork
         public IUnitRepository Units { get; } = new UnitRepository(context);
         public IProductRepository Products { get; } = new ProductRepository(context);
         public ISaleRepository Sales { get; } = new SaleRepository(context);
-<<<<<<< HEAD
         public IProductVariantRepository ProductVariants { get; } = new ProductVariantRepository(context);
 
         public IBaseRepository<ProductAttribute> Attributes => new BaseRepository<ProductAttribute>(context);
 
         public IBaseRepository<ProductAttributeValue> AttributeValues => new BaseRepository<ProductAttributeValue>(context);
-=======
-        public IDiscountRepository Discounts { get; }= new DiscountRepository(context);
->>>>>>> Discount_MOW
 
         public async Task BeginTransactionAsync()
         {

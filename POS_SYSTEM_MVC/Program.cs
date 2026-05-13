@@ -4,25 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using POS_SYSTEM_MVC.Constants;
 using POS_SYSTEM_MVC.Data;
 using POS_SYSTEM_MVC.Models;
-using POS_SYSTEM_MVC.Repositories.DiscountRepo;
-using POS_SYSTEM_MVC.Repositories.ProductRepo;
-using POS_SYSTEM_MVC.Repositories.ProductVariantRepo;
 using POS_SYSTEM_MVC.Services.Brands;
 using POS_SYSTEM_MVC.Services.CategoryServices;
-using POS_SYSTEM_MVC.Services.DashboardServices;
-using POS_SYSTEM_MVC.Services.DiscountServices;
 using POS_SYSTEM_MVC.Services.ProductServices;
 using POS_SYSTEM_MVC.Services.SubCategoriesServices;
 using POS_SYSTEM_MVC.Services.Unitservices;
 using POS_SYSTEM_MVC.Services.UnitServices;
 using POS_SYSTEM_MVC.UnitOfWork;
-<<<<<<< HEAD
 using POS_SYSTEM_MVC.Services.DashboardServices;
 using POS_SYSTEM_MVC.Services.InventoryServices;
 using POS_SYSTEM_MVC.Services.SalesHistoryServices;
 using POS_SYSTEM_MVC.Services.AttributeServices;
-=======
->>>>>>> Discount_MOW
 
 namespace POS_SYSTEM_MVC
 {
@@ -66,18 +58,9 @@ namespace POS_SYSTEM_MVC
             builder.Services.AddScoped<IUnitService, UnitService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
-<<<<<<< HEAD
             builder.Services.AddScoped<IInventoryService, InventoryService>();
             builder.Services.AddScoped<ISalesHistoryService, SalesHistoryService>();
             builder.Services.AddScoped<IAttributeService, AttributeService>();
-=======
-            builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
-            builder.Services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
-            builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IDiscountService,DiscountService>();
-
-
->>>>>>> Discount_MOW
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
@@ -168,13 +151,8 @@ namespace POS_SYSTEM_MVC
                 name: "areas",
                 pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
             app.MapControllerRoute(
-<<<<<<< HEAD
                 name: "cashier",
                 pattern: "{controller=Cashier}/{action=Index}/{id?}");
-=======
-                name: "areas",
-                pattern: "{area:exists}/{controller=Discount}/{action=Index}/{id?}");
->>>>>>> Discount_MOW
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}")
