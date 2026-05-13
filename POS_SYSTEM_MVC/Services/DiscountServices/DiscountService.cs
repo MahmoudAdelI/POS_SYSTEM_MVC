@@ -10,7 +10,7 @@ namespace POS_SYSTEM_MVC.Services.DiscountServices
     public class DiscountService : IDiscountService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public DiscountService(IDiscountRepository discountRepository , IUnitOfWork unitOfWork)
+        public DiscountService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
