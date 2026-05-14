@@ -37,6 +37,23 @@ $(document).ready(function () {
         loadContent(fullUrl, true);
     });
 
+    // Handle Discount Search Form Submission via AJAX
+    $(document).on('submit', '#discountSearchForm', function (e) {
+        if ($(this).hasClass('no-ajax')) return;
+        e.preventDefault();
+
+        var url = $(this).attr('action') || window.location.pathname;
+        var serializedData = $(this).serialize();
+        var fullUrl = url + (url.indexOf('?') > -1 ? '&' : '?') + serializedData;
+
+        loadContent(fullUrl, true);
+    });
+
+    // Auto-submit when dropdowns change (optional quality of life enhancement)
+    $(document).on('change', '#discountSearchForm select', function () {
+        $('#discountSearchForm').submit();
+    });
+
     $(document).on('click', '.ajax-link', function (e) {
         if ($(this).hasClass('no-ajax')) return;
         e.preventDefault();
@@ -578,3 +595,55 @@ $(document).ready(function () {
     renderCart();
 });
 
+
+
+// Discount Management Events
+$(document).on('change', 'input[name="discount_on"]', function () {
+    $('#thresholdSection').hide();
+    $('#productSection').hide();
+    $('#variantSection').hide();
+
+    if (this.value === 'Cart_Threshold') {
+        $('#thresholdSection').show();
+    } else if (this.value === 'Product') {
+        $('#productSection').show();
+    } else if (this.value === 'Product_Variant') {
+        $('#variantSection').show();
+    }
+});
+
+$(document).on('change', 'input[name="Discount.Type"]', function () {
+    $('#Discount_Value_Percentage').hide();
+    $('#Discount_Value_Fixed').hide();
+
+    if (this.value === 'Percentage') {
+        $('#Discount_Value_Percentage').show();
+    } else if (this.value === 'Fixed') {
+        $('#Discount_Value_Fixed').show();
+    }
+});
+
+$(document).on('input', '#percentageRange', function () {
+    $('#percentageValue').text(this.value);
+});
+
+
+
+
+// Ensure Select2 initializes properly
+function initSelect2() {
+    if ($().select2) {
+        $('.select2').select2({
+            theme: 'classic', // Use standard/classic layout to fit bootstrap
+            placeholder: 'Select an option'
+        });
+    }
+}
+
+$(document).on('content-updated', function () {
+    initSelect2();
+});
+
+$(document).ready(function () {
+    initSelect2();
+});

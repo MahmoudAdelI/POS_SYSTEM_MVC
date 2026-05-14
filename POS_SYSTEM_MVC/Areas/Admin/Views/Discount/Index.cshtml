@@ -1,7 +1,6 @@
 ﻿@model POS_SYSTEM_MVC.ViewModels.DiscountformVM
-<form method="post">
 
-<div asp-validation-summary="All"class="text-danger"></div>
+<div asp-validation-summary="All" class="text-danger"></div>
 
 <div class="container-fluid py-4">
 
@@ -22,486 +21,377 @@
             <div class="card border-0 shadow-sm rounded-4">
 
                 <div class="card-body p-4">
+                    <form method="post">
 
-                    <h3 class="fw-bold mb-4">
-                        Create New Discount
-                    </h3>
+                        <h3 class="fw-bold mb-4">
+                            Create New Discount
+                        </h3>
 
-                    <label class="form-label fw-semibold">
-                        Discount Name
-                    </label>
-
-                    <input asp-for="Discount.Name"
-                           class="form-control form-control-lg mb-4"
-                           placeholder="e.g., Summer Sale" />
-
-                    <label class="form-label fw-bold mb-3">
-                        Discount On
-                    </label>
-
-                    <div class="d-flex gap-3 mb-4 flex-wrap">
-
-                        <input type="radio"
-                               class="btn-check"
-                               name="discount_on"
-                               id="thresholdRadio"
-                               value="Cart_Threshold"
-                               autocomplete="off">
-
-                        <label class="btn btn-outline-primary rounded-4 p-4 flex-fill"
-                               for="thresholdRadio">
-
-                            <div class="fs-3 mb-2 text-primary">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                            </div>
-
-                            <div class="fw-semibold">
-                                Cart Threshold
-                            </div>
-
+                        <label class="form-label fw-semibold">
+                            Discount Name
                         </label>
 
-                        <input type="radio"
-                               class="btn-check"
-                               name="discount_on"
-                               id="productRadio"
-                               value="Product"
-                               autocomplete="off">
+                        <input asp-for="Discount.Name" class="form-control form-control-lg mb-4"
+                               placeholder="e.g., Summer Sale" />
 
-                        <label class="btn btn-outline-primary rounded-4 p-4 flex-fill"
-                               for="productRadio">
+                        <label class="form-label fw-bold mb-3">
+                            Discount On
+                        </label>
 
-                            <div class="fs-3 mb-2 text-primary">
-                                <i class="fa-solid fa-box"></i>
-                            </div>
+                        <div class="d-flex gap-3 mb-4 flex-wrap">
 
-                            <div class="fw-semibold">
+                            <input type="radio" class="btn-check" name="discount_on" id="thresholdRadio"
+                                   value="Cart_Threshold" autocomplete="off">
+
+                            <label class="btn btn-outline-primary rounded-4 p-4 flex-fill" for="thresholdRadio">
+
+                                <div class="fs-3 mb-2">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                </div>
+
+                                <div class="fw-semibold">
+                                    Cart Threshold
+                                </div>
+
+                            </label>
+
+                            <input type="radio" class="btn-check" name="discount_on" id="productRadio" value="Product"
+                                   autocomplete="off">
+
+                            <label class="btn btn-outline-primary rounded-4 p-4 flex-fill" for="productRadio">
+
+                                <div class="fs-3 mb-2">
+                                    <i class="fa-solid fa-box"></i>
+                                </div>
+
+                                <div class="fw-semibold">
+                                    Product
+                                </div>
+
+                            </label>
+
+                            <input type="radio" class="btn-check" name="discount_on" id="variantRadio"
+                                   value="Product_Variant" autocomplete="off">
+
+                            <label class="btn btn-outline-primary rounded-4 p-4 flex-fill" for="variantRadio">
+
+                                <div class="fs-3 mb-2">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+
+                                <div class="fw-semibold">
+                                    Product Variant
+                                </div>
+
+                            </label>
+
+                        </div>
+
+                        <div id="thresholdSection" class="mb-4" style="display:none">
+
+                            <label class="form-label fw-semibold">
+                                Sale Total Threshold
+                            </label>
+
+                            <input asp-for="Discount.SaleTotalThreshold" class="form-control form-control-lg"
+                                   placeholder="e.g., 200" />
+
+                        </div>
+
+                        <div id="productSection" class="mb-4" style="display:none">
+
+                            <label class="form-label fw-semibold">
                                 Product
-                            </div>
+                            </label>
 
-                        </label>
+                            <select asp-for="Discount.ProductId" class="form-select select2" style="width: 100%;">
 
-                        <input type="radio"
-                               class="btn-check"
-                               name="discount_on"
-                               id="variantRadio"
-                               value="Product_Variant"
-                               autocomplete="off">
+                                <option value="">
+                                    Select Product
+                                </option>
 
-                        <label class="btn btn-outline-primary rounded-4 p-4 flex-fill"
-                               for="variantRadio">
+                                @foreach (var product in Model.Products)
+                                {
+                                    <option value="@product.Id">
+                                        @product.Name
+                                    </option>
+                                }
 
-                            <div class="fs-3 mb-2 text-primary">
-                                <i class="fa-solid fa-layer-group"></i>
-                            </div>
+                            </select>
 
-                            <div class="fw-semibold">
+                        </div>
+
+                        <div id="variantSection" class="mb-4" style="display:none">
+
+                            <label class="form-label fw-semibold">
                                 Product Variant
-                            </div>
-
-                        </label>
-
-                    </div>
-
-                    <div id="thresholdSection"
-                         class="mb-4"
-                         style="display:none">
-
-                        <label class="form-label fw-semibold">
-                            Sale Total Threshold
-                        </label>
-
-                        <input asp-for="Discount.SaleTotalThreshold"
-                               class="form-control form-control-lg"
-                               placeholder="e.g., 200" />
-
-                    </div>
-
-                    <div id="productSection"
-                         class="mb-4"
-                         style="display:none">
-
-                        <label class="form-label fw-semibold">
-                            Product
-                        </label>
-
-                        <select asp-for="Discount.ProductId"
-                                class="form-select">
-
-                            <option value="">
-                                Select Product
-                            </option>
-
-                            @foreach (var product in Model.Products)
-                            {
-                                <option value="@product.Id">
-                                    @product.Name
-                                </option>
-                            }
-
-                        </select>
-
-                    </div>
-
-                    <div id="variantSection"
-                         class="mb-4"
-                         style="display:none">
-
-                        <label class="form-label fw-semibold">
-                            Product Variant
-                        </label>
-
-                        <select asp-for="Discount.ProductVariantId"
-                                class="form-select">
-
-                            <option value="">
-                                Select Variant
-                            </option>
-
-                            @foreach (var variant in Model.ProductVariants)
-                            {
-                                <option value="@variant.Id">
-                                    @variant.SKU
-                                </option>
-                            }
-
-                        </select>
-
-                    </div>
-
-                    <hr class="my-4" />
-
-                    <label class="form-label fw-bold mb-3">
-                        Discount Value Type
-                    </label>
-
-                    <div class="d-flex gap-3 mb-4">
-
-                        <input type="radio"
-                               class="btn-check"
-                               asp-for="Discount.Type"
-                               id="percentageRadio"
-                               value="Percentage"
-                               autocomplete="off">
-
-                        <label class="btn btn-outline-success rounded-4 p-4 flex-fill"
-                               for="percentageRadio">
-
-                            <div class="fs-3 mb-2 text-success">
-                                <i class="fa-solid fa-percent"></i>
-                            </div>
-
-                            <div class="fw-semibold">
-                                Percentage
-                            </div>
-
-                        </label>
-
-                        <input type="radio"
-                               class="btn-check"
-                               asp-for="Discount.Type"
-                               id="fixedRadio"
-                                   value="Fixed"
-                               autocomplete="off">
-
-                        <label class="btn btn-outline-success rounded-4 p-4 flex-fill"
-                               for="fixedRadio">
-
-                            <div class="fs-3 mb-2 text-success">
-                                <i class="fa-solid fa-dollar-sign"></i>
-                            </div>
-
-                            <div class="fw-semibold">
-                                Fixed Amount
-                            </div>
-
-                        </label>
-
-                    </div>
-
-                    <div id="Discount_Value_Percentage"
-                         class="mb-4"
-                         style="display:none">
-
-                        <label class="form-label fw-semibold">
-                            Discount Percentage
-                        </label>
-
-                        <input type="range"
-                               asp-for="Discount.DiscountValue"
-                               class="form-range"
-                               min="1"
-                               max="100"
-                               id="percentageRange" />
-
-                        <div class="fw-semibold text-primary">
-                            <span id="percentageValue">
-                                50
-                            </span> %
-                        </div>
-
-                    </div>
-
-                    <div id="Discount_Value_Fixed"
-                         class="mb-4"
-                         style="display:none">
-
-                        <label class="form-label fw-semibold">
-                            Fixed Amount
-                        </label>
-
-                        <input type="number"
-                               asp-for="Discount.DiscountValue"
-                               class="form-control form-control-lg"
-                               placeholder="Enter fixed amount" />
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-6">
-
-                            <label class="form-label fw-semibold">
-                                Start Date
                             </label>
 
-                            <input type="datetime-local"
-                                   asp-for="Discount.StartDate"
-                                   class="form-control form-control-lg mb-4" />
+                            <select asp-for="Discount.ProductVariantId" class="form-select select2"
+                                    style="width: 100%;">
+
+                                <option value="">
+                                    Select Variant
+                                </option>
+
+                                @foreach (var variant in Model.ProductVariants)
+                                {
+                                    <option value="@variant.Id">
+                                        @variant.SKU
+                                    </option>
+                                }
+
+                            </select>
 
                         </div>
 
-                        <div class="col-md-6">
+                        <hr class="my-4" />
 
-                            <label class="form-label fw-semibold">
-                                Expiry Date
-                            </label>
+                        <label class="form-label fw-bold mb-3">
+                            Discount Value Type
+                        </label>
 
-                            <input type="datetime-local"
-                                   asp-for="Discount.EndDate"
-                                   class="form-control form-control-lg mb-4" />
+                        <div class="d-flex gap-3 mb-4">
 
-                        </div>
+                            <input type="radio" class="btn-check" asp-for="Discount.Type" id="percentageRadio"
+                                   value="Percentage" autocomplete="off">
 
-                    </div>
+                                <label class="btn btn-outline-success rounded-4 p-4 flex-fill" for="percentageRadio">
 
-                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-4 py-3 fw-semibold">
-                        Create Discount
-                    </button>
+                                    <div class="fs-3 mb-2">
+                                        <i class="fa-solid fa-percent"></i>
+                                    </div>
 
-                </div>
+                                    <div class="fw-semibold">
+                                        Percentage
+                                    </div>
 
-            </div>
+                                </label>
 
-        </div>
+                                <input type="radio" class="btn-check" asp-for="Discount.Type" id="fixedRadio" value="Fixed"
+                                       autocomplete="off">
 
-        <div class="col-lg-6">
+                                    <label class="btn btn-outline-success rounded-4 p-4 flex-fill" for="fixedRadio">
 
-            <div class="card border-0 shadow-sm rounded-4">
+                                        <div class="fs-3 mb-2">
+                                            <i class="fa-solid fa-dollar-sign"></i>
+                                        </div>
 
-                <div class="card-body p-4">
+                                        <div class="fw-semibold">
+                                            Fixed Amount
+                                        </div>
 
-                    <h3 class="fw-bold mb-4">
-                        Active Discounts
-                    </h3>
+                                    </label>
 
-                    @foreach (var discount in Model.Discounts)
-                    {
-                        <div class="border rounded-4 p-4 mb-3">
+                                </div>
 
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div id="Discount_Value_Percentage" class="mb-4" style="display:none">
 
-                                <div>
+                                    <label class="form-label fw-semibold">
+                                        Discount Percentage
+                                    </label>
 
-                                    <h5 class="fw-bold mb-1">
-                                        @discount.Name
-                                    </h5>
+                                    <input type="range" asp-for="Discount.DiscountValue" class="form-range" min="1" max="100"
+                                           id="percentageRange" />
 
-                                    <div class="text-secondary">
+                                    <div class="fw-semibold text-primary">
+                                        <span id="percentageValue">
+                                            50
+                                        </span> %
+                                    </div>
 
-                                        @if (discount.ProductVariantId != null)
-                                        {
-                                            <span>
-                                                Product Variant Discount
-                                            </span>
-                                        }
-                                        else if (discount.ProductId != null)
-                                        {
-                                            <span>
-                                                Product Discount
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span>
-                                                Cart Threshold Discount
-                                            </span>
-                                        }
+                                </div>
+
+                                <div id="Discount_Value_Fixed" class="mb-4" style="display:none">
+
+                                    <label class="form-label fw-semibold">
+                                        Fixed Amount
+                                    </label>
+
+                                    <input type="number" asp-for="Discount.DiscountValue" class="form-control form-control-lg"
+                                           placeholder="Enter fixed amount" />
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label fw-semibold">
+                                            Start Date
+                                        </label>
+
+                                        <input type="datetime-local" asp-for="Discount.StartDate"
+                                               class="form-control form-control-lg mb-4" />
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label fw-semibold">
+                                            Expiry Date
+                                        </label>
+
+                                        <input type="datetime-local" asp-for="Discount.EndDate"
+                                               class="form-control form-control-lg mb-4" />
 
                                     </div>
 
                                 </div>
 
-                                @if (discount.IsActive)
-                                {
-                                    <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
-                                        Active
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
-                                        Inactive
-                                    </span>
-                                }
+                                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-4 py-3 fw-semibold">
+                                    Create Discount
+                                </button>
+                            </form>
 
-                                @* mow-toggle active *@
-                                    @* <div class="form-check form-switch">
-                                        <input class="form-check-input discount-toggle" type="checkbox" data-id="@discount.Id" @(discount.IsActive ? "checked" : "") />
-                                    </div> *@
+                        </div>
 
+                    </div>
+
+                </div>
+
+                <div class="col-lg-6">
+
+                    <div class="card border-0 shadow-sm rounded-4">
+
+                        <div class="card-body p-4">
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="fw-bold mb-0">Active Discounts</h3>
                             </div>
 
-                            <div class="fs-5 fw-semibold text-primary mb-2">
+                            <div class="search-box mb-4">
+                                <form method="get" asp-action="Index" id="discountSearchForm">
+                                    <div class="row g-2">
+                                        <div class="col-md-5">
+                                            <input type="text" name="searchTerm" class="form-control"
+                                                   placeholder="Search discounts..." value="@Model.SearchTerm">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select name="filterType" class="form-select">
+                                                <option value="">All Types</option>
+                                                <option value="1"
+                                                        selected="@(Model.FilterType == POS_SYSTEM_MVC.Constants.Enums.DiscountTypeENUM.Percentage)">
+                                                    Percentage</option>
+                                                    <option value="2"
+                                                            selected="@(Model.FilterType == POS_SYSTEM_MVC.Constants.Enums.DiscountTypeENUM.Fixed)">
+                                                        Fixed</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <select name="filterIsActive" class="form-select">
+                                                        <option value="">All Status</option>
+                                                        <option value="true" selected="@(Model.FilterIsActive == true)">Active</option>
+                                                        <option value="false" selected="@(Model.FilterIsActive == false)">Inactive
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <button class="btn btn-outline-secondary w-100" type="submit" title="Filter">
+                                                        <i class="fa-solid fa-filter"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
 
-                                @if (discount.TypeName == "Percentage")
-                                {
-                                    <span>
-                                        @discount.Value% off
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span>
-                                        $@discount.Value off
-                                    </span>
-                                }
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Target</th>
+                                                    <th>Value</th>
+                                                    <th>Status</th>
+                                                    <th>Validity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.Discounts.Any())
+                                                {
+                                                    foreach (var discount in Model.Discounts)
+                                                    {
+                                                        <tr>
+                                                            <td class="fw-bold">@discount.Name</td>
+                                                            <td>
+                                                                <span class="text-secondary small">
+                                                                    @if (discount.ProductVariantId != null)
+                                                                    {
+                                                                        <span>Variant</span>
+                                                                    }
+                                                                    else if (discount.ProductId != null)
+                                                                    {
 
-                            </div>
+                                                                        <span>Product</span>
+                                                                    }
+                                                                    else
+                                                                    {
 
-                            <div class="text-secondary">
+                                                                        <span>Threshold</span>
+                                                                    }
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-primary fw-semibold">
+                                                                @(discount.Type == POS_SYSTEM_MVC.Constants.Enums.DiscountTypeENUM.Percentage ?
+                                                        $"{discount.Value}%" : $"${discount.Value}")
+                                                            </td>
+                                                            <td>
+                                                                @if (discount.IsActive)
+                                                                {
+                                                                    <span class="badge bg-success-subtle text-success">Active</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="badge bg-danger-subtle text-danger">Inactive</span>
+                                                                }
+                                                            </td>
+                                                            <td class="small text-secondary">
+                                                                @discount.CreatedAt.ToString("MMM dd") - @(discount.ExpiresAt?.ToString("MMM dd") ?? "Forever")
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-4">No discounts found.</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                                @discount.CreatedAt.ToString("yyyy-MM-dd")
-                                -
+                                    @if (Model.TotalPages > 1)
+                                    {
+                                        <nav aria-label="Discount pagination" class="mt-4">
+                                            <ul class="pagination justify-content-center">
+                                                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                                                    <a class="page-link ajax-link"
+                                                       href="@Url.Action("Index", new { page = Model.CurrentPage - 1, searchTerm = Model.SearchTerm, filterType = Model.FilterType, filterIsActive = Model.FilterIsActive })">Previous</a>
+                                                </li>
+                                
+                                                @for (int i = 1; i <= Model.TotalPages; i++)
+                                                {
+                                                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                                        <a class="page-link ajax-link"
+                                                           href="@Url.Action("Index", new { page = i, searchTerm = Model.SearchTerm, filterType = Model.FilterType, filterIsActive = Model.FilterIsActive })">@i</a>
+                                                    </li>
+                                                }
 
-                                @(discount.ExpiresAt?.ToString("yyyy-MM-dd"))
+                                                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                                                    <a class="page-link ajax-link"
+                                                       href="@Url.Action("Index", new { page = Model.CurrentPage + 1, searchTerm = Model.SearchTerm, filterType = Model.FilterType, filterIsActive = Model.FilterIsActive })">Next</a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    }
+
+                                </div>
 
                             </div>
 
                         </div>
-                    }
+
+                    </div>
 
                 </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<script>
-
-    const radios =
-        document.querySelectorAll(
-            'input[name="discount_on"]');
-
-    radios.forEach(radio => {
-
-        radio.addEventListener("change", function () {
-
-            document.getElementById(
-                "thresholdSection")
-                .style.display = "none";
-
-            document.getElementById(
-                "productSection")
-                .style.display = "none";
-
-            document.getElementById(
-                "variantSection")
-                .style.display = "none";
-
-            if (this.value === "Cart_Threshold") {
-
-                document.getElementById(
-                    "thresholdSection")
-                    .style.display = "block";
-            }
-
-            else if (this.value === "Product") {
-
-                document.getElementById(
-                    "productSection")
-                    .style.display = "block";
-            }
-
-            else if (this.value === "Product_Variant") {
-
-                document.getElementById(
-                    "variantSection")
-                    .style.display = "block";
-            }
-
-        });
-
-    });
-
-    const discountTypeRadios =
-        document.querySelectorAll(
-            'input[name="Discount.Type"]');
-
-    discountTypeRadios.forEach(radio => {
-
-        radio.addEventListener("change", function () {
-
-            document.getElementById(
-                "Discount_Value_Percentage")
-                .style.display = "none";
-
-            document.getElementById(
-                "Discount_Value_Fixed")
-                .style.display = "none";
-
-            if (this.value === "Percentage") {
-
-                document.getElementById(
-                    "Discount_Value_Percentage")
-                    .style.display = "block";
-            }
-
-                    else if (this.value === "Fixed") {
-
-                document.getElementById(
-                    "Discount_Value_Fixed")
-                    .style.display = "block";
-            }
-
-        });
-
-    });
-
-    const percentageRange =
-        document.getElementById(
-            "percentageRange");
-
-    const percentageValue =
-        document.getElementById(
-            "percentageValue");
-
-    percentageRange.addEventListener(
-        "input",
-        function () {
-
-            percentageValue.innerText =
-                this.value;
-
-
-        });
-
-
-</script>
-
-
-</form>

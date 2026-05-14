@@ -15,5 +15,11 @@ namespace POS_SYSTEM_MVC.ViewModels
         public IReadOnlyList<ProductVariant> ProductVariants { get; set; }
             = new List<ProductVariant>();
 
+        public int CurrentPage { get; set; } = 1;
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; } = 10;
+        public string SearchTerm { get; set; }
+        public POS_SYSTEM_MVC.Constants.Enums.DiscountTypeENUM? FilterType { get; set; }
+        public bool? FilterIsActive { get; set; }
     }
 }
