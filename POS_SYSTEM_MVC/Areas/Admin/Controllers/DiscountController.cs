@@ -20,24 +20,33 @@ namespace POS_SYSTEM_MVC.Areas.Admin.Controllers
             _discountService = discountService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm = null, POS_SYSTEM_MVC.Constants.Enums.DiscountTypeENUM? filterType = null, bool? filterIsActive = null, int page = 1)
         {
-            var discounts = await _unitOfWork.Discounts.GetAllAsync();
+            int pageSize = 10;
+            var paginatedResult = await _unitOfWork.Discounts.GetPaginatedAsync(searchTerm, page, pageSize, filterType, filterIsActive);
             var products = await _unitOfWork.Products.GetAllAsync();
             var variants = await _unitOfWork.ProductVariants.GetAllAsync();
 
+            int totalPages = (int)Math.Ceiling(paginatedResult.TotalCount / (double)pageSize);
+
             var vm = new DiscountformVM
             {
-                Discounts = discounts,
+                Discounts = paginatedResult.Discounts.ToList(),
                 Products = products,
-                ProductVariants = variants
+                ProductVariants = variants,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pageSize,
+                SearchTerm = searchTerm,
+                FilterType = filterType,
+                FilterIsActive = filterIsActive
             };
 
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(DiscountformVM vm)
+        public async Task<IActionResult> Index(DiscountformVM vm, string searchTerm = null, POS_SYSTEM_MVC.Constants.Enums.DiscountTypeENUM? filterType = null, bool? filterIsActive = null, int page = 1)
         {
             var errors = await _discountService.CreateAsync(vm.Discount);
 
@@ -48,9 +57,19 @@ namespace POS_SYSTEM_MVC.Areas.Admin.Controllers
                     ModelState.AddModelError("", error);
                 }
 
-                vm.Discounts = await _discountService.GetAllAsync();
+                int pageSize = 10;
+                var paginatedResult = await _unitOfWork.Discounts.GetPaginatedAsync(searchTerm, page, pageSize, filterType, filterIsActive);
+                int totalPages = (int)Math.Ceiling(paginatedResult.TotalCount / (double)pageSize);
+
+                vm.Discounts = paginatedResult.Discounts.ToList();
                 vm.Products = await _unitOfWork.Products.GetAllAsync();
                 vm.ProductVariants = await _unitOfWork.ProductVariants.GetAllAsync();
+                vm.CurrentPage = page;
+                vm.TotalPages = totalPages;
+                vm.PageSize = pageSize;
+                vm.SearchTerm = searchTerm;
+                vm.FilterType = filterType;
+                vm.FilterIsActive = filterIsActive;
 
                 return View(vm);
             }
